@@ -1,0 +1,10 @@
+BasedOnStyle: Microsoft
+UseTab: Never
+IndentWidth: 4
+BreakBeforeBraces: Allman
+IndentCaseLabels: false
+BreakTemplateDeclarations: Yes
+AllowShortLoopsOnASingleLine: true
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AccessModifierOffset: -4
+AllowShortFunctionsOnASingleLine: Empty
