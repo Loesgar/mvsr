@@ -53,14 +53,14 @@ extern "C"
      * @param dimensions Number of input dimensions
      * @param variants   Number of output variants
      * @param data       Data matrix of all samples
-     * @param minsegsize Minimum number of smaples in any segment
+     * @param minsegsize Minimum number of samples in any segment
      * @param placement  Placement strategy for initial segment placement
      *
      * @return The created regression object or NULL on error
      *
      * This function creates a regression object. The initial segments are later
-     * reduced. Currently as many segments as possible are placed, ignoreing the
-     * placement paramter. This results in
+     * reduced. Currently as many segments as possible are placed, ignoring the
+     * placement parameter. This results in
      * $\lfloor\frac{samples}{minsegsize}\rfloor$ segments. The only segments that
      * may be larger than minsegsize is the last one. Parameter minsegsize should be
      * 'dimensions' if the greedy approach will be used and '1' if the dynamic
@@ -97,7 +97,7 @@ extern "C"
      * @return The number of segments or '0' on error.
      *
      * This should be executed after reducing with the greedy regression algorithm.
-     * The range paramter is a number relative to the neighbouring segment size.
+     * The range parameter is a number relative to the neighbouring segment size.
      */
     size_t mvsr_optimize_f64(void *reg, const double *data, unsigned int range, MvsrMetric metric);
 
@@ -130,12 +130,12 @@ extern "C"
     void *mvsr_copy_f64(void *reg);
 
     /**
-     * @brief Release a regresion object.
+     * @brief Release a regression object.
      *
      * @param reg The regression object.
      *
      * This function releases a regression object and frees all associated
-     * resources. The object MUST NOT be used afterwards by any funtion.
+     * resources. The object MUST NOT be used afterwards by any function.
      */
     void mvsr_release_f64(void *reg);
 

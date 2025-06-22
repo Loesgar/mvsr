@@ -19,7 +19,7 @@ private:
     union Bucket
     {
         Element element;
-        T2 _alignment; // alignes the Element to alignment of T2
+        T2 _alignment; // aligns the Element to alignment of T2
         size_t _empty; // needed for Element to be at least ptr size
     };
 

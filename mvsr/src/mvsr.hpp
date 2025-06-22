@@ -162,7 +162,7 @@ public:
                 segUpdateError(curSegDiff);
                 auto err = curSegDiff[offErr];
 
-                // check wether the error is smaller than currently used one
+                // check whether the error is smaller than currently used one
                 for (size_t idx = 1; idx < numSegments; idx++)
                 {
                     if (cmpRow[idx - 1].err + err < curRow[idx].err)

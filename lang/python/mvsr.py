@@ -181,7 +181,7 @@ class Kernel:
         def normalize(self, y):
             if self.__tidx is None:
                 raise NotImplementedError(
-                    "Normalization is not possible by default on Raw kernel. Either specify the tranlation dimension index or consider turnign off normalization."
+                    "Normalization is not possible by default on Raw kernel. Either specify the translation dimension index or consider turnign off normalization."
                 )
             self.__offsets = np.min(y, axis=1)
             y -= self.__offsets[:, np.newaxis]
@@ -191,7 +191,7 @@ class Kernel:
         def denormalize(self, models):
             if self.__tidx is None:
                 raise NotImplementedError(
-                    "Normalization is not possible by default on Raw kernel. Either specify the tranlation dimension index or consider turnign off normalization."
+                    "Normalization is not possible by default on Raw kernel. Either specify the translation dimension index or consider turnign off normalization."
                 )
             if self.__offsets is None or self.__factors is None:
                 raise NotImplementedError(

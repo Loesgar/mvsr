@@ -115,7 +115,7 @@ __libmvsr.mvsr_release_f32.restype = None
 __libmvsr.mvsr_release_f32.argtypes = [__voidp]
 
 #################################################
-# Function dictonary (direct usage discouraged) #
+# Function dictionary (direct usage discouraged) #
 #################################################
 
 funcs = {
@@ -181,7 +181,7 @@ class Mvsr:
         if len(x.shape) != 2 or len(y.shape) != 2:
             raise Exception("Unsupported input dymensions.")
         if x.shape[1] != y.shape[1]:
-            raise Exception("Missmatch in sample count of x and y.")
+            raise Exception("Mismatch in sample count of x and y.")
         if dtype not in funcs:
             raise Exception("Unsupported dtype.")
 

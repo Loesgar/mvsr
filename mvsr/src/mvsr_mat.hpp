@@ -7,7 +7,7 @@
  * @brief Computes the grand sum of $aa^T*b$ where '*' is the shor product (element-wise product)
  *
  * @param width width of matrix a
- * @param height heigth of matrix a
+ * @param height height of matrix a
  * @param a input buffer for matrix a
  * @param b input buffer for matrix b
  * @return grand sum

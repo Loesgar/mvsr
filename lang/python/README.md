@@ -1,6 +1,6 @@
 # Python (MVSR)
 
-This describes the python version of the MVSR-project. Consider reading the [general documentaion](../../README.md).
+This describes the python version of the MVSR-project. Consider reading the [general documentation](../../README.md).
 
 ## Installation
 
