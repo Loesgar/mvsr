@@ -16,6 +16,13 @@ add_library(mvsr SHARED
 )
 target_include_directories(mvsr PRIVATE inc)
 
+set_target_properties(mvsr PROPERTIES PUBLIC_HEADER
+    inc/mvsr.h
+)
+install(TARGETS mvsr
+    LIBRARY DESTINATION lib
+    PUBLIC_HEADER DESTINATION inc
+)
 
 option(TESTING "Enable tests." ON)
 if (TESTING)
