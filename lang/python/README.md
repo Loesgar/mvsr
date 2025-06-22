@@ -1,6 +1,7 @@
-# Python (MVSR)
+# Python API
 
-This describes the python version of the MVSR-project. Consider reading the [general documentation](../../README.md).
+<!--hide-in-docs-->
+This describes the Python API of the MVSR-project. Consider reading the [general documentation](../../README.md).
 
 ## Installation
 

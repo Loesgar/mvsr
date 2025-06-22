@@ -1,4 +1,4 @@
-# Multi-Variant Segmented Regression (MVSR)
+# Multi-Variant Segmented Regression
 
 {TODO: Brief description goes here}
 
@@ -6,7 +6,7 @@
 
 {TODO: Citations go here}
 
-## Description
+## Overview
 
 This library enables segmented regression (also referred to as piecewise regression or min-$\epsilon$ segmented regression). It generates a segmented regression function, based on models and input samples. The input samples consist of (typically noise-free) independent variables (x) and noisy dependent variables (y).
 
@@ -61,6 +61,7 @@ While the algorithms are implemented in C++, the interface is exposed via a C-AP
 - [R/Rlang](lang/rlang/README.md)
 - [Rust](lang/rust/README.md)
 
+<!--end-docs-->
 ## License and Contribution
 
 The whole project is licensed under Mozilla Public License (MPL 2.0). This enables everyone to use, link and share this work (see [LICENSE](LICENSE)). We strongly encourage you to share any changes and contribute to this project directly.

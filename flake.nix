@@ -25,6 +25,7 @@
               packages = with pkgs; [ nixfmt-rfc-style ];
             };
             mvsr = import ./mvsr/shell.nix { inherit pkgs; };
+            docs = import ./docs/shell.nix { inherit pkgs; };
             lang-python = import ./lang/python/shell.nix { inherit pkgs; };
           };
         };

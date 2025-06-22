@@ -1,6 +1,7 @@
-# C (MVSR)
+# C API
 
-This describes the C version of the MVSR-project. Consider reading the [general documentation](../../README.md).
+<!--hide-in-docs-->
+This describes the C API of the MVSR-project. Consider reading the [general documentation](../../README.md).
 
 ## Installation
 

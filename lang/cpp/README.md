@@ -1,6 +1,7 @@
-# C++ (MVSR)
+# C++ (Native)
 
-This describes the C++ version of the MVSR-project. Consider reading the [general documentation](../../README.md).
+<!--hide-in-docs-->
+This describes the native C++ version of the MVSR-project. Consider reading the [general documentation](../../README.md).
 
 ## Installation
 

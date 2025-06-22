@@ -1,0 +1,21 @@
+[project]
+name = "mvsr-docs"
+version = "0.1"
+requires-python = ">=3.12"
+dependencies = [
+    "mvsr",
+    "sphinx",
+    "furo",
+    "myst-parser",
+    "docutils",
+    "sphinxcontrib-mermaid",
+]
+
+[tool.uv.sources]
+mvsr = { path = "../lang/python", editable = true }
+
+[dependency-groups]
+dev = ["ruff", "sphinx-autobuild"]
+
+[tool.ruff]
+line-length = 100
