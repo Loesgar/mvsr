@@ -18,6 +18,7 @@ add_library(mvsr SHARED
     inc/mvsr.h
 )
 target_include_directories(mvsr PRIVATE inc)
+target_link_options(mvsr PRIVATE -static-libgcc -static-libstdc++)
 
 set_target_properties(mvsr PROPERTIES PUBLIC_HEADER
     inc/mvsr.h
