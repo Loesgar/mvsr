@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 set(CMAKE_CXX_VERSION 20)
-set(WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+set(WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 if (MVSC)
     add_compile_options(/W4)
@@ -16,8 +16,11 @@ add_library(mvsr SHARED
 )
 target_include_directories(mvsr PRIVATE inc)
 
-include(CTest)
-add_executable(TestLinear test/linear.cpp)
-target_link_libraries(TestLinear PUBLIC mvsr)
-add_test(NAME TestLinear COMMAND TestLinear)
 
+option(TESTING "Enable tests." ON)
+if (TESTING)
+    include(CTest)
+    add_executable(test-linear test/linear.cpp)
+    target_link_libraries(test-linear PUBLIC mvsr)
+    add_test(NAME test-linear COMMAND test-linear)
+endif()
