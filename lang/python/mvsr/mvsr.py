@@ -1,6 +1,8 @@
-from libmvsr import Mvsr
-import numpy as np
 from bisect import bisect
+
+import numpy as np
+
+from .libmvsr import Mvsr
 
 
 class Regression:

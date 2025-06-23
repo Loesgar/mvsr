@@ -1,0 +1,22 @@
+[project]
+name = "mvsr"
+version = "0.1"
+requires-python = ">=3.9"
+readme = "README.md"
+dependencies = ["numpy"]
+
+[dependency-groups]
+dev = ["hatchling", "auditwheel", "ruff"]
+
+[build-system]
+requires = ["hatchling", "auditwheel"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+packages = ["mvsr"]
+[tool.hatch.build.targets.sdist.force-include]
+"../../mvsr/CMakeLists.txt" = "libmvsr/CMakeLists.txt"
+"../../mvsr/src" = "libmvsr/src"
+[tool.hatch.build.targets.wheel]
+artifacts = ["*/lib/*.so", "*/lib/*.dylib", "*/lib/*.dll"]
+[tool.hatch.build.targets.wheel.hooks.custom]

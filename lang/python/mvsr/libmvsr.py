@@ -2,8 +2,8 @@
 
 import ctypes
 from enum import IntEnum
+
 import numpy as np
-from pathlib import Path
 
 
 def ndarray_or_null(*args, **kwargs):
