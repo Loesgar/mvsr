@@ -50,30 +50,11 @@ __libmvsr = ctypes.CDLL("../../build/libmvsr.so")
 
 # F64 Functions
 __libmvsr.mvsr_init_f64.restype = __voidp
-__libmvsr.mvsr_init_f64.argtypes = [
-    __size_t,
-    __size_t,
-    __size_t,
-    __f64ptr2d,
-    __size_t,
-    __int,
-]
+__libmvsr.mvsr_init_f64.argtypes = [__size_t, __size_t, __size_t, __f64ptr2d, __size_t, __int]
 __libmvsr.mvsr_reduce_f64.restype = __size_t
-__libmvsr.mvsr_reduce_f64.argtypes = [
-    __voidp,
-    __size_t,
-    __size_t,
-    __int,
-    __int,
-    __int,
-]
+__libmvsr.mvsr_reduce_f64.argtypes = [__voidp, __size_t, __size_t, __int, __int, __int]
 __libmvsr.mvsr_optimize_f64.restype = __size_t
-__libmvsr.mvsr_optimize_f64.argtypes = [
-    __voidp,
-    __f64ptr2d,
-    __uint,
-    __int,
-]
+__libmvsr.mvsr_optimize_f64.argtypes = [__voidp, __f64ptr2d, __uint, __int]
 __libmvsr.mvsr_get_data_f64.restype = __size_t
 __libmvsr.mvsr_get_data_f64.argtypes = [__voidp, __sizeptr, __f64ptr3d, __f64ptr]
 __libmvsr.mvsr_copy_f64.restype = __voidp
@@ -83,30 +64,11 @@ __libmvsr.mvsr_release_f64.argtypes = [__voidp]
 
 # F32 Functions
 __libmvsr.mvsr_init_f32.restype = __voidp
-__libmvsr.mvsr_init_f32.argtypes = [
-    __size_t,
-    __size_t,
-    __size_t,
-    __f32ptr2d,
-    __size_t,
-    __int,
-]
+__libmvsr.mvsr_init_f32.argtypes = [__size_t, __size_t, __size_t, __f32ptr2d, __size_t, __int]
 __libmvsr.mvsr_reduce_f32.restype = __size_t
-__libmvsr.mvsr_reduce_f32.argtypes = [
-    __voidp,
-    __size_t,
-    __size_t,
-    __int,
-    __int,
-    __int,
-]
+__libmvsr.mvsr_reduce_f32.argtypes = [__voidp, __size_t, __size_t, __int, __int, __int]
 __libmvsr.mvsr_optimize_f32.restype = __size_t
-__libmvsr.mvsr_optimize_f32.argtypes = [
-    __voidp,
-    __f32ptr2d,
-    __uint,
-    __int,
-]
+__libmvsr.mvsr_optimize_f32.argtypes = [__voidp, __f32ptr2d, __uint, __int]
 __libmvsr.mvsr_get_data_f32.restype = __size_t
 __libmvsr.mvsr_get_data_f32.argtypes = [__voidp, __sizeptr, __f32ptr3d, __f32ptr]
 __libmvsr.mvsr_copy_f32.restype = __voidp
@@ -159,9 +121,7 @@ class Mvsr:
 
     __reg = None
 
-    def __init__(
-        self, x, y=None, minsegsize=None, placement=Placement.ALL, dtype=np.float64
-    ):
+    def __init__(self, x, y=None, minsegsize=None, placement=Placement.ALL, dtype=np.float64):
         if isinstance(x, Mvsr):
             self.__dimensions = x.__dimensions
             self.__variants = x.__variants
@@ -207,14 +167,7 @@ class Mvsr:
         if self.__reg is None:
             raise Exception("Error initializing segments.")  # todo: more info?
 
-    def reduce(
-        self,
-        min,
-        max=0,
-        alg=Algorithm.GREEDY,
-        score=Score.EXACT,
-        metric=Metric.MSE,
-    ):
+    def reduce(self, min, max=0, alg=Algorithm.GREEDY, score=Score.EXACT, metric=Metric.MSE):
         res = self.__funcs["reduce"](self.__reg, min, max, alg, metric, score)
         if res == 0:
             raise Exception("Error reducing segments.")  # todo: more info?
@@ -234,8 +187,7 @@ class Mvsr:
             self.__num_pieces = res
         starts = np.empty((self.__num_pieces), dtype=np.uintp)
         models = np.empty(
-            (self.__num_pieces, self.__dimensions, self.__variants),
-            dtype=self.__dtype,
+            (self.__num_pieces, self.__dimensions, self.__variants), dtype=self.__dtype
         )
         errors = np.empty((self.__num_pieces), dtype=self.__dtype)
 

@@ -1,9 +1,9 @@
-#include <mvsr.h>
 #include "mvsr.hpp"
+#include <mvsr.h>
 
 template <typename Scalar>
-inline void *mvsr_init(size_t samples, size_t dimensions, size_t variants, const Scalar *data, size_t minsegsize,
-                       MvsrPlacement placement)
+inline void *mvsr_init(size_t samples, size_t dimensions, size_t variants, const Scalar *data,
+                       size_t minsegsize, MvsrPlacement placement)
 {
     if (placement != MvsrPlaceAll) return nullptr;
 
@@ -12,7 +12,8 @@ inline void *mvsr_init(size_t samples, size_t dimensions, size_t variants, const
     return reg;
 }
 template <typename Scalar>
-inline size_t mvsr_reduce(void *reg, size_t minsegs, size_t maxsegs, MvsrAlg alg, MvsrMetric metric, MvsrScore score)
+inline size_t mvsr_reduce(void *reg, size_t minsegs, size_t maxsegs, MvsrAlg alg, MvsrMetric metric,
+                          MvsrScore score)
 {
     if (metric != MvsrMetricMSE || score != MvsrScoreExact) return 0;
 
@@ -52,7 +53,8 @@ inline size_t mvsr_get_data(void *reg, size_t *breakpoints, Scalar *models, Scal
         {
             if (breakpoints != nullptr) breakpoints[i] = curbp;
             if (models != nullptr)
-                regression->getSegModel(seg, &models[i * (regression->getDimensions() * regression->getVariants())]);
+                regression->getSegModel(
+                    seg, &models[i * (regression->getDimensions() * regression->getVariants())]);
             if (errors != nullptr) errors[i] = regression->getSegRss(seg);
             curbp += regression->getSegSize(seg);
             i++;
@@ -74,13 +76,14 @@ inline void mvsr_release(void *reg)
     delete regression;
 }
 
-void *mvsr_init_f64(size_t samples, size_t dimensions, size_t variants, const double *data, size_t minsegsize,
-                    MvsrPlacement placement)
+void *mvsr_init_f64(size_t samples, size_t dimensions, size_t variants, const double *data,
+                    size_t minsegsize, MvsrPlacement placement)
 {
     return mvsr_init<double>(samples, dimensions, variants, data, minsegsize, placement);
 }
 
-size_t mvsr_reduce_f64(void *reg, size_t minsegs, size_t maxsegs, MvsrAlg alg, MvsrMetric metric, MvsrScore score)
+size_t mvsr_reduce_f64(void *reg, size_t minsegs, size_t maxsegs, MvsrAlg alg, MvsrMetric metric,
+                       MvsrScore score)
 {
     return mvsr_reduce<double>(reg, minsegs, maxsegs, alg, metric, score);
 }
@@ -101,12 +104,13 @@ void mvsr_release_f64(void *reg)
 {
     return mvsr_release<double>(reg);
 }
-void *mvsr_init_f32(size_t samples, size_t dimension, size_t variants, const float *data, size_t minsegsize,
-                    MvsrPlacement placement)
+void *mvsr_init_f32(size_t samples, size_t dimension, size_t variants, const float *data,
+                    size_t minsegsize, MvsrPlacement placement)
 {
     return mvsr_init<float>(samples, dimension, variants, data, minsegsize, placement);
 }
-size_t mvsr_reduce_f32(void *reg, size_t minsegs, size_t maxsegs, MvsrAlg alg, MvsrMetric metric, MvsrScore score)
+size_t mvsr_reduce_f32(void *reg, size_t minsegs, size_t maxsegs, MvsrAlg alg, MvsrMetric metric,
+                       MvsrScore score)
 {
     return mvsr_reduce<float>(reg, minsegs, maxsegs, alg, metric, score);
 }

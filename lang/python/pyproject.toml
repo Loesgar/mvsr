@@ -20,3 +20,6 @@ packages = ["mvsr"]
 [tool.hatch.build.targets.wheel]
 artifacts = ["*/lib/*.so", "*/lib/*.dylib", "*/lib/*.dll"]
 [tool.hatch.build.targets.wheel.hooks.custom]
+
+[tool.ruff]
+line-length = 100

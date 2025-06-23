@@ -1,5 +1,6 @@
-// A typical double linked list, but enables getting an iterator from an element pointer and holds additional space for
-// each element. The list reserves space once and can never grow bigger. Otherwise a segfault will occur.
+// A typical double linked list, but enables getting an iterator from an element pointer and holds
+// additional space for each element. The list reserves space once and can never grow bigger.
+// Otherwise a segfault will occur.
 
 #ifndef MVSR_LIST_HPP
 #define MVSR_LIST_HPP
@@ -29,8 +30,8 @@ public:
         if (reserve != 0) reserveElements(reserve);
     }
     List(List &&move)
-        : first(move.first), last(move.last), space(move.space), size(move.size), allocated(move.allocated),
-          freeptr(move.freeptr)
+        : first(move.first), last(move.last), space(move.space), size(move.size),
+          allocated(move.allocated), freeptr(move.freeptr)
     {
         move.first = move.last = nullptr;
         move.allocated = move.freeptr = nullptr;
@@ -263,7 +264,8 @@ private:
             allocated = (Bucket *)::calloc(reserve, getBucketSize());
             freeptr = allocated;
             auto *last = (Bucket *)&((char *)allocated)[(reserve - 1) * getBucketSize()];
-            last->_empty = (char *)(nullptr) - (char *)(last) - (sizeof(Bucket) + sizeof(T2) * space);
+            last->_empty =
+                (char *)(nullptr) - (char *)(last) - (sizeof(Bucket) + sizeof(T2) * space);
         }
     }
     Element *alloc()

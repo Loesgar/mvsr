@@ -35,8 +35,8 @@ public:
      * @param other Other segmented regression.
      */
     Mvsr(const Mvsr<Scalar> &other)
-        : variants(other.variants), dimensions(other.dimensions), pieces(other.pieces), offY(other.offY),
-          segSize(other.segSize)
+        : variants(other.variants), dimensions(other.dimensions), pieces(other.pieces),
+          offY(other.offY), segSize(other.segSize)
     {
         queue = other.queue.copyByOrder(other.pieces, pieces);
     }
@@ -49,14 +49,17 @@ public:
     /**
      * @brief Creates an mvsr object from samples in the data parameter.
      *
-     * @param dimensions Number of dimensions. For a $d$-degree polynomial regression this must be set to $d+1$.
+     * @param dimensions Number of dimensions. For a $d$-degree polynomial regression this must be
+     * set to $d+1$.
      * @param variants Number of variants. Typically 1.
      * @param samples Number of samples in the data array.
-     * @param data Array of samples. Each sample needs the all xvalues and all variant results in the same order.
+     * @param data Array of samples. Each sample needs the all xvalues and all variant results in
+     * the same order.
      */
     Mvsr(size_t dimensions, size_t variants)
         : variants(variants), dimensions(dimensions), offY(dimensions * dimensions + offX),
-          segSize(dimensions * (dimensions + variants) + offX), pieces(dimensions * (dimensions + variants) + offX)
+          segSize(dimensions * (dimensions + variants) + offX),
+          pieces(dimensions * (dimensions + variants) + offX)
     {
     }
 
@@ -81,10 +84,12 @@ public:
         segInit(segGetStartPtr(*pieces.prepend(Segment{
                     .sampleSize = minPerSeg + (sampleCount % minPerSeg),
                 })),
-                minPerSeg + (sampleCount % minPerSeg), data -= (minPerSeg + (sampleCount % minPerSeg)) * rowSize);
+                minPerSeg + (sampleCount % minPerSeg),
+                data -= (minPerSeg + (sampleCount % minPerSeg)) * rowSize);
         while ((sampleCount -= minPerSeg) != 0)
         {
-            segInit(segGetStartPtr(*pieces.prepend(Segment{.sampleSize = minPerSeg})), minPerSeg, data -= segMatSize);
+            segInit(segGetStartPtr(*pieces.prepend(Segment{.sampleSize = minPerSeg})), minPerSeg,
+                    data -= segMatSize);
         }
     }
 

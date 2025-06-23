@@ -67,8 +67,8 @@ extern "C"
      * program will be used. The data contains all samples. Each sample is defined
      * by an array of $dimensions + variants$ values.
      */
-    void *mvsr_init_f64(size_t samples, size_t dimensions, size_t variants, const double *data, size_t minsegsize,
-                        MvsrPlacement placement);
+    void *mvsr_init_f64(size_t samples, size_t dimensions, size_t variants, const double *data,
+                        size_t minsegsize, MvsrPlacement placement);
 
     /**
      * @brief Reduce the amount of segments.
@@ -85,7 +85,8 @@ extern "C"
      * This function reduces the number of segments. Depending on 'scoring', the
      * number is given by segments or dynamically determined.
      */
-    size_t mvsr_reduce_f64(void *reg, size_t minsegs, size_t maxsegs, MvsrAlg alg, MvsrMetric metric, MvsrScore score);
+    size_t mvsr_reduce_f64(void *reg, size_t minsegs, size_t maxsegs, MvsrAlg alg,
+                           MvsrMetric metric, MvsrScore score);
 
     /**
      * @brief Optimize the breakpoints.
@@ -146,13 +147,14 @@ extern "C"
     /**
      * @copydoc mvsr_init_f64
      */
-    void *mvsr_init_f32(size_t samples, size_t dimension, size_t variants, const float *data, size_t minsegsize,
-                        MvsrPlacement placement);
+    void *mvsr_init_f32(size_t samples, size_t dimension, size_t variants, const float *data,
+                        size_t minsegsize, MvsrPlacement placement);
 
     /**
      * @copydoc mvsr_reduce_f64
      */
-    size_t mvsr_reduce_f32(void *reg, size_t minsegs, size_t maxsegs, MvsrAlg alg, MvsrMetric metric, MvsrScore score);
+    size_t mvsr_reduce_f32(void *reg, size_t minsegs, size_t maxsegs, MvsrAlg alg,
+                           MvsrMetric metric, MvsrScore score);
 
     /**
      * @copydoc mvsr_optimize_f64
@@ -178,9 +180,9 @@ extern "C"
                                Helper Functions
     ------------------------------------------------------------------------------*/
 
-    inline size_t mvsr_f64(size_t samples, size_t dimensions, size_t variants, const double *data, size_t minsegs,
-                           size_t maxsegs, MvsrAlg alg, MvsrScore score, MvsrMetric metric, size_t *breakpoints,
-                           double *models, double *error)
+    inline size_t mvsr_f64(size_t samples, size_t dimensions, size_t variants, const double *data,
+                           size_t minsegs, size_t maxsegs, MvsrAlg alg, MvsrScore score,
+                           MvsrMetric metric, size_t *breakpoints, double *models, double *error)
     {
         size_t res = 0;
         size_t mss = (alg == MvsrAlgDP) ? 1 : dimensions;

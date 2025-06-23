@@ -17,8 +17,7 @@ class Regression:
 
         def __call__(self, x):
             res = np.matmul(
-                self.__models,
-                np.array(self.__kernel(np.array([x])), dtype=self.__model.dtype),
+                self.__models, np.array(self.__kernel(np.array([x])), dtype=self.__model.dtype)
             ).T[0]
             return res[0] if self.__flatten else res
 
@@ -144,10 +143,7 @@ class Regression:
         return [
             reg.plot(ax, style, istyle)
             for reg, ax, style, istyle in zip(
-                [self.get_variant(v) for v in range(self.__y.shape[1])],
-                axs,
-                styles,
-                istyles,
+                [self.get_variant(v) for v in range(self.__y.shape[1])], axs, styles, istyles
             )
         ]
 
@@ -196,9 +192,7 @@ class Kernel:
                     "Normalization is not possible by default on Raw kernel. Either specify the translation dimension index or consider turnign off normalization."
                 )
             if self.__offsets is None or self.__factors is None:
-                raise NotImplementedError(
-                    "Denormalization can not happen before normalization."
-                )
+                raise NotImplementedError("Denormalization can not happen before normalization.")
             res = models * self.__factors[np.newaxis, :]
             res[self.__tidx] += self.__offsets
             return res
@@ -207,9 +201,7 @@ class Kernel:
             return np.array(x, ndmin=2).T
 
         def interpolate(self, s1, s2, x1, x2):
-            raise NotImplementedError(
-                "Interpolation is not possible by default on Raw Kernel."
-            )
+            raise NotImplementedError("Interpolation is not possible by default on Raw Kernel.")
 
     class Poly(Raw):
         def __init__(self, degree=1, combinations=True):
@@ -224,11 +216,7 @@ class Kernel:
             return np.concatenate(
                 (
                     np.ones((1, len(x))),
-                    *(
-                        [np.power(val, i)]
-                        for val in x.T
-                        for i in range(1, self.__degree + 1)
-                    ),
+                    *([np.power(val, i)] for val in x.T for i in range(1, self.__degree + 1)),
                 )
             )
 
