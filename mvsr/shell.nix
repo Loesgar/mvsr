@@ -1,5 +1,5 @@
-{pkgs, ...}:
+{ pkgs, ... }:
 pkgs.mkShell {
-    inputsFrom = [(pkgs.callPackage ./package.nix {})];
-    packages = with pkgs; [clang-tools];
+  inputsFrom = [ (pkgs.callPackage ./package.nix { }) ];
+  packages = with pkgs; [ clang-tools ];
 }
