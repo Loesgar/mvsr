@@ -1,0 +1,13 @@
+diff --git a/src/linear_merging.jl b/src/linear_merging.jl
+index bf8e100..570bcae 100644
+--- a/src/linear_merging.jl
++++ b/src/linear_merging.jl
+@@ -122,7 +122,7 @@ function compute_errors_fast(X::Array{Float64,2}, y::Array{Float64,1})
+         currow = vec(X[jj,:])
+         normysq += y[jj] *  y[jj]
+         A += X[jj,:] * X[jj,:]'
+-        Ainv -= (Ainv * currow * currow' * Ainv) / (1 + dot(vec(currow' * Ainv), currow))
++        Ainv -= ((Ainv * currow) * (currow' * Ainv)) / (1 + dot(vec(currow' * Ainv), currow))
+         y2 += currow * y[jj]
+         theta = Ainv * y2
+         res[ii,jj] = normysq - dot(vec(theta' * A), theta)
