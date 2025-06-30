@@ -7,19 +7,20 @@ project(mvsr
 set(CMAKE_CXX_STANDARD 20)
 set(WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-if (MVSC)
-    add_compile_options(/W4)
-else()
-    add_compile_options(-Wall -Wextra -pedantic)
-    add_compile_options(-Wno-vla -Wno-missing-field-initializers)
-endif()
-
 add_library(mvsr SHARED
     src/mvsr.cpp
     inc/mvsr.h
 )
 target_include_directories(mvsr PRIVATE inc)
-target_link_options(mvsr PRIVATE -static-libgcc -static-libstdc++)
+
+if (MVSC)
+    add_compile_options(/W4)
+    target_link_options(msvr PRIVATE /MT)
+else()
+    add_compile_options(-Wall -Wextra -pedantic)
+    add_compile_options(-Wno-vla -Wno-missing-field-initializers)
+    target_link_options(mvsr PRIVATE -static-libgcc -static-libstdc++)
+endif()
 
 set_target_properties(mvsr PROPERTIES PUBLIC_HEADER
     inc/mvsr.h
