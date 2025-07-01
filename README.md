@@ -55,7 +55,7 @@ We do not support segmentation across multiple input dimensions (yet). Currently
 While the algorithms are implemented in C++, the interface is exposed via a C-API and there are bindings for multiple languages, often already installable with the corresponding package managers. The exact usage differs between the languages. We currently support the following languages (see the individual documentation for usage instructions):
 
 - [C](lang/c/README.md)
-- [C++](lang/c++/README.md)
+- [C++](lang/cpp/README.md)
 - [Julia](lang/julia/README.md)
 - [Python](lang/python/README.md)
 - [R/Rlang](lang/rlang/README.md)
