@@ -1,7 +1,9 @@
 # Python wrapper code to use the exported c++ mvsr functions
 
 import ctypes
+import platform
 from enum import IntEnum
+from pathlib import Path
 
 import numpy as np
 
@@ -40,9 +42,9 @@ __f32ptr3d = ndarray_or_null(dtype=np.float32, ndim=3, flags="C")
 # Load dynamic library #
 ########################
 
-# todo: adapt for windows
-# __libmvsr = ctypes.CDLL(Path(__file__).parent / "build" / "libmvsr.so")
-__libmvsr = ctypes.CDLL("../../build/libmvsr.so")
+LIBRARY_EXTENSION = {"Windows": "dll", "Darwin": "dylib"}.get(platform.system(), "so")
+LIBRARY_PATH = Path(__file__).parent / "lib" / f"libmvsr.{LIBRARY_EXTENSION}"
+__libmvsr = ctypes.CDLL(LIBRARY_PATH)
 
 ########################
 # Function definitions #
