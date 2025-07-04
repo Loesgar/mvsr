@@ -22,6 +22,8 @@ source_suffix = {
     ".rst": "restructuredtext",
 }
 html_theme = "furo"
+html_static_path = ["static"]
+html_css_files = ["theme-overrides.css"]
 myst_fence_as_directive = ["automodule", "mermaid"]
 add_module_names = False
 autodoc_preserve_defaults = True

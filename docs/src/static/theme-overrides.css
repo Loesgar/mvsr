@@ -1,0 +1,30 @@
+h1,
+h2,
+h3 {
+    margin-top: 1.75rem;
+    margin-bottom: 1rem;
+}
+
+h1 {
+    font-size: 2em;
+}
+
+h2 {
+    font-size: 1.5em;
+}
+
+h3 {
+    font-size: 1.25em;
+}
+
+h4,
+h5,
+h6 {
+    margin-top: 1.25rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.125em;
+}
+
+.sidebar-brand-text {
+    font-size: 1.4rem;
+}
