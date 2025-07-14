@@ -2,10 +2,16 @@
 
 import ctypes
 import platform
+import typing
 from enum import IntEnum
 from pathlib import Path
 
 import numpy as np
+
+if typing.TYPE_CHECKING:
+    from ctypes import _NamedFuncPointer as NamedFuncPointer
+else:
+    NamedFuncPointer = object
 
 
 def ndarray_or_null(*args, **kwargs):
@@ -106,6 +112,16 @@ funcs = {
 #######################
 
 
+class InternalError(Exception):
+    _Unset = object()
+
+    def __init__(self, function: NamedFuncPointer, return_value: typing.Any = _Unset):
+        super().__init__(
+            f"internal error in '{function.__name__}'"
+            + (f" (returned '{return_value}')" if return_value is not self._Unset else "")
+        )
+
+
 class Mvsr:
     class Placement(IntEnum):
         ALL = 0
@@ -123,21 +139,7 @@ class Mvsr:
 
     __reg = None
 
-    def __init__(self, x, y=None, minsegsize=None, placement=Placement.ALL, dtype=np.float64):
-        if isinstance(x, Mvsr):
-            self.__dimensions = x.__dimensions
-            self.__variants = x.__variants
-            self.__dtype = x.__dtype
-            self.__funcs = x.__funcs
-            self.__data = x.__data
-            self.__num_pieces = x.__num_pieces
-            self.__reg = x.__funcs["copy"](x.__reg)
-            if self.__reg is None:
-                raise Exception("Error copying regression.")
-            return
-
-        if y is None:
-            raise Exception("Missing y values")
+    def __init__(self, x, y, minsegsize=None, placement=Placement.ALL, dtype=np.float64):
         x = np.array(x, dtype=dtype)
         y = np.array(y, dtype=dtype)
         if len(x.shape) != 2 or len(y.shape) != 2:
@@ -165,27 +167,26 @@ class Mvsr:
             minsegsize,
             placement,
         )
-
         if self.__reg is None:
-            raise Exception("Error initializing segments.")  # todo: more info?
+            raise InternalError(self.__funcs["init"], self.__reg)
 
     def reduce(self, min, max=0, alg=Algorithm.GREEDY, score=Score.EXACT, metric=Metric.MSE):
         res = self.__funcs["reduce"](self.__reg, min, max, alg, metric, score)
         if res == 0:
-            raise Exception("Error reducing segments.")  # todo: more info?
+            raise InternalError(self.__funcs["reduce"], res)
         self.__num_pieces = res
 
     def optimize(self, range=ctypes.c_uint(-1).value + 1 // 4, metric=Metric.MSE):
         res = self.__funcs["optimize"](self.__reg, self.__data, range, metric)
         if res == 0:
-            raise Exception("Error optimizing segments.")  # todo: more info?
+            raise InternalError(self.__funcs["optimize"], res)
         self.__num_pieces = res
 
     def get_data(self):
         if self.__num_pieces is None or self.__num_pieces == 0:
             res = self.__funcs["get_data"](self.__reg, None, None, None)
             if res == 0:
-                raise Exception("Error getting segments.")  # todo: more info?
+                raise InternalError(self.__funcs["get_data"], res)
             self.__num_pieces = res
         starts = np.empty((self.__num_pieces), dtype=np.uintp)
         models = np.empty(
@@ -195,12 +196,24 @@ class Mvsr:
 
         res = self.__funcs["get_data"](self.__reg, starts, models, errors)
         if res == 0:
-            raise Exception("Error getting segments.")  # todo: more info?
+            raise InternalError(self.__funcs["get_data"], res)
 
         return (starts, models, errors)
 
-    def copy(self):
-        return Mvsr(self)
+    def __copy__(self) -> typing.Self:
+        copy = self.__new__(self.__class__)
+
+        copy.__dimensions = self.__dimensions
+        copy.__variants = self.__variants
+        copy.__dtype = self.__dtype
+        copy.__funcs = self.__funcs
+        copy.__data = self.__data
+        copy.__num_pieces = self.__num_pieces
+        copy.__reg = self.__funcs["copy"](self.__reg)
+        if self.__reg is None:
+            raise InternalError(self.__funcs["copy"], self.__reg)
+
+        return copy
 
     def close(self):
         if self.__reg is not None:
