@@ -12,46 +12,51 @@ from .libmvsr import Score as Score
 
 class Kernel:
     class Raw:
-        __tidx = None
+        __translation_dimension = None
         __offsets = None
         __factors = None
 
-        def __init__(self, translation_index=None):
-            if translation_index is not None:
-                self.__tidx = translation_index
+        def __init__(self, translation_dimension=None):
+            self.__translation_dimension = translation_dimension
 
         def normalize(self, y):
-            if self.__tidx is None:
-                raise NotImplementedError(
-                    "Normalization is not possible by default on Raw kernel. Either specify the translation dimension index or consider turnign off normalization."
-                )
+            self._ensure_translation_dimension()
+
             self.__offsets = np.min(y, axis=1)
             y -= self.__offsets[:, np.newaxis]
             self.__factors = np.max(y, axis=1)
             return y / self.__factors[:, np.newaxis]
 
         def denormalize(self, models):
-            if self.__tidx is None:
-                raise NotImplementedError(
-                    "Normalization is not possible by default on Raw kernel. Either specify the translation dimension index or consider turnign off normalization."
-                )
+            self._ensure_translation_dimension()
+
             if self.__offsets is None or self.__factors is None:
-                raise NotImplementedError("Denormalization can not happen before normalization.")
+                raise RuntimeError("'normalize' was not called before 'denormalize'")
+
             res = models * self.__factors[np.newaxis, :]
-            res[self.__tidx] += self.__offsets
+            res[self.__translation_dimension] += self.__offsets
             return res
 
         def __call__(self, x):
             return np.array(x, ndmin=2).T
 
         def interpolate(self, s1, s2, x1, x2):
-            raise NotImplementedError("Interpolation is not possible by default on Raw Kernel.")
+            raise RuntimeError(
+                f"interpolation is not possible with '{self.__class__.__name__}' kernel"
+            )
+
+        def _ensure_translation_dimension(self):
+            if self.__translation_dimension is None:
+                raise RuntimeError(
+                    f"normalization without specifying 'translation_dimension' is not possible with"
+                    f" '{self.__class__.__name__}' kernel"
+                )
 
     class Poly(Raw):
         def __init__(self, degree=1, combinations=True):
-            super().__init__(translation_index=0)
+            super().__init__(translation_dimension=0)
             self.__degree = degree
-            self.__conbinations = combinations
+            self.__combinations = combinations
 
         def __call__(self, x):  # [1,2,3] or [[1,1],[2,2],[3,3]]
             # @TODO: handle combinations!
@@ -65,16 +70,19 @@ class Kernel:
             )
 
         def interpolate(self, s1, s2, x1, x2):
-            xstart = self(np.array(x1[-1], ndmin=2))
-            xend = self(np.array(x2[0], ndmin=2))
-            ystart = np.matmul(s1, xstart).T[0]
-            yend = np.matmul(s2, xend).T[0]
-            if xstart.shape[1] > self.__degree + 1:
-                NotImplementedError(
-                    "Interpolation is nor possible on Poly Kernel for multidimensional data."
+            x_start = self(np.array(x1[-1], ndmin=2))
+            x_end = self(np.array(x2[0], ndmin=2))
+            y_start = np.matmul(s1, x_start).T[0]
+            y_end = np.matmul(s2, x_end).T[0]
+
+            if x_start.shape[1] > self.__degree + 1:
+                RuntimeError(
+                    f"interpolation of multidimensional data is not possible with "
+                    f"'{self.__class__.__name__}' kernel"
                 )
-            slopes = yend - ystart
-            offsets = ystart - xstart[1] * slopes
+
+            slopes = y_end - y_start
+            offsets = y_start - x_start[1] * slopes
             res = np.zeros((s1.shape))
             res[:, 0] = offsets
             res[:, 1] = slopes
@@ -257,7 +265,6 @@ def segreg(
     interpolate=None,
 ):
     x_dat = np.array(kernel(x), dtype=dtype)
-
     y = np.array(y, ndmin=2, dtype=dtype)
     normalize = True if y.shape[0] != 1 or weighting is not None else normalize
     y_norm = np.array(kernel.normalize(y), dtype=dtype) if normalize else y
