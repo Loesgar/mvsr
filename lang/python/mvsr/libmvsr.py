@@ -111,6 +111,8 @@ funcs = {
 # Low-Level Interface #
 #######################
 
+valid_dtypes = type[np.float32] | type[np.float64]
+
 
 class InternalError(Exception):
     _Unset = object()
@@ -142,12 +144,16 @@ class Mvsr:
     def __init__(self, x, y, minsegsize=None, placement=Placement.ALL, dtype=np.float64):
         x = np.array(x, dtype=dtype)
         y = np.array(y, dtype=dtype)
-        if len(x.shape) != 2 or len(y.shape) != 2:
-            raise Exception("Unsupported input dymensions.")
+        if len(x.shape) != 2:
+            raise ValueError(f"unsupported input shape 'len({x.shape}) != 2'")
+        if len(y.shape) != 2:
+            raise ValueError(f"unsupported input shape 'len({y.shape}) != 2'")
         if x.shape[1] != y.shape[1]:
-            raise Exception("Mismatch in sample count of x and y.")
+            raise ValueError(
+                f"incompatible input shapes '{x.shape}, {y.shape}' ({x.shape[1]} != {y.shape[1]})"
+            )
         if dtype not in funcs:
-            raise Exception("Unsupported dtype.")
+            raise TypeError(f"unsupported dtype '{dtype}' (valid: {valid_dtypes})")
 
         self.__dimensions = x.shape[0]
         self.__variants = y.shape[0]
