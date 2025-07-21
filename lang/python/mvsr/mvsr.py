@@ -151,41 +151,41 @@ class Regression:
         idx = bisect(self.__startvals[1:], x)
         if self.__endvals[idx] < x:
             return (idx, idx + 1)
-        return idx
+        return (idx,)
 
     def get_segment(self, x):
         idx = self.get_segment_idx(x)
-        if isinstance(idx, tuple):
-            match self.__interpolate:
-                case True | "interpolate":
-                    return Segment(
-                        [],
-                        [],
-                        self.__kernel.interpolate(
-                            self.__models[idx[0]],
-                            self.__models[idx[1]],
-                            self.__x[self.__starts[idx[0]] : self.__ends[idx[0]] + 1],
-                            self.__x[self.__starts[idx[1]] : self.__ends[idx[1]] + 1],
-                        ),
-                        [],
-                        self.__kernel,
-                        self.__flatten,
-                    )
-                case "middle" | "euclidean":
-                    if np.sum(np.pow(x - self.__x[self.__starts[idx[0]]], 2)) < np.sum(
-                        np.pow(x - self.__x[self.__starts[idx[1]]], 2)
-                    ):
-                        return self[idx]
-                    else:
-                        return self[idx + 1]
-                case "left":
-                    return self[idx]
-                case "right":
-                    return self[idx + 1]
-                case other:
-                    raise ValueError(f"Unknown interpolation: {other}")
+        if len(idx) == 1:
+            return self[idx[0]]
 
-        return self[idx]
+        match self.__interpolate:
+            case True | "interpolate":
+                return Segment(
+                    [],
+                    [],
+                    self.__kernel.interpolate(
+                        self.__models[idx[0]],
+                        self.__models[idx[1]],
+                        self.__x[self.__starts[idx[0]] : self.__ends[idx[0]] + 1],
+                        self.__x[self.__starts[idx[1]] : self.__ends[idx[1]] + 1],
+                    ),
+                    [],
+                    self.__kernel,
+                    self.__flatten,
+                )
+            case "middle" | "euclidean":
+                if np.sum(np.pow(x - self.__x[self.__starts[idx[0]]], 2)) < np.sum(
+                    np.pow(x - self.__x[self.__starts[idx[1]]], 2)
+                ):
+                    return self[idx[0]]
+                else:
+                    return self[idx[1]]
+            case "left":
+                return self[idx[0]]
+            case "right":
+                return self[idx[1]]
+            case other:
+                raise ValueError(f"Unknown interpolation: {other}")
 
     def get_variant(self, variant):
         if variant < 0 or variant >= self.__y.shape[1]:
