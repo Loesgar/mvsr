@@ -9,6 +9,77 @@ from .libmvsr import Placement as Placement
 from .libmvsr import Score as Score
 
 
+class Kernel:
+    class Raw:
+        __tidx = None
+        __offsets = None
+        __factors = None
+
+        def __init__(self, translation_index=None):
+            if translation_index is not None:
+                self.__tidx = translation_index
+
+        def normalize(self, y):
+            if self.__tidx is None:
+                raise NotImplementedError(
+                    "Normalization is not possible by default on Raw kernel. Either specify the translation dimension index or consider turnign off normalization."
+                )
+            self.__offsets = np.min(y, axis=1)
+            y -= self.__offsets[:, np.newaxis]
+            self.__factors = np.max(y, axis=1)
+            return y / self.__factors[:, np.newaxis]
+
+        def denormalize(self, models):
+            if self.__tidx is None:
+                raise NotImplementedError(
+                    "Normalization is not possible by default on Raw kernel. Either specify the translation dimension index or consider turnign off normalization."
+                )
+            if self.__offsets is None or self.__factors is None:
+                raise NotImplementedError("Denormalization can not happen before normalization.")
+            res = models * self.__factors[np.newaxis, :]
+            res[self.__tidx] += self.__offsets
+            return res
+
+        def __call__(self, x):
+            return np.array(x, ndmin=2).T
+
+        def interpolate(self, s1, s2, x1, x2):
+            raise NotImplementedError("Interpolation is not possible by default on Raw Kernel.")
+
+    class Poly(Raw):
+        def __init__(self, degree=1, combinations=True):
+            super().__init__(translation_index=0)
+            self.__degree = degree
+            self.__conbinations = combinations
+
+        def __call__(self, x):  # [1,2,3] or [[1,1],[2,2],[3,3]]
+            # @TODO: handle combinations!
+            x = np.array(x)
+            x = x if len(x.shape) > 1 else np.array(x, ndmin=2).T
+            return np.concatenate(
+                (
+                    np.ones((1, len(x))),
+                    *([np.power(val, i)] for val in x.T for i in range(1, self.__degree + 1)),
+                )
+            )
+
+        def interpolate(self, s1, s2, x1, x2):
+            xstart = self(np.array(x1[-1], ndmin=2))
+            xend = self(np.array(x2[0], ndmin=2))
+            ystart = np.matmul(s1, xstart).T[0]
+            yend = np.matmul(s2, xend).T[0]
+            if xstart.shape[1] > self.__degree + 1:
+                NotImplementedError(
+                    "Interpolation is nor possible on Poly Kernel for multidimensional data."
+                )
+            slopes = yend - ystart
+            offsets = ystart - xstart[1] * slopes
+            res = np.zeros((s1.shape))
+            res[:, 0] = offsets
+            res[:, 1] = slopes
+            return res
+
+
 class Segment:
     def __init__(self, x, y, models, errors, kernel, flatten):
         self.__x = x
@@ -169,77 +240,6 @@ class Regression:
             self.__kernel,
             self.__flatten,
         )
-
-
-class Kernel:
-    class Raw:
-        __tidx = None
-        __offsets = None
-        __factors = None
-
-        def __init__(self, translation_index=None):
-            if translation_index is not None:
-                self.__tidx = translation_index
-
-        def normalize(self, y):
-            if self.__tidx is None:
-                raise NotImplementedError(
-                    "Normalization is not possible by default on Raw kernel. Either specify the translation dimension index or consider turnign off normalization."
-                )
-            self.__offsets = np.min(y, axis=1)
-            y -= self.__offsets[:, np.newaxis]
-            self.__factors = np.max(y, axis=1)
-            return y / self.__factors[:, np.newaxis]
-
-        def denormalize(self, models):
-            if self.__tidx is None:
-                raise NotImplementedError(
-                    "Normalization is not possible by default on Raw kernel. Either specify the translation dimension index or consider turnign off normalization."
-                )
-            if self.__offsets is None or self.__factors is None:
-                raise NotImplementedError("Denormalization can not happen before normalization.")
-            res = models * self.__factors[np.newaxis, :]
-            res[self.__tidx] += self.__offsets
-            return res
-
-        def __call__(self, x):
-            return np.array(x, ndmin=2).T
-
-        def interpolate(self, s1, s2, x1, x2):
-            raise NotImplementedError("Interpolation is not possible by default on Raw Kernel.")
-
-    class Poly(Raw):
-        def __init__(self, degree=1, combinations=True):
-            super().__init__(translation_index=0)
-            self.__degree = degree
-            self.__conbinations = combinations
-
-        def __call__(self, x):  # [1,2,3] or [[1,1],[2,2],[3,3]]
-            # @TODO: handle combinations!
-            x = np.array(x)
-            x = x if len(x.shape) > 1 else np.array(x, ndmin=2).T
-            return np.concatenate(
-                (
-                    np.ones((1, len(x))),
-                    *([np.power(val, i)] for val in x.T for i in range(1, self.__degree + 1)),
-                )
-            )
-
-        def interpolate(self, s1, s2, x1, x2):
-            xstart = self(np.array(x1[-1], ndmin=2))
-            xend = self(np.array(x2[0], ndmin=2))
-            ystart = np.matmul(s1, xstart).T[0]
-            yend = np.matmul(s2, xend).T[0]
-            if xstart.shape[1] > self.__degree + 1:
-                NotImplementedError(
-                    "Interpolation is nor possible on Poly Kernel for multidimensional data."
-                )
-            slopes = yend - ystart
-            offsets = ystart - xstart[1] * slopes
-            res = np.zeros((s1.shape))
-            res[:, 0] = offsets
-            res[:, 1] = slopes
-            return res
 
 
 def segreg(
