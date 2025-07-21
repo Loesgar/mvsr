@@ -1,4 +1,5 @@
 from bisect import bisect
+from enum import Enum
 
 import numpy as np
 
@@ -126,6 +127,13 @@ class Segment:
         pass
 
 
+class Interpolate(Enum):
+    INTERPOLATE = 0
+    LEFT = 1
+    RIGHT = 2
+    CLOSEST = 3
+
+
 class Regression:
     def __init__(self, x, y, kernel, starts, models, errors, flatten, interpolate):
         starts = np.append(starts, len(x))
@@ -159,7 +167,7 @@ class Regression:
             return self[idx[0]]
 
         match self.__interpolate:
-            case True | "interpolate":
+            case Interpolate.INTERPOLATE:
                 return Segment(
                     [],
                     [],
@@ -173,19 +181,14 @@ class Regression:
                     self.__kernel,
                     self.__flatten,
                 )
-            case "middle" | "euclidean":
-                if np.sum(np.pow(x - self.__x[self.__starts[idx[0]]], 2)) < np.sum(
-                    np.pow(x - self.__x[self.__starts[idx[1]]], 2)
-                ):
-                    return self[idx[0]]
-                else:
-                    return self[idx[1]]
-            case "left":
+            case Interpolate.CLOSEST:
+                left_distance = np.sum(np.pow(x - self.__x[self.__starts[idx[0]]], 2))
+                right_distance = np.sum(np.pow(x - self.__x[self.__starts[idx[1]]], 2))
+                return self[idx[0] if left_distance < right_distance else idx[1]]
+            case Interpolate.LEFT:
                 return self[idx[0]]
-            case "right":
+            case Interpolate.RIGHT:
                 return self[idx[1]]
-            case other:
-                raise ValueError(f"Unknown interpolation: {other}")
 
     def get_variant(self, variant):
         if variant < 0 or variant >= self.__y.shape[1]:
@@ -198,6 +201,7 @@ class Regression:
             self.__models[:, variant, :],
             self.__errors,
             True,
+            self.__interpolate,
         )
 
     def plot(self, axs, styles={}, istyles=None):
@@ -270,18 +274,10 @@ def segreg(
     variants, num_samplesy = y_norm.shape
     samples_per_seg = dimensions if alg == Algorithm.GREEDY else 1
     flatten = False if variants != 1 else not donotflattenvariants
-    if interpolate is None:
-        interpolate = "euclidean"
-    if interpolate and interpolate not in [
-        True,
-        "interpolate",
-        "linear",
-        "left",
-        "right",
-        "middle",
-        "euclidean",
-    ]:
-        raise ValueError("Unknown interpolation method.")
+    if interpolate is True:
+        interpolate = Interpolate.INTERPOLATE
+    elif interpolate is False:
+        interpolate = Interpolate.CLOSEST
 
     with Mvsr(x_dat, y_norm, samples_per_seg, Placement.ALL, dtype) as reg:
         reg.reduce(k, alg=alg)
