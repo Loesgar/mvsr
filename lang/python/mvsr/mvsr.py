@@ -91,39 +91,39 @@ class Segment:
         self.__flatten = flatten
 
     def __call__(self, x):
-        res = np.matmul(
-            self.__models, np.array(self.__kernel(np.array([x])), dtype=self.__model.dtype)
-        ).T[0]
+        res = np.matmul(self.__models, self.__kernel(np.array([x], dtype=self.__models.dtype))).T[0]
         return res[0] if self.__flatten else res
 
-    def get_rss(self):
-        return self.__errors
+    @property
+    def rss(self):
+        return self.__errors.copy()
 
-    def get_mse(self):
-        sc = self.get_samplecount()
-        return 0 if sc == 0 else self.get_rss() / sc
+    @property
+    def mse(self):
+        return 0 if self.samplecount == 0 else self.rss / self.samplecount
 
-    def get_samplecount(self):
+    @property
+    def samplecount(self):
         return len(self.__x)
 
-    def get_model(self, variant=None):
-        if variant is not None:
-            if variant < 0 or variant >= len(self.__models):
-                raise IndexError("Index out of range.")
-            return self.__models[variant]
-        return self.__models
+    @property
+    def models(self):
+        return self.__models.copy()
 
-    def get_range(self):
+    @property
+    def range(self):
         return (self.__x[0], self.__x[-1])
 
-    def get_x(self):
-        return self.__x
+    @property
+    def x(self):
+        return self.__x.copy()
 
-    def get_y(self):
-        return self.__y
+    @property
+    def y(self):
+        return self.__y.copy()
 
     def plot(self):
-        # TODO!
+        # TODO
         pass
 
 
@@ -149,11 +149,6 @@ class Regression:
         self.__endvals = [x[idx] for idx in self.__ends]
         self.__startvals = [x[idx] for idx in self.__starts]
         self.__interpolate = interpolate
-
-    def get_range(self, idx):
-        if idx < 0 or idx >= len(self):
-            raise IndexError("Index out of range.")
-        return (self.__startvals[idx], self.__endvals[idx])
 
     def get_segment_idx(self, x):
         idx = bisect(self.__startvals[1:], x)
@@ -190,19 +185,21 @@ class Regression:
             case Interpolate.RIGHT:
                 return self[idx[1]]
 
-    def get_variant(self, variant):
-        if variant < 0 or variant >= self.__y.shape[1]:
-            raise IndexError("Variant index out of range")
-        return Regression(
-            self.__x,
-            self.__y[:, variant],
-            self.__kernel,
-            self.__starts,
-            self.__models[:, variant, :],
-            self.__errors,
-            True,
-            self.__interpolate,
-        )
+    @property
+    def variants(self):
+        return [
+            Regression(
+                self.__x,
+                self.__y[:, variant],
+                self.__kernel,
+                self.__starts,
+                self.__models[:, variant, :],
+                self.__errors,
+                True,
+                self.__interpolate,
+            )
+            for variant in range(self.__y.shape[1])
+        ]
 
     def plot(self, axs, styles={}, istyles=None):
         # TODO
@@ -222,9 +219,7 @@ class Regression:
 
         return [
             reg.plot(ax, style, istyle)
-            for reg, ax, style, istyle in zip(
-                [self.get_variant(v) for v in range(self.__y.shape[1])], axs, styles, istyles
-            )
+            for reg, ax, style, istyle in zip(self.variants, axs, styles, istyles)
         ]
 
     def __call__(self, x):
