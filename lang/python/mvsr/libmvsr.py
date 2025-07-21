@@ -5,19 +5,23 @@ import platform
 import typing
 from enum import IntEnum
 from pathlib import Path
+from types import TracebackType
 
 import numpy as np
+import numpy.typing as npt
 
 if typing.TYPE_CHECKING:
+    ndptr = type[np.ctypeslib._ndptr[typing.Any]]
     from ctypes import _NamedFuncPointer as NamedFuncPointer
 else:
+    ndptr = object
     NamedFuncPointer = object
 
 
-def ndarray_or_null(*args, **kwargs):
-    ndtype = np.ctypeslib.ndpointer(*args, **kwargs)
+def ndarray_or_null(*args: typing.Any, **kwargs: typing.Any):
+    ndtype = typing.cast(ndptr, np.ctypeslib.ndpointer(*args, **kwargs))
 
-    def from_param(cls, obj):
+    def from_param(cls: type, obj: np.ndarray | None):
         if obj is None:
             return obj
         return ndtype.from_param(obj)
@@ -84,9 +88,9 @@ __libmvsr.mvsr_copy_f32.argtypes = [__voidp]
 __libmvsr.mvsr_release_f32.restype = None
 __libmvsr.mvsr_release_f32.argtypes = [__voidp]
 
-#################################################
+##################################################
 # Function dictionary (direct usage discouraged) #
-#################################################
+##################################################
 
 funcs = {
     np.float64: {
@@ -112,6 +116,7 @@ funcs = {
 #######################
 
 valid_dtypes = type[np.float32] | type[np.float64]
+MvsrArray = npt.NDArray[np.float32 | np.float64]
 
 
 class InternalError(Exception):
@@ -145,9 +150,14 @@ class Score(IntEnum):
 class Mvsr:
     __reg = None
 
-    def __init__(self, x, y, minsegsize=None, placement=Placement.ALL, dtype=np.float64):
-        x = np.array(x, dtype=dtype)
-        y = np.array(y, dtype=dtype)
+    def __init__(
+        self,
+        x: MvsrArray,
+        y: MvsrArray,
+        minsegsize: int | None = None,
+        placement: Placement = Placement.ALL,
+        dtype: valid_dtypes = np.float64,
+    ):
         if len(x.shape) != 2:
             raise ValueError(f"unsupported input shape 'len({x.shape}) != 2'")
         if len(y.shape) != 2:
@@ -180,13 +190,20 @@ class Mvsr:
         if self.__reg is None:
             raise InternalError(self.__funcs["init"], self.__reg)
 
-    def reduce(self, min, max=0, alg=Algorithm.GREEDY, score=Score.EXACT, metric=Metric.MSE):
+    def reduce(
+        self,
+        min: int,
+        max: int = 0,
+        alg: Algorithm = Algorithm.GREEDY,
+        score: Score = Score.EXACT,
+        metric: Metric = Metric.MSE,
+    ):
         res = self.__funcs["reduce"](self.__reg, min, max, alg, metric, score)
         if res == 0:
             raise InternalError(self.__funcs["reduce"], res)
         self.__num_pieces = res
 
-    def optimize(self, range=ctypes.c_uint(-1).value + 1 // 4, metric=Metric.MSE):
+    def optimize(self, range: int = ctypes.c_uint(-1).value + 1 // 4, metric: Metric = Metric.MSE):
         res = self.__funcs["optimize"](self.__reg, self.__data, range, metric)
         if res == 0:
             raise InternalError(self.__funcs["optimize"], res)
@@ -236,5 +253,10 @@ class Mvsr:
     def __enter__(self):
         return self
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(
+        self,
+        exc_type: type[Exception] | None,
+        exc_value: Exception | None,
+        traceback: TracebackType | None,
+    ):
         self.close()

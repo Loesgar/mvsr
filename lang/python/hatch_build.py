@@ -6,9 +6,11 @@ from itertools import chain
 from pathlib import Path
 from sysconfig import get_platform
 from tempfile import gettempdir
+from typing import Any
 from zipfile import ZipFile
 
 from auditwheel.wheel_abi import analyze_wheel_abi
+from hatchling.builders.config import BuilderConfig
 from hatchling.builders.hooks.plugin.interface import BuildHookInterface
 
 PARENT_DIR = Path(__file__).parent
@@ -19,8 +21,8 @@ TARGET_DIR = PARENT_DIR / "mvsr" / "lib"
 LIBRARY_EXTENSIONS = ["so", "dylib", "dll"]
 
 
-class CustomBuildHook(BuildHookInterface):
-    def initialize(self, version, build_data):
+class CustomBuildHook(BuildHookInterface[BuilderConfig]):
+    def initialize(self, version: str, build_data: dict[str, Any]):
         if not os.environ.get("CI"):
             print(f"building '{LIBMVSR_SOURCE_DIR.name}' library ...")
             self.build_library()

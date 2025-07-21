@@ -1,33 +1,37 @@
 from bisect import bisect
 from enum import Enum
+from typing import Any, cast
 
 import numpy as np
+import numpy.typing as npt
 
 from .libmvsr import Algorithm as Algorithm
 from .libmvsr import Metric as Metric
-from .libmvsr import Mvsr
+from .libmvsr import Mvsr, MvsrArray, valid_dtypes
 from .libmvsr import Placement as Placement
 from .libmvsr import Score as Score
+
+AnyArray = npt.NDArray[Any]
 
 
 class Kernel:
     class Raw:
-        __translation_dimension = None
-        __offsets = None
-        __factors = None
+        __translation_dimension: int | None = None
+        __offsets: MvsrArray | None
+        __factors: MvsrArray | None
 
-        def __init__(self, translation_dimension=None):
+        def __init__(self, translation_dimension: int | None = None):
             self.__translation_dimension = translation_dimension
 
-        def normalize(self, y):
+        def normalize(self, y: MvsrArray):
             self._ensure_translation_dimension()
 
-            self.__offsets = np.min(y, axis=1)
+            self.__offsets = cast(MvsrArray, np.min(y, axis=1))
             y -= self.__offsets[:, np.newaxis]
-            self.__factors = np.max(y, axis=1)
+            self.__factors = cast(MvsrArray, np.max(y, axis=1))
             return y / self.__factors[:, np.newaxis]
 
-        def denormalize(self, models):
+        def denormalize(self, models: MvsrArray):
             self._ensure_translation_dimension()
 
             if self.__offsets is None or self.__factors is None:
@@ -37,10 +41,12 @@ class Kernel:
             res[self.__translation_dimension] += self.__offsets
             return res
 
-        def __call__(self, x):
-            return np.array(x, ndmin=2).T
+        def __call__(self, x: npt.ArrayLike) -> AnyArray:
+            return np.array(x, ndmin=2, dtype=object).T
 
-        def interpolate(self, s1, s2, x1, x2):
+        def interpolate(
+            self, s1: MvsrArray, s2: MvsrArray, x1: MvsrArray, x2: MvsrArray
+        ) -> MvsrArray:
             raise RuntimeError(
                 f"interpolation is not possible with '{self.__class__.__name__}' kernel"
             )
@@ -53,13 +59,13 @@ class Kernel:
                 )
 
     class Poly(Raw):
-        def __init__(self, degree=1, combinations=True):
+        def __init__(self, degree: int = 1, combinations: bool = True):
             super().__init__(translation_dimension=0)
             self.__degree = degree
             self.__combinations = combinations
 
-        def __call__(self, x):  # [1,2,3] or [[1,1],[2,2],[3,3]]
-            # @TODO: handle combinations!
+        def __call__(self, x: npt.ArrayLike):  # [1,2,3] or [[1,1],[2,2],[3,3]]
+            # TODO: handle combinations!
             x = np.array(x)
             x = x if len(x.shape) > 1 else np.array(x, ndmin=2).T
             return np.concatenate(
@@ -69,7 +75,7 @@ class Kernel:
                 )
             )
 
-        def interpolate(self, s1, s2, x1, x2):
+        def interpolate(self, s1: MvsrArray, s2: MvsrArray, x1: MvsrArray, x2: MvsrArray):
             x_start = self(np.array(x1[-1], ndmin=2))
             x_end = self(np.array(x2[0], ndmin=2))
             y_start = np.matmul(s1, x_start).T[0]
@@ -90,7 +96,15 @@ class Kernel:
 
 
 class Segment:
-    def __init__(self, x, y, models, errors, kernel, flatten):
+    def __init__(
+        self,
+        x: MvsrArray,
+        y: MvsrArray,
+        models: MvsrArray,
+        errors: MvsrArray,
+        kernel: Kernel.Raw,
+        flatten: bool,
+    ):
         self.__x = x
         self.__y = y
         self.__models = models
@@ -98,7 +112,7 @@ class Segment:
         self.__kernel = kernel
         self.__flatten = flatten
 
-    def __call__(self, x):
+    def __call__(self, x: float):
         res = np.matmul(self.__models, self.__kernel(np.array([x], dtype=self.__models.dtype))).T[0]
         return res[0] if self.__flatten else res
 
@@ -143,7 +157,18 @@ class Interpolate(Enum):
 
 
 class Regression:
-    def __init__(self, x, y, kernel, starts, models, errors, flatten, interpolate):
+    def __init__(
+        self,
+        x: npt.ArrayLike,
+        y: MvsrArray,
+        kernel: Kernel.Raw,
+        starts: npt.NDArray[np.uintp],
+        models: MvsrArray,
+        errors: MvsrArray,
+        flatten: bool,
+        interpolate: Interpolate,
+    ):
+        x = np.array(x, dtype=object)
         self.__x = x
         self.__y = y
         self.__kernel = kernel
@@ -154,17 +179,17 @@ class Regression:
         self.__interpolate = interpolate
 
         self.__ends = np.concatenate((starts[1:], np.array([x.shape[1]], dtype=np.uintp))) - 1
-        self.__samplecounts = self.__ends - self.__starts
+        self.__samplecounts: npt.NDArray[np.uintp] = self.__ends - self.__starts
         self.__startvals = x[:, self.__starts]
         self.__endvals = x[:, self.__ends]
 
-    def get_segment_idx(self, x):
+    def get_segment_idx(self, x: Any):
         idx = bisect(self.__startvals[1:], x)
         if self.__endvals[idx] < x:
             return (idx, idx + 1)
         return (idx,)
 
-    def get_segment(self, x):
+    def get_segment(self, x: Any):
         idx = self.get_segment_idx(x)
         if len(idx) == 1:
             return self[idx[0]]
@@ -172,15 +197,15 @@ class Regression:
         match self.__interpolate:
             case Interpolate.INTERPOLATE:
                 return Segment(
-                    [],
-                    [],
+                    np.empty(0),
+                    np.empty(0),
                     self.__kernel.interpolate(
                         self.__models[idx[0]],
                         self.__models[idx[1]],
                         self.__x[self.__starts[idx[0]] : self.__ends[idx[0]] + 1],
                         self.__x[self.__starts[idx[1]] : self.__ends[idx[1]] + 1],
                     ),
-                    [],
+                    np.empty(0),
                     self.__kernel,
                     self.__flatten,
                 )
@@ -209,6 +234,7 @@ class Regression:
             for variant in range(self.__y.shape[1])
         ]
 
+    """
     def plot(self, axs, styles={}, istyles=None):
         # TODO
         istyles = styles if istyles is None else istyles
@@ -229,14 +255,15 @@ class Regression:
             reg.plot(ax, style, istyle)
             for reg, ax, style, istyle in zip(self.variants, axs, styles, istyles)
         ]
+    """
 
-    def __call__(self, x):
+    def __call__(self, x: Any):
         return self.get_segment(x)(x)
 
     def __len__(self):
         return len(self.__endvals) + 1
 
-    def __getitem__(self, idx):
+    def __getitem__(self, idx: int):
         if idx < 0 or idx > len(self):
             raise IndexError(f"segment index '{idx}' is out of range [0, {len(self)})")
         return Segment(
@@ -250,22 +277,23 @@ class Regression:
 
 
 def segreg(
-    x,
-    y,
-    k=None,
+    x: npt.ArrayLike,
+    y: npt.ArrayLike,
+    k: int,
     *,  # Following arguments must be explicitly specified via names.
-    kernel=Kernel.Poly(1),
-    alg=Algorithm.GREEDY,
-    score=None,  # TODO: unused atm
-    metric=Metric.MSE,  # TODO: unused atm
-    normalize=None,
-    weighting=None,
-    dtype=np.float64,
-    donotflattenvariants=False,
-    interpolate=None,
-):
-    x_dat = np.array(kernel(x), dtype=dtype)
+    kernel: Kernel.Raw = Kernel.Poly(1),
+    alg: Algorithm = Algorithm.GREEDY,
+    score: Score | None = None,  # TODO: unused atm
+    metric: Metric = Metric.MSE,  # TODO: unused atm
+    normalize: bool | None = None,
+    weighting: npt.ArrayLike | None = None,
+    dtype: valid_dtypes = np.float64,
+    donotflattenvariants: bool = False,
+    interpolate: Interpolate | bool = False,
+) -> Regression:
+    x_dat = kernel(x)
     y = np.array(y, ndmin=2, dtype=dtype)
+
     normalize = normalize or y.shape[0] != 1 or weighting is not None
     y_norm = np.array(kernel.normalize(y), dtype=dtype) if normalize else y
 

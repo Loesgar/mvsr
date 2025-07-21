@@ -23,3 +23,10 @@ artifacts = ["*/lib/*.so", "*/lib/*.dylib", "*/lib/*.dll"]
 
 [tool.ruff]
 line-length = 100
+
+[tool.pyright]
+typeCheckingMode = "strict"
+reportMissingParameterType = "warning"
+reportUnnecessaryTypeIgnoreComment = "warning"
+reportPrivateUsage = false
+reportMissingTypeStubs = false
