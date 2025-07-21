@@ -2,55 +2,60 @@ from bisect import bisect
 
 import numpy as np
 
+from .libmvsr import Algorithm as Algorithm
+from .libmvsr import Metric as Metric
 from .libmvsr import Mvsr
+from .libmvsr import Placement as Placement
+from .libmvsr import Score as Score
+
+
+class Segment:
+    def __init__(self, x, y, models, errors, kernel, flatten):
+        self.__x = x
+        self.__y = y
+        self.__models = models
+        self.__errors = errors
+        self.__kernel = kernel
+        self.__flatten = flatten
+
+    def __call__(self, x):
+        res = np.matmul(
+            self.__models, np.array(self.__kernel(np.array([x])), dtype=self.__model.dtype)
+        ).T[0]
+        return res[0] if self.__flatten else res
+
+    def get_rss(self):
+        return self.__errors
+
+    def get_mse(self):
+        sc = self.get_samplecount()
+        return 0 if sc == 0 else self.get_rss() / sc
+
+    def get_samplecount(self):
+        return len(self.__x)
+
+    def get_model(self, variant=None):
+        if variant is not None:
+            if variant < 0 or variant >= len(self.__models):
+                raise IndexError("Index out of range.")
+            return self.__models[variant]
+        return self.__models
+
+    def get_range(self):
+        return (self.__x[0], self.__x[-1])
+
+    def get_x(self):
+        return self.__x
+
+    def get_y(self):
+        return self.__y
+
+    def plot(self):
+        # TODO!
+        pass
 
 
 class Regression:
-    class Segment:
-        def __init__(self, x, y, models, errors, kernel, flatten):
-            self.__x = x
-            self.__y = y
-            self.__models = models
-            self.__errors = errors
-            self.__kernel = kernel
-            self.__flatten = flatten
-
-        def __call__(self, x):
-            res = np.matmul(
-                self.__models, np.array(self.__kernel(np.array([x])), dtype=self.__model.dtype)
-            ).T[0]
-            return res[0] if self.__flatten else res
-
-        def get_rss(self):
-            return self.__errors
-
-        def get_mse(self):
-            sc = self.get_samplecount()
-            return 0 if sc == 0 else self.get_rss() / sc
-
-        def get_samplecount(self):
-            return len(self.__x)
-
-        def get_model(self, variant=None):
-            if variant is not None:
-                if variant < 0 or variant >= len(self.__models):
-                    raise IndexError("Index out of range.")
-                return self.__models[variant]
-            return self.__models
-
-        def get_range(self):
-            return (self.__x[0], self.__x[-1])
-
-        def get_x(self):
-            return self.__x
-
-        def get_y(self):
-            return self.__y
-
-        def plot(self):
-            # TODO!
-            pass
-
     def __init__(self, x, y, kernel, starts, models, errors, flatten, interpolate):
         starts = np.append(starts, len(x))
         self.__x = x
@@ -82,7 +87,7 @@ class Regression:
         if isinstance(idx, tuple):
             match self.__interpolate:
                 case True | "interpolate":
-                    return Regression.Segment(
+                    return Segment(
                         [],
                         [],
                         self.__kernel.interpolate(
@@ -156,7 +161,7 @@ class Regression:
     def __getitem__(self, idx):
         if idx < 0 or idx > len(self):
             raise IndexError("Index out of range.")
-        return Regression.Segment(
+        return Segment(
             self.__x[self.__starts[idx] : self.__ends[idx] + 1],
             self.__y[self.__starts[idx] : self.__ends[idx] + 1],
             self.__models[idx],
@@ -243,9 +248,9 @@ def segreg(
     k=None,
     *,  # Following arguments must be explicitly specified via names.
     kernel=Kernel.Poly(1),
-    alg=Mvsr.Algorithm.GREEDY,
+    alg=Algorithm.GREEDY,
     score=None,
-    metric=Mvsr.Metric.MSE,
+    metric=Metric.MSE,
     normalize=None,
     weighting=None,
     dtype=np.float64,
@@ -263,7 +268,7 @@ def segreg(
 
     dimensions, num_samplesx = x_dat.shape
     variants, num_samplesy = y_norm.shape
-    samples_per_seg = dimensions if alg == Mvsr.Algorithm.GREEDY else 1
+    samples_per_seg = dimensions if alg == Algorithm.GREEDY else 1
     flatten = False if variants != 1 else not donotflattenvariants
     if interpolate is None:
         interpolate = "euclidean"
@@ -278,9 +283,9 @@ def segreg(
     ]:
         raise ValueError("Unknown interpolation method.")
 
-    with Mvsr(x_dat, y_norm, samples_per_seg, Mvsr.Placement.ALL, dtype) as reg:
+    with Mvsr(x_dat, y_norm, samples_per_seg, Placement.ALL, dtype) as reg:
         reg.reduce(k, alg=alg)
-        if alg == Mvsr.Algorithm.GREEDY and dimensions > 1:
+        if alg == Algorithm.GREEDY and dimensions > 1:
             reg.optimize()
 
         (starts, models, errors) = reg.get_data()

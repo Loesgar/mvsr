@@ -124,21 +124,25 @@ class InternalError(Exception):
         )
 
 
+class Placement(IntEnum):
+    ALL = 0
+
+
+class Algorithm(IntEnum):
+    GREEDY = 0
+    DP = 1
+
+
+class Metric(IntEnum):
+    MSE = 0
+
+
+class Score(IntEnum):
+    EXACT = 0
+    CHI = 1
+
+
 class Mvsr:
-    class Placement(IntEnum):
-        ALL = 0
-
-    class Algorithm(IntEnum):
-        GREEDY = 0
-        DP = 1
-
-    class Metric(IntEnum):
-        MSE = 0
-
-    class Score(IntEnum):
-        EXACT = 0
-        CHI = 1
-
     __reg = None
 
     def __init__(self, x, y, minsegsize=None, placement=Placement.ALL, dtype=np.float64):
