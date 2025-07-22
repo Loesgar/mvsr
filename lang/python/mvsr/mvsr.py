@@ -144,19 +144,19 @@ class Interpolate(Enum):
 
 class Regression:
     def __init__(self, x, y, kernel, starts, models, errors, flatten, interpolate):
-        starts = np.append(starts, len(x))
         self.__x = x
         self.__y = y
         self.__kernel = kernel
-        self.__flatten = flatten
-        self.__starts = starts[:-1]
-        self.__ends = [i - 1 for i in starts[1:]]
+        self.__starts = starts
         self.__models = models
-        self.__errors = errors  # todo: recalculate?
-        self.__samplecount = [e - s for s, e in zip(starts[:-1], starts[1:])]
-        self.__endvals = [x[idx] for idx in self.__ends]
-        self.__startvals = [x[idx] for idx in self.__starts]
+        self.__errors = errors  # TODO: recalculate?
+        self.__flatten = flatten
         self.__interpolate = interpolate
+
+        self.__ends = np.concatenate((starts[1:], np.array([x.shape[1]], dtype=np.uintp))) - 1
+        self.__samplecounts = self.__ends - self.__starts
+        self.__startvals = x[:, self.__starts]
+        self.__endvals = x[:, self.__ends]
 
     def get_segment_idx(self, x):
         idx = bisect(self.__startvals[1:], x)
