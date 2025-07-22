@@ -100,22 +100,20 @@ class Segment:
         self,
         x: MvsrArray,
         y: MvsrArray,
-        models: MvsrArray,
+        model: MvsrArray,
         errors: MvsrArray,
         kernel: Kernel.Raw,
         flatten: bool,
     ):
         self.__x = x
         self.__y = y
-        self.__models = models
+        self.__model = model
         self.__errors = errors
         self.__kernel = kernel
         self.__flatten = flatten
 
-    def __call__(self, x: float):
-        result = np.matmul(
-            self.__models, self.__kernel(np.array([x], dtype=self.__models.dtype))
-        ).T[0]
+    def __call__(self, x: Any):
+        result = np.matmul(self.__model, self.__kernel([x])).T[0]
         return result[0] if self.__flatten else result
 
     @property
@@ -131,8 +129,8 @@ class Segment:
         return len(self.__x)
 
     @property
-    def models(self):
-        return self.__models.copy()
+    def model(self):
+        return self.__model.copy()
 
     @property
     def range(self):
