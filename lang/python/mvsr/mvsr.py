@@ -238,7 +238,7 @@ class Regression:
 
     def __getitem__(self, idx):
         if idx < 0 or idx > len(self):
-            raise IndexError("Index out of range.")
+            raise IndexError(f"segment index '{idx}' is out of range [0, {len(self)})")
         return Segment(
             self.__x[self.__starts[idx] : self.__ends[idx] + 1],
             self.__y[self.__starts[idx] : self.__ends[idx] + 1],
