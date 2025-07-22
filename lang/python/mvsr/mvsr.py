@@ -37,9 +37,9 @@ class Kernel:
             if self.__offsets is None or self.__factors is None:
                 raise RuntimeError("'normalize' was not called before 'denormalize'")
 
-            res = models * self.__factors[np.newaxis, :]
-            res[self.__translation_dimension] += self.__offsets
-            return res
+            result = models * self.__factors[np.newaxis, :]
+            result[self.__translation_dimension] += self.__offsets
+            return result
 
         def __call__(self, x: npt.ArrayLike) -> AnyArray:
             return np.array(x, ndmin=2, dtype=object).T
@@ -89,10 +89,10 @@ class Kernel:
 
             slopes = y_end - y_start
             offsets = y_start - x_start[1] * slopes
-            res = np.zeros((s1.shape))
-            res[:, 0] = offsets
-            res[:, 1] = slopes
-            return res
+            result = np.zeros((s1.shape))
+            result[:, 0] = offsets
+            result[:, 1] = slopes
+            return result
 
 
 class Segment:
@@ -113,8 +113,10 @@ class Segment:
         self.__flatten = flatten
 
     def __call__(self, x: float):
-        res = np.matmul(self.__models, self.__kernel(np.array([x], dtype=self.__models.dtype))).T[0]
-        return res[0] if self.__flatten else res
+        result = np.matmul(
+            self.__models, self.__kernel(np.array([x], dtype=self.__models.dtype))
+        ).T[0]
+        return result[0] if self.__flatten else result
 
     @property
     def rss(self):
@@ -180,19 +182,19 @@ class Regression:
 
         self.__ends = np.concatenate((starts[1:], np.array([x.shape[1]], dtype=np.uintp))) - 1
         self.__samplecounts: npt.NDArray[np.uintp] = self.__ends - self.__starts
-        self.__startvals = x[:, self.__starts]
-        self.__endvals = x[:, self.__ends]
+        self.__start_values = x[:, self.__starts]
+        self.__end_values = x[:, self.__ends]
 
-    def get_segment_idx(self, x: Any):
-        idx = bisect(self.__startvals[1:], x)
-        if self.__endvals[idx] < x:
-            return (idx, idx + 1)
-        return (idx,)
+    def get_segment_index(self, x: Any):
+        index = bisect(self.__start_values[1:], x)
+        if self.__end_values[index] < x:
+            return (index, index + 1)
+        return (index,)
 
     def get_segment(self, x: Any):
-        idx = self.get_segment_idx(x)
-        if len(idx) == 1:
-            return self[idx[0]]
+        index = self.get_segment_index(x)
+        if len(index) == 1:
+            return self[index[0]]
 
         match self.__interpolate:
             case Interpolate.INTERPOLATE:
@@ -200,23 +202,23 @@ class Regression:
                     np.empty(0),
                     np.empty(0),
                     self.__kernel.interpolate(
-                        self.__models[idx[0]],
-                        self.__models[idx[1]],
-                        self.__x[self.__starts[idx[0]] : self.__ends[idx[0]] + 1],
-                        self.__x[self.__starts[idx[1]] : self.__ends[idx[1]] + 1],
+                        self.__models[index[0]],
+                        self.__models[index[1]],
+                        self.__x[self.__starts[index[0]] : self.__ends[index[0]] + 1],
+                        self.__x[self.__starts[index[1]] : self.__ends[index[1]] + 1],
                     ),
                     np.empty(0),
                     self.__kernel,
                     self.__flatten,
                 )
             case Interpolate.CLOSEST:
-                left_distance = np.sum(np.pow(x - self.__x[self.__starts[idx[0]]], 2))
-                right_distance = np.sum(np.pow(x - self.__x[self.__starts[idx[1]]], 2))
-                return self[idx[0] if left_distance < right_distance else idx[1]]
+                left_distance = np.sum(np.pow(x - self.__x[self.__starts[index[0]]], 2))
+                right_distance = np.sum(np.pow(x - self.__x[self.__starts[index[1]]], 2))
+                return self[index[0] if left_distance < right_distance else index[1]]
             case Interpolate.LEFT:
-                return self[idx[0]]
+                return self[index[0]]
             case Interpolate.RIGHT:
-                return self[idx[1]]
+                return self[index[1]]
 
     @property
     def variants(self):
@@ -261,16 +263,16 @@ class Regression:
         return self.get_segment(x)(x)
 
     def __len__(self):
-        return len(self.__endvals) + 1
+        return len(self.__end_values) + 1
 
-    def __getitem__(self, idx: int):
-        if idx < 0 or idx > len(self):
-            raise IndexError(f"segment index '{idx}' is out of range [0, {len(self)})")
+    def __getitem__(self, index: int):
+        if index < 0 or index > len(self):
+            raise IndexError(f"segment index '{index}' is out of range [0, {len(self)})")
         return Segment(
-            self.__x[self.__starts[idx] : self.__ends[idx] + 1],
-            self.__y[self.__starts[idx] : self.__ends[idx] + 1],
-            self.__models[idx],
-            self.__errors[idx],
+            self.__x[self.__starts[index] : self.__ends[index] + 1],
+            self.__y[self.__starts[index] : self.__ends[index] + 1],
+            self.__models[index],
+            self.__errors[index],
             self.__kernel,
             self.__flatten,
         )
@@ -282,7 +284,7 @@ def segreg(
     k: int,
     *,  # Following arguments must be explicitly specified via names.
     kernel: Kernel.Raw = Kernel.Poly(1),
-    alg: Algorithm = Algorithm.GREEDY,
+    algorithm: Algorithm = Algorithm.GREEDY,
     score: Score | None = None,  # TODO: unused atm
     metric: Metric = Metric.MSE,  # TODO: unused atm
     normalize: bool | None = None,
@@ -291,31 +293,31 @@ def segreg(
     donotflattenvariants: bool = False,
     interpolate: Interpolate | bool = False,
 ) -> Regression:
-    x_dat = kernel(x)
+    x_data = kernel(x)
     y = np.array(y, ndmin=2, dtype=dtype)
 
     normalize = normalize or y.shape[0] != 1 or weighting is not None
-    y_norm = np.array(kernel.normalize(y), dtype=dtype) if normalize else y
+    y_normalized = np.array(kernel.normalize(y), dtype=dtype) if normalize else y
 
     if weighting is not None:
         weighting = np.array(weighting, dtype=dtype)
-        y_norm *= weighting[:, np.newaxis]
+        y_normalized *= weighting[:, np.newaxis]
 
-    dimensions, _num_samplesx = x_dat.shape
-    variants, _num_samplesy = y_norm.shape
-    samples_per_seg = dimensions if alg == Algorithm.GREEDY else 1
+    dimensions, _n_samples_x = x_data.shape
+    variants, _n_samples_y = y_normalized.shape
+    samples_per_segment = dimensions if algorithm == Algorithm.GREEDY else 1
     flatten = False if variants != 1 else not donotflattenvariants
     if interpolate is True:
         interpolate = Interpolate.INTERPOLATE
     elif interpolate is False:
         interpolate = Interpolate.CLOSEST
 
-    with Mvsr(x_dat, y_norm, samples_per_seg, Placement.ALL, dtype) as reg:
-        reg.reduce(k, alg=alg)
-        if alg == Algorithm.GREEDY and dimensions > 1:
-            reg.optimize()
+    with Mvsr(x_data, y_normalized, samples_per_segment, Placement.ALL, dtype) as regression:
+        regression.reduce(k, alg=algorithm)
+        if algorithm == Algorithm.GREEDY and dimensions > 1:
+            regression.optimize()
 
-        (starts, models, errors) = reg.get_data()
+        (starts, models, errors) = regression.get_data()
         if weighting is not None:
             models /= weighting
         if normalize:
