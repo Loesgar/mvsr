@@ -256,8 +256,8 @@ def segreg(
     *,  # Following arguments must be explicitly specified via names.
     kernel=Kernel.Poly(1),
     alg=Algorithm.GREEDY,
-    score=None,
-    metric=Metric.MSE,
+    score=None,  # TODO: unused atm
+    metric=Metric.MSE,  # TODO: unused atm
     normalize=None,
     weighting=None,
     dtype=np.float64,
@@ -266,14 +266,15 @@ def segreg(
 ):
     x_dat = np.array(kernel(x), dtype=dtype)
     y = np.array(y, ndmin=2, dtype=dtype)
-    normalize = True if y.shape[0] != 1 or weighting is not None else normalize
+    normalize = normalize or y.shape[0] != 1 or weighting is not None
     y_norm = np.array(kernel.normalize(y), dtype=dtype) if normalize else y
 
     if weighting is not None:
-        y_norm *= np.array(weighting, dtype=dtype)[:, np.newaxis]
+        weighting = np.array(weighting, dtype=dtype)
+        y_norm *= weighting[:, np.newaxis]
 
-    dimensions, num_samplesx = x_dat.shape
-    variants, num_samplesy = y_norm.shape
+    dimensions, _num_samplesx = x_dat.shape
+    variants, _num_samplesy = y_norm.shape
     samples_per_seg = dimensions if alg == Algorithm.GREEDY else 1
     flatten = False if variants != 1 else not donotflattenvariants
     if interpolate is True:
