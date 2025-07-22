@@ -42,11 +42,7 @@ class CustomBuildHook(BuildHookInterface):
                 shutil.rmtree(out_dir)
             out_dir.mkdir()
 
-            generator = (
-                ["-G", "Visual Studio 17 2022"]
-                if platform.system() == "Windows"
-                else []
-            )
+            generator = ["-G", "Visual Studio 17 2022"] if platform.system() == "Windows" else []
             subprocess.run(
                 ["cmake", "-B", out_dir.name, "-DTESTING=off", *generator],
                 cwd=source_dir,
@@ -69,24 +65,18 @@ class CustomBuildHook(BuildHookInterface):
             dummy_wheel_path = Path(gettempdir()) / "dummy.whl"
             with ZipFile(dummy_wheel_path, "w", strict_timestamps=False) as zip_file:
                 records_str = ""
-                for lib_path in chain(
-                    *(TARGET_DIR.glob(f"*.{ext}") for ext in LIBRARY_EXTENSIONS)
-                ):
+                for lib_path in chain(*(TARGET_DIR.glob(f"*.{ext}") for ext in LIBRARY_EXTENSIONS)):
                     zip_file.write(lib_path, lib_path.name)
                     records_str += f"{lib_path.name},,\n"
                 zip_file.writestr("dummy.dist-info/RECORD", records_str)
-            wheel_info = analyze_wheel_abi(
-                None, None, dummy_wheel_path, frozenset(), False, False
-            )
+            wheel_info = analyze_wheel_abi(None, None, dummy_wheel_path, frozenset(), False, False)
 
             if wheel_info.external_refs[wheel_info.policies.lowest.name].libs:
                 platform_tag = f"{wheel_info.overall_policy.name}_{platform_tag}"
 
         elif platform.system() == "Darwin":
             product_version = "_".join(
-                subprocess.check_output(["sw_vers -productVersion"])
-                .decode()
-                .split(".")[:2]
+                subprocess.check_output(["sw_vers -productVersion"]).decode().split(".")[:2]
             )
             platform_tag = f"macosx_{product_version}_{platform.uname().machine}"
 
