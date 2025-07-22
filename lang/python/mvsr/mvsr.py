@@ -103,18 +103,18 @@ class Segment:
         model: MvsrArray,
         errors: MvsrArray,
         kernel: Kernel.Raw,
-        flatten: bool,
+        keep_y_dims: bool,
     ):
         self.__x = x
         self.__y = y
         self.__model = model
         self.__errors = errors
         self.__kernel = kernel
-        self.__flatten = flatten
+        self.__keep_y_dims = keep_y_dims
 
     def __call__(self, x: Any):
         result = np.matmul(self.__model, self.__kernel([x])).T[0]
-        return result[0] if self.__flatten else result
+        return result if self.__keep_y_dims else result[0]
 
     @property
     def rss(self):
@@ -165,7 +165,7 @@ class Regression:
         starts: npt.NDArray[np.uintp],
         models: MvsrArray,
         errors: MvsrArray,
-        flatten: bool,
+        keep_y_dims: bool,
         interpolate: Interpolate,
     ):
         x = np.array(x, dtype=object)
@@ -175,7 +175,7 @@ class Regression:
         self.__starts = starts
         self.__models = models
         self.__errors = errors  # TODO: recalculate?
-        self.__flatten = flatten
+        self.__keep_y_dims = keep_y_dims
         self.__interpolate = interpolate
 
         self.__ends = np.concatenate((starts[1:], np.array([x.shape[1]], dtype=np.uintp))) - 1
@@ -207,7 +207,7 @@ class Regression:
                     ),
                     np.empty(0),
                     self.__kernel,
-                    self.__flatten,
+                    self.__keep_y_dims,
                 )
             case Interpolate.CLOSEST:
                 left_distance = np.sum(np.pow(x - self.__x[self.__starts[index[0]]], 2))
@@ -272,7 +272,7 @@ class Regression:
             self.__models[index],
             self.__errors[index],
             self.__kernel,
-            self.__flatten,
+            self.__keep_y_dims,
         )
 
 
@@ -288,7 +288,7 @@ def segreg(
     normalize: bool | None = None,
     weighting: npt.ArrayLike | None = None,
     dtype: valid_dtypes = np.float64,
-    donotflattenvariants: bool = False,
+    keep_y_dims: bool = False,
     interpolate: Interpolate | bool = False,
 ) -> Regression:
     x_data = kernel(x)
@@ -302,9 +302,10 @@ def segreg(
         y_normalized *= weighting[:, np.newaxis]
 
     dimensions, _n_samples_x = x_data.shape
-    variants, _n_samples_y = y_normalized.shape
     samples_per_segment = dimensions if algorithm == Algorithm.GREEDY else 1
-    flatten = False if variants != 1 else not donotflattenvariants
+    n_variants, _n_samples_y = y_normalized.shape
+    keep_y_dims = n_variants > 1 or keep_y_dims
+
     if interpolate is True:
         interpolate = Interpolate.INTERPOLATE
     elif interpolate is False:
@@ -330,6 +331,6 @@ def segreg(
             np.array(starts, dtype=int),
             models,
             errors,  # TODO: recalculate
-            flatten,
+            keep_y_dims,
             interpolate,
         )
