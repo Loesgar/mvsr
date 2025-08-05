@@ -12,8 +12,8 @@ inline void *mvsr_init(size_t samples, size_t dimensions, size_t variants, const
     return reg;
 }
 template <typename Scalar>
-inline size_t mvsr_reduce(void *reg, size_t minsegs, size_t maxsegs, MvsrAlg alg, MvsrMetric metric,
-                          MvsrScore score)
+inline size_t mvsr_reduce(void *reg, size_t minsegs, size_t maxsegs [[maybe_unused]], MvsrAlg alg,
+                          MvsrMetric metric, MvsrScore score)
 {
     if (metric != MvsrMetricMSE || score != MvsrScoreExact) return 0;
 
@@ -33,7 +33,8 @@ inline size_t mvsr_reduce(void *reg, size_t minsegs, size_t maxsegs, MvsrAlg alg
     return regression->getSegCount();
 }
 template <typename Scalar>
-inline size_t mvsr_optimize(void *reg, const Scalar *data, unsigned int range, MvsrMetric metric)
+inline size_t mvsr_optimize(void *reg, const Scalar *data, unsigned int range [[maybe_unused]],
+                            MvsrMetric metric)
 {
     if (metric != MvsrMetricMSE) return 0;
 

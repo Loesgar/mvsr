@@ -4,13 +4,14 @@ project(mvsr
     HOMEPAGE_URL https://github.com/Loesgar/mvsr
 )
 
-set(CMAKE_CXX_VERSION 20)
+set(CMAKE_CXX_STANDARD 20)
 set(WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 if (MVSC)
     add_compile_options(/W4)
 else()
     add_compile_options(-Wall -Wextra -pedantic)
+    add_compile_options(-Wno-vla -Wno-missing-field-initializers)
 endif()
 
 add_library(mvsr SHARED

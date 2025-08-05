@@ -35,7 +35,7 @@ public:
      * @param other Other segmented regression.
      */
     Mvsr(const Mvsr<Scalar> &other)
-        : variants(other.variants), dimensions(other.dimensions), pieces(other.pieces),
+        : pieces(other.pieces), dimensions(other.dimensions), variants(other.variants),
           offY(other.offY), segSize(other.segSize)
     {
         queue = other.queue.copyByOrder(other.pieces, pieces);
@@ -57,9 +57,9 @@ public:
      * the same order.
      */
     Mvsr(size_t dimensions, size_t variants)
-        : variants(variants), dimensions(dimensions), offY(dimensions * dimensions + offX),
-          segSize(dimensions * (dimensions + variants) + offX),
-          pieces(dimensions * (dimensions + variants) + offX)
+        : pieces(dimensions * (dimensions + variants) + offX), dimensions(dimensions),
+          variants(variants), offY(dimensions * dimensions + offX),
+          segSize(dimensions * (dimensions + variants) + offX)
     {
     }
 
@@ -73,7 +73,6 @@ public:
      */
     void placeSegments(const Scalar *data, size_t sampleCount, size_t minPerSeg)
     {
-        auto *td = data;
         queue.clear();
         pieces.clear();
         pieces.reserve(sampleCount / minPerSeg);
@@ -201,7 +200,7 @@ public:
     }
     void optimize(const Scalar *data) /// @TODO: Add parameter to determine opt-range
     {
-        const auto optimizeBp = [=](Segment &s1, Segment &s2, size_t bpIdx)
+        const auto optimizeBp = [=, this](Segment &s1, Segment &s2, size_t bpIdx)
         {
             const size_t start = bpIdx - s1.sampleSize / 4;
             const size_t end = bpIdx + s2.sampleSize / 4;
@@ -267,7 +266,7 @@ public:
         {
             auto &&[entry, seg] = elements.pop();
             size_t startPos = entry.startPos;
-            size_t endPos = entry.startPos + seg.sampleSize;
+            // size_t endPos = entry.startPos + seg.sampleSize;
             auto piece = List<Segment, Scalar>::Iterator::FromElement(seg);
             // auto n = std::next(piece);
             auto p = std::prev(piece);

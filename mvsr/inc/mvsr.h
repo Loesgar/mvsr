@@ -180,6 +180,7 @@ extern "C"
                                Helper Functions
     ------------------------------------------------------------------------------*/
 
+    /**
     inline size_t mvsr_f64(size_t samples, size_t dimensions, size_t variants, const double *data,
                            size_t minsegs, size_t maxsegs, MvsrAlg alg, MvsrScore score,
                            MvsrMetric metric, size_t *breakpoints, double *models, double *error)
@@ -192,6 +193,7 @@ extern "C"
         //                   MvsrMetric metric) return 0;
         return 0;
     }
+    **/
 
 #ifdef __cplusplus
 }
