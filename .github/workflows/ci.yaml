@@ -2,28 +2,29 @@ name: Test
 on:
   push:
 permissions:
-  actions: write
   contents: read
 jobs:
+  build-lib:
+    uses: ./.github/workflows/lib.yaml
+    permissions:
+      actions: write
+      contents: read
   python-coverage:
+    needs: build-lib
     name: Test Coverage
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
       with:
         persist-credentials: false
-    - uses: nixbuild/nix-quick-install-action@v31
+    - uses: astral-sh/setup-uv@v6
+    - uses: actions/download-artifact@v4
       with:
-        nix_conf: keep-outputs = true
-    - uses: nix-community/cache-nix-action@v6
-      with:
-        primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
-        restore-prefixes-first-match: nix-${{ runner.os }}-
-        purge: true
-        purge-prefixes: nix-${{ runner.os }}-
-        purge-created: 0
-        purge-last-accessed: 0
-        purge-primary-key: never
-    - uses: wntrblm/nox@2254a1ee500bbf66c2a5e4ff5dad030b9f579dcd
-    - working-directory: lang/python/test
+        name: lib-ubuntu-latest
+        path: lang/python/artifacts
+    - name: Copy built library to package
+      run: cp -r lang/python/artifacts/lib lang/python/mvsr/lib
+    - uses: wntrblm/nox@main
+    - name: Run coverage tests
+      working-directory: lang/python/test
       run: nox -s coverage

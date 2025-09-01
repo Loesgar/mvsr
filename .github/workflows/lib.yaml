@@ -1,0 +1,46 @@
+name: Build C++ Library
+on:
+  workflow_call:
+    inputs:
+      runner:
+        type: string
+        default: ubuntu-latest
+jobs:
+  build_lib:
+    name: Build dynamic library on ${{ inputs.runner }}
+    runs-on: ${{ inputs.runner }}
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: nixbuild/nix-quick-install-action@v31
+        if: runner.os != 'Windows'
+        with:
+          nix_conf: keep-outputs = true
+      - uses: nix-community/cache-nix-action@v6
+        if: runner.os != 'Windows'
+        with:
+          primary-key: nix-${{ matrix.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
+          restore-prefixes-first-match: nix-${{ matrix.os }}-
+          purge: true
+          purge-prefixes: nix-${{ matrix.os }}-
+          purge-created: 0
+          purge-last-accessed: 0
+          purge-primary-key: never
+      - name: Build library
+        run: |
+          if [ "$RUNNER_OS" != "Windows" ]; then
+            nix build .#mvsr
+          else
+            cmake -B build -G "Visual Studio 17 2022"
+            cmake --build build --config Release
+            cmake --build build --config Release -t RUN_TESTS
+            cmake --install build --config Release --prefix "build/install"
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lib-${{ inputs.runner }}
+          path: ${{ runner.os != 'Windows' && 'result/*' || 'build/install/*' }}
