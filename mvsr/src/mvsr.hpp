@@ -85,6 +85,7 @@ public:
                 })),
                 minPerSeg + (sampleCount % minPerSeg),
                 data -= (minPerSeg + (sampleCount % minPerSeg)) * rowSize);
+        sampleCount -= sampleCount % minPerSeg;
         while ((sampleCount -= minPerSeg) != 0)
         {
             segInit(segGetStartPtr(*pieces.prepend(Segment{.sampleSize = minPerSeg})), minPerSeg,
