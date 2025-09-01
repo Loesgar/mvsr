@@ -1,6 +1,6 @@
 from bisect import bisect
 from enum import Enum
-from typing import Any, Sequence, cast
+from typing import Any, Iterator, Sequence, cast
 
 import numpy as np
 import numpy.typing as npt
@@ -279,6 +279,9 @@ class Regression:
             self.__kernel,
             self.__keep_y_dims,
         )
+
+    def __iter__(self) -> Iterator[Segment]:
+        return (self[i] for i in range(len(self)))
 
 
 def segreg(
