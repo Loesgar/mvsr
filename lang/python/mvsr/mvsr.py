@@ -11,8 +11,6 @@ from .libmvsr import Mvsr, MvsrArray, valid_dtypes
 from .libmvsr import Placement as Placement
 from .libmvsr import Score as Score
 
-AnyArray = npt.NDArray[Any]
-
 
 class Kernel:
     class Raw:
@@ -41,8 +39,8 @@ class Kernel:
             result[self.__translation_dimension] += self.__offsets
             return result
 
-        def __call__(self, x: npt.ArrayLike) -> AnyArray:
-            return np.array(x, ndmin=2, dtype=object).T
+        def __call__(self, x: npt.ArrayLike) -> npt.NDArray[Any]:
+            return np.array(x, ndmin=2)
 
         def interpolate(
             self, s1: MvsrArray, s2: MvsrArray, x1: MvsrArray, x2: MvsrArray
