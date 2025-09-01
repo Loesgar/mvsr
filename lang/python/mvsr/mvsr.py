@@ -1,6 +1,6 @@
 from bisect import bisect
 from enum import Enum
-from typing import Any, cast
+from typing import Any, Sequence, cast
 
 import numpy as np
 import numpy.typing as npt
@@ -215,6 +215,14 @@ class Regression:
                 return self[index[0]]
             case Interpolate.RIGHT:
                 return self[index[1]]
+
+    @property
+    def starts(self):
+        return self.__starts.copy()
+
+    @property
+    def segments(self) -> Sequence[Segment]:
+        return [segment for segment in self]
 
     @property
     def variants(self):
