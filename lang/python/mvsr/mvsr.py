@@ -305,15 +305,15 @@ def segreg(
     y = np.array(y, ndmin=2, dtype=dtype)
 
     normalize = normalize or y.shape[0] != 1 or weighting is not None
-    y_normalized = np.array(kernel.normalize(y), dtype=dtype) if normalize else y
+    y_data = np.array(kernel.normalize(y), dtype=dtype) if normalize else y.copy()
 
     if weighting is not None:
         weighting = np.array(weighting, dtype=dtype)
-        y_normalized *= weighting[:, np.newaxis]
+        y_data *= weighting[:, np.newaxis]
 
     dimensions, _n_samples_x = x_data.shape
     samples_per_segment = dimensions if algorithm == Algorithm.GREEDY else 1
-    n_variants, _n_samples_y = y_normalized.shape
+    n_variants, _n_samples_y = y_data.shape
     keep_y_dims = n_variants > 1 or keep_y_dims
 
     if interpolate is True:
@@ -321,7 +321,7 @@ def segreg(
     elif interpolate is False:
         interpolate = Interpolate.CLOSEST
 
-    with Mvsr(x_data, y_normalized, samples_per_segment, Placement.ALL, dtype) as regression:
+    with Mvsr(x_data, y_data, samples_per_segment, Placement.ALL, dtype) as regression:
         regression.reduce(k, alg=algorithm)
         if algorithm == Algorithm.GREEDY and dimensions > 1:
             regression.optimize()
