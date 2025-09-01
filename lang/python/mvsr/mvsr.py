@@ -166,8 +166,7 @@ class Regression:
         keep_y_dims: bool,
         interpolate: Interpolate,
     ):
-        x = np.array(x, dtype=object)
-        self.__x = x
+        self.__x = x = np.array(x, dtype=object)
         self.__y = y
         self.__kernel = kernel
         self.__starts = starts
@@ -176,10 +175,10 @@ class Regression:
         self.__keep_y_dims = keep_y_dims
         self.__interpolate = interpolate
 
-        self.__ends = np.concatenate((starts[1:], np.array([x.shape[1]], dtype=np.uintp))) - 1
-        self.__samplecounts: npt.NDArray[np.uintp] = self.__ends - self.__starts
-        self.__start_values = x[:, self.__starts]
-        self.__end_values = x[:, self.__ends]
+        self.__ends = np.concatenate((starts[1:], np.array([x.shape[0]], dtype=np.uintp))) - 1
+        self.__samplecounts = self.__ends - self.__starts
+        self.__start_values = x[self.__starts]
+        self.__end_values = x[self.__ends]
 
     def get_segment_index(self, x: Any):
         index = bisect(self.__start_values[1:], x)
@@ -237,7 +236,7 @@ class Regression:
                 True,
                 self.__interpolate,
             )
-            for variant in range(self.__y.shape[1])
+            for variant in range(self.__y.shape[0])
         ]
 
     """
@@ -274,7 +273,7 @@ class Regression:
             raise IndexError(f"segment index '{index}' is out of range [0, {len(self)})")
         return Segment(
             self.__x[self.__starts[index] : int(self.__ends[index]) + 1],
-            self.__y[self.__starts[index] : int(self.__ends[index]) + 1],
+            self.__y[:, self.__starts[index] : int(self.__ends[index]) + 1],
             self.__models[index],
             self.__errors[index],
             self.__kernel,
