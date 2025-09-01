@@ -72,7 +72,7 @@ class Kernel:
             )
 
         def interpolate(self, segments: list["Segment"]):
-            if len(segments) > 2:
+            if len(segments) > 2:  # pragma: no cover
                 RuntimeError(
                     "interpolation of more than 2 segments is not possible with "
                     f"'{self.__class__.__name__}' kernel"
