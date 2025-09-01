@@ -6,7 +6,7 @@ readme = "README.md"
 dependencies = ["numpy"]
 
 [dependency-groups]
-dev = ["hatchling", "auditwheel", "ruff"]
+dev = ["hatchling", "auditwheel", "ruff", "pytest", "pytest-cov"]
 
 [build-system]
 requires = ["hatchling", "auditwheel"]
@@ -30,3 +30,9 @@ reportMissingParameterType = "warning"
 reportUnnecessaryTypeIgnoreComment = "warning"
 reportPrivateUsage = false
 reportMissingTypeStubs = false
+
+[tool.coverage.report]
+exclude_also = ["InternalError"]
+
+[tool.pytest.ini_options]
+addopts = "--cov mvsr --cov-fail-under 99"

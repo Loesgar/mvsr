@@ -208,7 +208,7 @@ class Mvsr:
         self.__num_pieces = res
 
     def get_data(self):
-        if self.__num_pieces is None or self.__num_pieces == 0:
+        if self.__num_pieces is None or self.__num_pieces == 0:  # pragma: no cover
             res = self.__funcs["get_data"](self.__reg, None, None, None)
             if res == 0:
                 raise InternalError(self.__funcs["get_data"], res)
