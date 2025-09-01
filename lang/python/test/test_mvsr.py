@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 from pytest import approx, raises
 
-from mvsr import Algorithm, Interpolate, Kernel, segreg
+from mvsr import Algorithm, Interpolate, Kernel, mvsr
 from mvsr.libmvsr import Metric, Mvsr, Score
 
 # pyright: basic
@@ -20,23 +20,23 @@ STARTS_WEIGHTED = [0, 8, 10]
 
 
 def test_simple_dp():
-    assert segreg(X, Y, K, algorithm=Algorithm.DP).starts.tolist() == STARTS
+    assert mvsr(X, Y, K, algorithm=Algorithm.DP).starts.tolist() == STARTS
 
 
 def test_simple_greedy():
-    assert segreg(X, Y, K, algorithm=Algorithm.GREEDY).starts.tolist() == STARTS
+    assert mvsr(X, Y, K, algorithm=Algorithm.GREEDY).starts.tolist() == STARTS
 
 
 def test_simple_normalize():
-    assert segreg(X, Y, K, normalize=True).starts.tolist() == STARTS
+    assert mvsr(X, Y, K, normalize=True).starts.tolist() == STARTS
 
 
 def test_simple_weighting():
-    assert segreg(X, [Y, Y2], K, weighting=WEIGHTING).starts.tolist() == STARTS_WEIGHTED
+    assert mvsr(X, [Y, Y2], K, weighting=WEIGHTING).starts.tolist() == STARTS_WEIGHTED
 
 
 def test_simple_poly2():
-    assert segreg(X, Y, K, kernel=Kernel.Poly(2)).starts.tolist() == STARTS
+    assert mvsr(X, Y, K, kernel=Kernel.Poly(2)).starts.tolist() == STARTS
 
 
 def test_interpolate():
@@ -54,11 +54,11 @@ def test_interpolate():
 
     for interpolate, results in interp_results:
         for x, y in results:
-            assert segreg(X, Y, K, interpolate=interpolate)(x) == approx(y)
+            assert mvsr(X, Y, K, interpolate=interpolate)(x) == approx(y)
 
 
 def test_regression_and_segment():
-    regression = segreg(X, Y, K)
+    regression = mvsr(X, Y, K)
     assert len(regression) == len(regression.segments) == K
     assert regression[-K]
     for index in (-(K + 1), K):
@@ -80,12 +80,12 @@ def test_regression_and_segment():
 
 
 def test_keep_y_dims():
-    assert isinstance(segreg(X, Y, K)(0.0), float)
-    assert len(y := segreg(X, Y, K, keep_y_dims=True)(0.0)) == 1 and isinstance(y[0], float)
+    assert isinstance(mvsr(X, Y, K)(0.0), float)
+    assert len(y := mvsr(X, Y, K, keep_y_dims=True)(0.0)) == 1 and isinstance(y[0], float)
 
 
 def test_kernels():
-    models = segreg(X, Y, K)._models
+    models = mvsr(X, Y, K)._models
 
     for kernel in (Kernel.Raw(0), Kernel.Poly(1)):
         assert kernel(X).shape[1] == len(X)
@@ -97,14 +97,14 @@ def test_kernels():
     with raises(RuntimeError, match="normalization without specifying .* is not possible"):
         raw_kernel.denormalize(models)
 
-    assert len(segreg(X, Y, K, kernel=Kernel.Raw()).segments) == 3
+    assert len(mvsr(X, Y, K, kernel=Kernel.Raw()).segments) == 3
 
     with raises(RuntimeError, match="interpolation is not possible"):
-        regression = segreg(X, Y, K, kernel=Kernel.Raw(), interpolate=True)
+        regression = mvsr(X, Y, K, kernel=Kernel.Raw(), interpolate=True)
         regression(regression.starts[1] - 0.5)
 
 
-TESTDATA_SEGREG = chain(
+TESTDATA_MVSR = chain(
     product(
         [Y],
         [Kernel.Raw(), Kernel.Raw(0), Kernel.Poly(1)],
@@ -134,9 +134,9 @@ TESTDATA_SEGREG = chain(
 
 @pytest.mark.parametrize(
     "y,kernel,algorithm,score,metric,normalize,weighting,dtype,keep_y_dims,interpolate",
-    TESTDATA_SEGREG,
+    TESTDATA_MVSR,
 )
-def test_segreg(
+def test_mvsr(
     y, kernel, algorithm, score, metric, normalize, weighting, dtype, keep_y_dims, interpolate
 ):
     match (len(y), kernel, normalize, bool(weighting), interpolate):
@@ -150,7 +150,7 @@ def test_segreg(
             expectation = does_not_raise()
 
     with expectation:
-        regression = segreg(
+        regression = mvsr(
             X,
             y,
             K,

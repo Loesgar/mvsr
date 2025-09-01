@@ -280,7 +280,7 @@ class Regression:
         return (self[i] for i in range(len(self)))
 
 
-def segreg(
+def mvsr(
     x: npt.ArrayLike,
     y: npt.ArrayLike,
     k: int,
