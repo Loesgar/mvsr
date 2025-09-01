@@ -36,7 +36,7 @@ class CustomBuildHook(BuildHookInterface[BuilderConfig]):
         TARGET_DIR.mkdir(exist_ok=True)
 
         if shutil.which("nix") and not is_sdist_build:
-            subprocess.run(["nix", "build"], cwd=source_dir)
+            subprocess.check_call(["nix", "build"], cwd=source_dir)
             out_dir = source_dir / "result" / "lib"
         else:
             out_dir = source_dir / "build"
@@ -45,11 +45,11 @@ class CustomBuildHook(BuildHookInterface[BuilderConfig]):
             out_dir.mkdir()
 
             generator = ["-G", "Visual Studio 17 2022"] if platform.system() == "Windows" else []
-            subprocess.run(
+            subprocess.check_call(
                 ["cmake", "-B", out_dir.name, "-DTESTING=off", *generator],
                 cwd=source_dir,
             )
-            subprocess.run(
+            subprocess.check_call(
                 ["cmake", "--build", out_dir.name, "--config", "Release"],
                 cwd=source_dir,
             )
@@ -61,7 +61,6 @@ class CustomBuildHook(BuildHookInterface[BuilderConfig]):
 
     def get_platform_tag(self):
         platform_tag = get_platform().replace("-", "_").replace(".", "_")
-        print("platform_tag 1", platform_tag)
 
         if platform.system() == "Linux":
             dummy_wheel_path = Path(gettempdir()) / "dummy.whl"
@@ -81,7 +80,5 @@ class CustomBuildHook(BuildHookInterface[BuilderConfig]):
                 subprocess.check_output(["sw_vers -productVersion"]).decode().split(".")[:2]
             )
             platform_tag = f"macosx_{product_version}_{platform.uname().machine}"
-
-        print("platform_tag 2", platform_tag)
 
         return platform_tag
