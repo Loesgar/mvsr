@@ -63,7 +63,7 @@ class Kernel:
         def __call__(self, x: npt.ArrayLike):  # [1,2,3] or [[1,1],[2,2],[3,3]]
             # TODO: handle combinations!
             x = np.array(x)
-            x = x if len(x.shape) > 1 else np.array(x, ndmin=2).T
+            x = (x if len(x.shape) > 1 else np.array(x, ndmin=2)).T
             return np.concatenate(
                 (
                     np.ones((1, len(x))),
