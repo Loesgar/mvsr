@@ -42,9 +42,7 @@ class Kernel:
         def __call__(self, x: npt.ArrayLike) -> npt.NDArray[Any]:
             return np.array(x, ndmin=2)
 
-        def interpolate(
-            self, s1: MvsrArray, s2: MvsrArray, x1: npt.NDArray[Any], x2: npt.NDArray[Any]
-        ) -> MvsrArray:
+        def interpolate(self, segments: list["Segment"]) -> "Segment":
             raise RuntimeError(
                 f"interpolation is not possible with '{self.__class__.__name__}' kernel"
             )
@@ -73,26 +71,34 @@ class Kernel:
                 )
             )
 
-        def interpolate(
-            self, s1: MvsrArray, s2: MvsrArray, x1: npt.NDArray[Any], x2: npt.NDArray[Any]
-        ):
-            x_start = self(x1[-1])
-            x_end = self(x2[0])
-            y_start = np.matmul(s1, x_start).T[0]
-            y_end = np.matmul(s2, x_end).T[0]
+        def interpolate(self, segments: list["Segment"]):
+            if len(segments) > 2:
+                RuntimeError(
+                    "interpolation of more than 2 segments is not possible with "
+                    f"'{self.__class__.__name__}' kernel"
+                )
 
-            if x_start.shape[1] > self.__degree + 1:
+            x_start = self([segments[0].range[1]])
+            x_end = self([segments[1].range[0]])
+
+            if x_start.shape[1] > self.__degree + 1 or x_end.shape[1] > self.__degree + 1:
                 RuntimeError(
                     f"interpolation of multidimensional data is not possible with "
                     f"'{self.__class__.__name__}' kernel"
                 )
 
-            slopes = y_end - y_start
+            y_start = segments[0](segments[0].range[1])
+            y_end = segments[1](segments[1].range[0])
+
+            slopes = (y_end - y_start) / (x_end - x_start)[1]
             offsets = y_start - x_start[1] * slopes
-            result = np.zeros((s1.shape))
-            result[:, 0] = offsets
-            result[:, 1] = slopes
-            return result
+            model = np.zeros(segments[0].model.shape)
+            model[:, 0] = offsets
+            model[:, 1] = slopes
+
+            return Segment(
+                np.empty(0), np.empty(0), model, np.empty(0), self, segments[0].__keep_y_dims
+            )
 
 
 class Segment:
@@ -195,19 +201,7 @@ class Regression:
 
         match self.__interpolate:
             case Interpolate.INTERPOLATE:
-                return Segment(
-                    np.empty(0),
-                    np.empty(0),
-                    self.__kernel.interpolate(
-                        self.__models[index[0]],
-                        self.__models[index[1]],
-                        self.__x[self.__starts[index[0]] : int(self.__ends[index[0]]) + 1],
-                        self.__x[self.__starts[index[1]] : int(self.__ends[index[1]]) + 1],
-                    ),
-                    np.empty(0),
-                    self.__kernel,
-                    self.__keep_y_dims,
-                )
+                return self.__kernel.interpolate([self[i] for i in index])
             case Interpolate.CLOSEST:
                 left_distance = np.sum(np.power(x - self.__x[self.__ends[index[0]]], 2))
                 right_distance = np.sum(np.power(x - self.__x[self.__starts[index[1]]], 2))
