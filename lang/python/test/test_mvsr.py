@@ -107,7 +107,7 @@ def test_kernels():
 TESTDATA_MVSR = chain(
     product(
         [Y],
-        [Kernel.Raw(), Kernel.Raw(0), Kernel.Poly(1)],
+        [Kernel.Raw(), Kernel.Raw(0), *(Kernel.Poly(d) for d in range(1, 3))],
         Algorithm,
         Score,
         Metric,
@@ -119,7 +119,7 @@ TESTDATA_MVSR = chain(
     ),
     product(
         [[Y, Y2]],
-        [Kernel.Raw(), Kernel.Raw(0), Kernel.Poly(1)],
+        [Kernel.Raw(), Kernel.Raw(0), *(Kernel.Poly(d) for d in range(1, 3))],
         Algorithm,
         Score,
         Metric,
