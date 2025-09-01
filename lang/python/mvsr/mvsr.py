@@ -25,7 +25,7 @@ class Kernel:
             self._ensure_translation_dimension()
 
             self.__offsets = cast(MvsrArray, np.min(y, axis=1))
-            y -= self.__offsets[:, np.newaxis]
+            y = y - self.__offsets[:, np.newaxis]
             self.__factors = cast(MvsrArray, np.max(y, axis=1))
             return y / self.__factors[:, np.newaxis]
 
@@ -200,16 +200,16 @@ class Regression:
                     self.__kernel.interpolate(
                         self.__models[index[0]],
                         self.__models[index[1]],
-                        self.__x[self.__starts[index[0]] : self.__ends[index[0]] + 1],
-                        self.__x[self.__starts[index[1]] : self.__ends[index[1]] + 1],
+                        self.__x[self.__starts[index[0]] : int(self.__ends[index[0]]) + 1],
+                        self.__x[self.__starts[index[1]] : int(self.__ends[index[1]]) + 1],
                     ),
                     np.empty(0),
                     self.__kernel,
                     self.__keep_y_dims,
                 )
             case Interpolate.CLOSEST:
-                left_distance = np.sum(np.pow(x - self.__x[self.__starts[index[0]]], 2))
-                right_distance = np.sum(np.pow(x - self.__x[self.__starts[index[1]]], 2))
+                left_distance = np.sum(np.power(x - self.__x[self.__starts[index[0]]], 2))
+                right_distance = np.sum(np.power(x - self.__x[self.__starts[index[1]]], 2))
                 return self[index[0] if left_distance < right_distance else index[1]]
             case Interpolate.LEFT:
                 return self[index[0]]
@@ -273,8 +273,8 @@ class Regression:
         if index < 0 or index > len(self):
             raise IndexError(f"segment index '{index}' is out of range [0, {len(self)})")
         return Segment(
-            self.__x[self.__starts[index] : self.__ends[index] + 1],
-            self.__y[self.__starts[index] : self.__ends[index] + 1],
+            self.__x[self.__starts[index] : int(self.__ends[index]) + 1],
+            self.__y[self.__starts[index] : int(self.__ends[index]) + 1],
             self.__models[index],
             self.__errors[index],
             self.__kernel,
@@ -334,7 +334,7 @@ def segreg(
             x,
             y,
             kernel,
-            np.array(starts, dtype=int),
+            np.array(starts, dtype=np.uintp),
             models,
             errors,  # TODO: recalculate
             keep_y_dims,
