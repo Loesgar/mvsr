@@ -14,29 +14,29 @@ from .libmvsr import Score as Score
 
 class Kernel:
     class Raw:
-        __translation_dimension: int | None = None
-        __offsets: MvsrArray | None = None
-        __factors: MvsrArray | None = None
+        _translation_dimension: int | None = None
+        _offsets: MvsrArray | None = None
+        _factors: MvsrArray | None = None
 
         def __init__(self, translation_dimension: int | None = None):
-            self.__translation_dimension = translation_dimension
+            self._translation_dimension = translation_dimension
 
         def normalize(self, y: MvsrArray):
             self._ensure_translation_dimension()
 
-            self.__offsets = cast(MvsrArray, np.min(y, axis=1))
-            y = y - self.__offsets[:, np.newaxis]
-            self.__factors = cast(MvsrArray, np.max(y, axis=1))
-            return y / self.__factors[:, np.newaxis]
+            self._offsets = cast(MvsrArray, np.min(y, axis=1))
+            y = y - self._offsets[:, np.newaxis]
+            self._factors = cast(MvsrArray, np.max(y, axis=1))
+            return y / self._factors[:, np.newaxis]
 
         def denormalize(self, models: MvsrArray):
             self._ensure_translation_dimension()
 
-            if self.__offsets is None or self.__factors is None:
+            if self._offsets is None or self._factors is None:
                 raise RuntimeError("'normalize' was not called before 'denormalize'")
 
-            result = models * self.__factors[np.newaxis, :]
-            result[self.__translation_dimension] += self.__offsets
+            result = models * self._factors[np.newaxis, :]
+            result[self._translation_dimension] += self._offsets
             return result
 
         def __call__(self, x: npt.ArrayLike) -> npt.NDArray[Any]:
@@ -48,7 +48,7 @@ class Kernel:
             )
 
         def _ensure_translation_dimension(self):
-            if self.__translation_dimension is None:
+            if self._translation_dimension is None:
                 raise RuntimeError(
                     f"normalization without specifying 'translation_dimension' is not possible with"
                     f" '{self.__class__.__name__}' kernel"
@@ -57,8 +57,8 @@ class Kernel:
     class Poly(Raw):
         def __init__(self, degree: int = 1, combinations: bool = True):
             super().__init__(translation_dimension=0)
-            self.__degree = degree
-            self.__combinations = combinations
+            self._degree = degree
+            self._combinations = combinations
 
         def __call__(self, x: npt.ArrayLike):  # [1,2,3] or [[1,1],[2,2],[3,3]]
             # TODO: handle combinations!
@@ -67,7 +67,7 @@ class Kernel:
             return np.concatenate(
                 (
                     np.ones((1, len(x))),
-                    *([np.power(val, i)] for val in x.T for i in range(1, self.__degree + 1)),
+                    *([np.power(val, i)] for val in x.T for i in range(1, self._degree + 1)),
                 )
             )
 
@@ -81,7 +81,7 @@ class Kernel:
             x_start = self([segments[0].range[1]])
             x_end = self([segments[1].range[0]])
 
-            if x_start.shape[1] > self.__degree + 1 or x_end.shape[1] > self.__degree + 1:
+            if x_start.shape[1] > self._degree + 1 or x_end.shape[1] > self._degree + 1:
                 RuntimeError(
                     f"interpolation of multidimensional data is not possible with "
                     f"'{self.__class__.__name__}' kernel"
@@ -97,7 +97,7 @@ class Kernel:
             model[:, 1] = slopes
 
             return Segment(
-                np.empty(0), np.empty(0), model, np.empty(0), self, segments[0].__keep_y_dims
+                np.empty(0), np.empty(0), model, np.empty(0), self, segments[0]._keep_y_dims
             )
 
 
@@ -111,20 +111,20 @@ class Segment:
         kernel: Kernel.Raw,
         keep_y_dims: bool,
     ):
-        self.__x = x
-        self.__y = y
-        self.__model = model
-        self.__errors = errors
-        self.__kernel = kernel
-        self.__keep_y_dims = keep_y_dims
+        self._x = x
+        self._y = y
+        self._model = model
+        self._errors = errors
+        self._kernel = kernel
+        self._keep_y_dims = keep_y_dims
 
     def __call__(self, x: Any):
-        result = np.matmul(self.__model, self.__kernel([x])).T[0]
-        return result if self.__keep_y_dims else result[0]
+        result = np.matmul(self._model, self._kernel([x])).T[0]
+        return result if self._keep_y_dims else result[0]
 
     @property
     def rss(self):
-        return self.__errors.copy()
+        return self._errors.copy()
 
     @property
     def mse(self):
@@ -132,23 +132,23 @@ class Segment:
 
     @property
     def samplecount(self):
-        return len(self.__x)
+        return len(self._x)
 
     @property
     def model(self):
-        return self.__model.copy()
+        return self._model.copy()
 
     @property
     def range(self):
-        return (self.__x[0], self.__x[-1])
+        return (self._x[0], self._x[-1])
 
     @property
     def x(self):
-        return self.__x.copy()
+        return self._x.copy()
 
     @property
     def y(self):
-        return self.__y.copy()
+        return self._y.copy()
 
     def plot(self):
         # TODO
@@ -174,23 +174,23 @@ class Regression:
         keep_y_dims: bool,
         interpolate: Interpolate,
     ):
-        self.__x = x = np.array(x, dtype=object)
-        self.__y = y
-        self.__kernel = kernel
-        self.__starts = starts
-        self.__models = models
-        self.__errors = errors  # TODO: recalculate?
-        self.__keep_y_dims = keep_y_dims
-        self.__interpolate = interpolate
+        self._x = x = np.array(x, dtype=object)
+        self._y = y
+        self._kernel = kernel
+        self._starts = starts
+        self._models = models
+        self._errors = errors  # TODO: recalculate?
+        self._keep_y_dims = keep_y_dims
+        self._interpolate = interpolate
 
-        self.__ends = np.concatenate((starts[1:], np.array([x.shape[0]], dtype=np.uintp))) - 1
-        self.__samplecounts = self.__ends - self.__starts
-        self.__start_values = x[self.__starts]
-        self.__end_values = x[self.__ends]
+        self._ends = np.concatenate((starts[1:], np.array([x.shape[0]], dtype=np.uintp))) - 1
+        self._samplecounts = self._ends - self._starts
+        self._start_values = x[self._starts]
+        self._end_values = x[self._ends]
 
     def get_segment_index(self, x: Any):
-        index = bisect(self.__start_values[1:], x)
-        if self.__end_values[index] < x:
+        index = bisect(self._start_values[1:], x)
+        if self._end_values[index] < x:
             return (index, index + 1)
         return (index,)
 
@@ -199,12 +199,12 @@ class Regression:
         if len(index) == 1:
             return self[index[0]]
 
-        match self.__interpolate:
+        match self._interpolate:
             case Interpolate.INTERPOLATE:
-                return self.__kernel.interpolate([self[i] for i in index])
+                return self._kernel.interpolate([self[i] for i in index])
             case Interpolate.CLOSEST:
-                left_distance = np.sum(np.power(x - self.__x[self.__ends[index[0]]], 2))
-                right_distance = np.sum(np.power(x - self.__x[self.__starts[index[1]]], 2))
+                left_distance = np.sum(np.power(x - self._x[self._ends[index[0]]], 2))
+                right_distance = np.sum(np.power(x - self._x[self._starts[index[1]]], 2))
                 return self[index[0] if left_distance < right_distance else index[1]]
             case Interpolate.LEFT:
                 return self[index[0]]
@@ -213,7 +213,7 @@ class Regression:
 
     @property
     def starts(self):
-        return self.__starts.copy()
+        return self._starts.copy()
 
     @property
     def segments(self) -> Sequence[Segment]:
@@ -223,16 +223,16 @@ class Regression:
     def variants(self):
         return [
             Regression(
-                self.__x,
-                self.__y[:, variant],
-                self.__kernel,
-                self.__starts,
-                self.__models[:, variant, :],
-                self.__errors,
+                self._x,
+                self._y[:, variant],
+                self._kernel,
+                self._starts,
+                self._models[:, variant, :],
+                self._errors,
                 True,
-                self.__interpolate,
+                self._interpolate,
             )
-            for variant in range(self.__y.shape[0])
+            for variant in range(self._y.shape[0])
         ]
 
     """
@@ -242,15 +242,15 @@ class Regression:
         try:
             _ = iter(axs)
         except TypeError:
-            [axs] * self.__y.shape[1]
+            [axs] * self._y.shape[1]
         try:
             _ = iter(styles)
         except TypeError:
-            [styles] * self.__y.shape[1]
+            [styles] * self._y.shape[1]
         try:
             _ = iter(istyles)
         except TypeError:
-            [istyles] * self.__y.shape[1]
+            [istyles] * self._y.shape[1]
 
         return [
             reg.plot(ax, style, istyle)
@@ -262,18 +262,18 @@ class Regression:
         return self.get_segment(x)(x)
 
     def __len__(self):
-        return len(self.__end_values)
+        return len(self._end_values)
 
     def __getitem__(self, index: int):
         if index < -len(self) or index >= len(self):
             raise IndexError(f"segment index '{index}' is out of range [{-len(self)}, {len(self)})")
         return Segment(
-            self.__x[self.__starts[index] : int(self.__ends[index]) + 1],
-            self.__y[:, self.__starts[index] : int(self.__ends[index]) + 1],
-            self.__models[index],
-            self.__errors[index],
-            self.__kernel,
-            self.__keep_y_dims,
+            self._x[self._starts[index] : int(self._ends[index]) + 1],
+            self._y[:, self._starts[index] : int(self._ends[index]) + 1],
+            self._models[index],
+            self._errors[index],
+            self._kernel,
+            self._keep_y_dims,
         )
 
     def __iter__(self) -> Iterator[Segment]:

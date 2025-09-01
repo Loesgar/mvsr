@@ -85,7 +85,7 @@ def test_keep_y_dims():
 
 
 def test_kernels():
-    models = segreg(X, Y, K)._Regression__models  # pyright: ignore
+    models = segreg(X, Y, K)._models
 
     for kernel in (Kernel.Raw(0), Kernel.Poly(1)):
         assert kernel(X).shape[1] == len(X)
@@ -141,7 +141,7 @@ def test_segreg(
 ):
     match (len(y), kernel, normalize, bool(weighting), interpolate):
         case (_, _, True, *_) | (2, _, _, *_) | (_, _, _, True, _) if (
-            type(kernel) is Kernel.Raw and kernel._Raw__translation_dimension is None  # pyright: ignore
+            type(kernel) is Kernel.Raw and kernel._translation_dimension is None
         ):
             expectation = raises(RuntimeError, match="normalization .* is not possible")
         case (_, _, _, _, True) if type(kernel) is Kernel.Raw:

@@ -31,20 +31,20 @@ def ndarray_or_null(*args: typing.Any, **kwargs: typing.Any):
 # Type definitions #
 ####################
 
-__size_t = ctypes.c_size_t
-__voidp = ctypes.c_void_p
-__int = ctypes.c_int
-__uint = ctypes.c_uint
-# __sizeptr = ctypes.POINTER(ctypes.c_size_t)  # (dtype=np.uintp, ndim=1, flags="C")
-# __f64ptr = ctypes.POINTER(ctypes.c_double)  # might be NULL
-# __f32ptr = ctypes.POINTER(ctypes.c_float)  # might be NULL
-__sizeptr = ndarray_or_null(dtype=np.uintp, ndim=1, flags="C")
-__f64ptr = ndarray_or_null(dtype=np.float64, ndim=1, flags="C")
-__f32ptr = ndarray_or_null(dtype=np.float32, ndim=1, flags="C")
-__f64ptr2d = ndarray_or_null(dtype=np.float64, ndim=2, flags="C")
-__f32ptr2d = ndarray_or_null(dtype=np.float32, ndim=2, flags="C")
-__f64ptr3d = ndarray_or_null(dtype=np.float64, ndim=3, flags="C")
-__f32ptr3d = ndarray_or_null(dtype=np.float32, ndim=3, flags="C")
+_size_t = ctypes.c_size_t
+_voidp = ctypes.c_void_p
+_int = ctypes.c_int
+_uint = ctypes.c_uint
+# _sizeptr = ctypes.POINTER(ctypes.c_size_t)  # (dtype=np.uintp, ndim=1, flags="C")
+# _f64ptr = ctypes.POINTER(ctypes.c_double)  # might be NULL
+# _f32ptr = ctypes.POINTER(ctypes.c_float)  # might be NULL
+_sizeptr = ndarray_or_null(dtype=np.uintp, ndim=1, flags="C")
+_f64ptr = ndarray_or_null(dtype=np.float64, ndim=1, flags="C")
+_f32ptr = ndarray_or_null(dtype=np.float32, ndim=1, flags="C")
+_f64ptr2d = ndarray_or_null(dtype=np.float64, ndim=2, flags="C")
+_f32ptr2d = ndarray_or_null(dtype=np.float32, ndim=2, flags="C")
+_f64ptr3d = ndarray_or_null(dtype=np.float64, ndim=3, flags="C")
+_f32ptr3d = ndarray_or_null(dtype=np.float32, ndim=3, flags="C")
 
 ########################
 # Load dynamic library #
@@ -52,39 +52,39 @@ __f32ptr3d = ndarray_or_null(dtype=np.float32, ndim=3, flags="C")
 
 LIBRARY_EXTENSION = {"Windows": "dll", "Darwin": "dylib"}.get(platform.system(), "so")
 LIBRARY_PATH = Path(__file__).parent / "lib" / f"libmvsr.{LIBRARY_EXTENSION}"
-__libmvsr = ctypes.CDLL(LIBRARY_PATH)
+_libmvsr = ctypes.CDLL(LIBRARY_PATH)
 
 ########################
 # Function definitions #
 ########################
 
 # F64 Functions
-__libmvsr.mvsr_init_f64.restype = __voidp
-__libmvsr.mvsr_init_f64.argtypes = [__size_t, __size_t, __size_t, __f64ptr2d, __size_t, __int]
-__libmvsr.mvsr_reduce_f64.restype = __size_t
-__libmvsr.mvsr_reduce_f64.argtypes = [__voidp, __size_t, __size_t, __int, __int, __int]
-__libmvsr.mvsr_optimize_f64.restype = __size_t
-__libmvsr.mvsr_optimize_f64.argtypes = [__voidp, __f64ptr2d, __uint, __int]
-__libmvsr.mvsr_get_data_f64.restype = __size_t
-__libmvsr.mvsr_get_data_f64.argtypes = [__voidp, __sizeptr, __f64ptr3d, __f64ptr]
-__libmvsr.mvsr_copy_f64.restype = __voidp
-__libmvsr.mvsr_copy_f64.argtypes = [__voidp]
-__libmvsr.mvsr_release_f64.restype = None
-__libmvsr.mvsr_release_f64.argtypes = [__voidp]
+_libmvsr.mvsr_init_f64.restype = _voidp
+_libmvsr.mvsr_init_f64.argtypes = [_size_t, _size_t, _size_t, _f64ptr2d, _size_t, _int]
+_libmvsr.mvsr_reduce_f64.restype = _size_t
+_libmvsr.mvsr_reduce_f64.argtypes = [_voidp, _size_t, _size_t, _int, _int, _int]
+_libmvsr.mvsr_optimize_f64.restype = _size_t
+_libmvsr.mvsr_optimize_f64.argtypes = [_voidp, _f64ptr2d, _uint, _int]
+_libmvsr.mvsr_get_data_f64.restype = _size_t
+_libmvsr.mvsr_get_data_f64.argtypes = [_voidp, _sizeptr, _f64ptr3d, _f64ptr]
+_libmvsr.mvsr_copy_f64.restype = _voidp
+_libmvsr.mvsr_copy_f64.argtypes = [_voidp]
+_libmvsr.mvsr_release_f64.restype = None
+_libmvsr.mvsr_release_f64.argtypes = [_voidp]
 
 # F32 Functions
-__libmvsr.mvsr_init_f32.restype = __voidp
-__libmvsr.mvsr_init_f32.argtypes = [__size_t, __size_t, __size_t, __f32ptr2d, __size_t, __int]
-__libmvsr.mvsr_reduce_f32.restype = __size_t
-__libmvsr.mvsr_reduce_f32.argtypes = [__voidp, __size_t, __size_t, __int, __int, __int]
-__libmvsr.mvsr_optimize_f32.restype = __size_t
-__libmvsr.mvsr_optimize_f32.argtypes = [__voidp, __f32ptr2d, __uint, __int]
-__libmvsr.mvsr_get_data_f32.restype = __size_t
-__libmvsr.mvsr_get_data_f32.argtypes = [__voidp, __sizeptr, __f32ptr3d, __f32ptr]
-__libmvsr.mvsr_copy_f32.restype = __voidp
-__libmvsr.mvsr_copy_f32.argtypes = [__voidp]
-__libmvsr.mvsr_release_f32.restype = None
-__libmvsr.mvsr_release_f32.argtypes = [__voidp]
+_libmvsr.mvsr_init_f32.restype = _voidp
+_libmvsr.mvsr_init_f32.argtypes = [_size_t, _size_t, _size_t, _f32ptr2d, _size_t, _int]
+_libmvsr.mvsr_reduce_f32.restype = _size_t
+_libmvsr.mvsr_reduce_f32.argtypes = [_voidp, _size_t, _size_t, _int, _int, _int]
+_libmvsr.mvsr_optimize_f32.restype = _size_t
+_libmvsr.mvsr_optimize_f32.argtypes = [_voidp, _f32ptr2d, _uint, _int]
+_libmvsr.mvsr_get_data_f32.restype = _size_t
+_libmvsr.mvsr_get_data_f32.argtypes = [_voidp, _sizeptr, _f32ptr3d, _f32ptr]
+_libmvsr.mvsr_copy_f32.restype = _voidp
+_libmvsr.mvsr_copy_f32.argtypes = [_voidp]
+_libmvsr.mvsr_release_f32.restype = None
+_libmvsr.mvsr_release_f32.argtypes = [_voidp]
 
 ##################################################
 # Function dictionary (direct usage discouraged) #
@@ -92,20 +92,20 @@ __libmvsr.mvsr_release_f32.argtypes = [__voidp]
 
 funcs = {
     np.float64: {
-        "init": __libmvsr.mvsr_init_f64,
-        "reduce": __libmvsr.mvsr_reduce_f64,
-        "optimize": __libmvsr.mvsr_optimize_f64,
-        "get_data": __libmvsr.mvsr_get_data_f64,
-        "copy": __libmvsr.mvsr_copy_f64,
-        "release": __libmvsr.mvsr_release_f64,
+        "init": _libmvsr.mvsr_init_f64,
+        "reduce": _libmvsr.mvsr_reduce_f64,
+        "optimize": _libmvsr.mvsr_optimize_f64,
+        "get_data": _libmvsr.mvsr_get_data_f64,
+        "copy": _libmvsr.mvsr_copy_f64,
+        "release": _libmvsr.mvsr_release_f64,
     },
     np.float32: {
-        "init": __libmvsr.mvsr_init_f32,
-        "reduce": __libmvsr.mvsr_reduce_f32,
-        "optimize": __libmvsr.mvsr_optimize_f32,
-        "get_data": __libmvsr.mvsr_get_data_f32,
-        "copy": __libmvsr.mvsr_copy_f32,
-        "release": __libmvsr.mvsr_release_f32,
+        "init": _libmvsr.mvsr_init_f32,
+        "reduce": _libmvsr.mvsr_reduce_f32,
+        "optimize": _libmvsr.mvsr_optimize_f32,
+        "get_data": _libmvsr.mvsr_get_data_f32,
+        "copy": _libmvsr.mvsr_copy_f32,
+        "release": _libmvsr.mvsr_release_f32,
     },
 }
 
@@ -146,7 +146,7 @@ class Score(IntEnum):
 
 
 class Mvsr:
-    __reg = None
+    _reg = None
 
     def __init__(
         self,
@@ -167,26 +167,26 @@ class Mvsr:
         if dtype not in funcs:
             raise TypeError(f"unsupported dtype '{dtype}' (valid: {valid_dtypes})")
 
-        self.__dimensions = x.shape[0]
-        self.__variants = y.shape[0]
-        self.__dtype = dtype
-        self.__funcs = funcs[dtype]
-        self.__data = np.ascontiguousarray(
+        self._dimensions = x.shape[0]
+        self._variants = y.shape[0]
+        self._dtype = dtype
+        self._funcs = funcs[dtype]
+        self._data = np.ascontiguousarray(
             np.concatenate((x, y), dtype=dtype).transpose(), dtype=dtype
         )
-        self.__num_pieces = None
-        minsegsize = self.__dimensions if minsegsize is None else minsegsize
+        self._num_pieces = None
+        minsegsize = self._dimensions if minsegsize is None else minsegsize
 
-        self.__reg = self.__funcs["init"](
-            self.__data.shape[0],
-            self.__dimensions,
-            self.__variants,
-            self.__data,
+        self._reg = self._funcs["init"](
+            self._data.shape[0],
+            self._dimensions,
+            self._variants,
+            self._data,
             minsegsize,
             placement,
         )
-        if self.__reg is None:
-            raise InternalError(self.__funcs["init"], self.__reg)
+        if self._reg is None:
+            raise InternalError(self._funcs["init"], self._reg)
 
     def reduce(
         self,
@@ -196,33 +196,31 @@ class Mvsr:
         score: Score = Score.EXACT,
         metric: Metric = Metric.MSE,
     ):
-        res = self.__funcs["reduce"](self.__reg, min, max, alg, metric, score)
+        res = self._funcs["reduce"](self._reg, min, max, alg, metric, score)
         if res == 0:
-            raise InternalError(self.__funcs["reduce"], res)
-        self.__num_pieces = res
+            raise InternalError(self._funcs["reduce"], res)
+        self._num_pieces = res
 
     def optimize(self, range: int = ctypes.c_uint(-1).value + 1 // 4, metric: Metric = Metric.MSE):
-        res = self.__funcs["optimize"](self.__reg, self.__data, range, metric)
+        res = self._funcs["optimize"](self._reg, self._data, range, metric)
         if res == 0:
-            raise InternalError(self.__funcs["optimize"], res)
-        self.__num_pieces = res
+            raise InternalError(self._funcs["optimize"], res)
+        self._num_pieces = res
 
     def get_data(self):
-        if self.__num_pieces is None or self.__num_pieces == 0:  # pragma: no cover
-            res = self.__funcs["get_data"](self.__reg, None, None, None)
+        if self._num_pieces is None or self._num_pieces == 0:  # pragma: no cover
+            res = self._funcs["get_data"](self._reg, None, None, None)
             if res == 0:
-                raise InternalError(self.__funcs["get_data"], res)
-            self.__num_pieces = res
+                raise InternalError(self._funcs["get_data"], res)
+            self._num_pieces = res
 
-        starts = np.empty((self.__num_pieces), dtype=np.uintp)
-        models = np.empty(
-            (self.__num_pieces, self.__dimensions, self.__variants), dtype=self.__dtype
-        )
-        errors = np.empty((self.__num_pieces), dtype=self.__dtype)
+        starts = np.empty((self._num_pieces), dtype=np.uintp)
+        models = np.empty((self._num_pieces, self._dimensions, self._variants), dtype=self._dtype)
+        errors = np.empty((self._num_pieces), dtype=self._dtype)
 
-        res = self.__funcs["get_data"](self.__reg, starts, models, errors)
+        res = self._funcs["get_data"](self._reg, starts, models, errors)
         if res == 0:
-            raise InternalError(self.__funcs["get_data"], res)
+            raise InternalError(self._funcs["get_data"], res)
 
         return (starts, models, errors)
 
@@ -232,22 +230,22 @@ class Mvsr:
     def __copy__(self):
         copy = self.__new__(self.__class__)
 
-        copy.__dimensions = self.__dimensions
-        copy.__variants = self.__variants
-        copy.__dtype = self.__dtype
-        copy.__funcs = self.__funcs
-        copy.__data = self.__data
-        copy.__num_pieces = self.__num_pieces
-        copy.__reg = self.__funcs["copy"](self.__reg)
-        if self.__reg is None:
-            raise InternalError(self.__funcs["copy"], self.__reg)
+        copy._dimensions = self._dimensions
+        copy._variants = self._variants
+        copy._dtype = self._dtype
+        copy._funcs = self._funcs
+        copy._data = self._data
+        copy._num_pieces = self._num_pieces
+        copy._reg = self._funcs["copy"](self._reg)
+        if self._reg is None:
+            raise InternalError(self._funcs["copy"], self._reg)
 
         return copy
 
     def close(self):
-        if self.__reg is not None:
-            self.__funcs["release"](self.__reg)
-            self.__reg = None
+        if self._reg is not None:
+            self._funcs["release"](self._reg)
+            self._reg = None
 
     def __del__(self):
         self.close()
