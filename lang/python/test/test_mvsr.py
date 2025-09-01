@@ -35,6 +35,10 @@ def test_simple_weighting():
     assert segreg(X, [Y, Y2], K, weighting=WEIGHTING).starts.tolist() == STARTS_WEIGHTED
 
 
+def test_simple_poly2():
+    assert segreg(X, Y, K, kernel=Kernel.Poly(2)).starts.tolist() == STARTS
+
+
 def test_interpolate():
     c = STARTS[1] - 0.5
     cl = c - 0.25

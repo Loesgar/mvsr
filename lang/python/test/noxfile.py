@@ -37,4 +37,4 @@ def test(session: nox.Session, numpy: str):
 def coverage(session: nox.Session):
     session.install("pytest", "pytest-cov")
     session.install("..")
-    session.run("pytest")
+    session.run("pytest", "-v")
