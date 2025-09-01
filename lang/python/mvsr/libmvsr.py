@@ -22,9 +22,7 @@ def ndarray_or_null(*args: typing.Any, **kwargs: typing.Any):
     ndtype = typing.cast(ndptr, np.ctypeslib.ndpointer(*args, **kwargs))
 
     def from_param(cls: type, obj: np.ndarray | None):
-        if obj is None:
-            return obj
-        return ndtype.from_param(obj)
+        return ndtype.from_param(obj) if obj is not None else None
 
     return type(ndtype.__name__, (ndtype,), {"from_param": classmethod(from_param)})
 
@@ -215,6 +213,7 @@ class Mvsr:
             if res == 0:
                 raise InternalError(self.__funcs["get_data"], res)
             self.__num_pieces = res
+
         starts = np.empty((self.__num_pieces), dtype=np.uintp)
         models = np.empty(
             (self.__num_pieces, self.__dimensions, self.__variants), dtype=self.__dtype
@@ -227,7 +226,10 @@ class Mvsr:
 
         return (starts, models, errors)
 
-    def __copy__(self) -> typing.Self:
+    def copy(self):
+        return self.__copy__()
+
+    def __copy__(self):
         copy = self.__new__(self.__class__)
 
         copy.__dimensions = self.__dimensions
