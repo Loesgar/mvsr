@@ -15,8 +15,8 @@ from .libmvsr import Score as Score
 class Kernel:
     class Raw:
         __translation_dimension: int | None = None
-        __offsets: MvsrArray | None
-        __factors: MvsrArray | None
+        __offsets: MvsrArray | None = None
+        __factors: MvsrArray | None = None
 
         def __init__(self, translation_dimension: int | None = None):
             self.__translation_dimension = translation_dimension
