@@ -193,7 +193,8 @@ public:
                     pieces.remove(prev);
                     mergeIt->sampleSize += prev->sampleSize;
                 }
-                segGetStartPtr(*mergeIt)[offErr] = curRow->err - nextRow->err;
+                if (i != numSegments-1)
+                    segGetStartPtr(*mergeIt)[offErr] = curRow->err - nextRow->err;
             }
             curRow = nextRow;
             --mergeIt;
