@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import nox
 
 # pyright: basic
@@ -11,6 +13,8 @@ MIN_NUMPY_VERSION = {
     "3.13": "2.1.*",
 }
 PINNED_NUMPY_VERSION = "2.2.*"
+
+COVERAGE_CONFIG = Path(__file__).parents[1] / "pyproject.toml"
 
 
 @nox.session(python=["3.10", "3.11", "3.12", "3.13"])
@@ -37,4 +41,4 @@ def test(session: nox.Session, numpy: str):
 def coverage(session: nox.Session):
     session.install("pytest", "pytest-cov")
     session.install("..")
-    session.run("pytest", "-v")
+    session.run("pytest", "-v", "--cov-config", COVERAGE_CONFIG)

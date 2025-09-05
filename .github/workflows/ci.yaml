@@ -10,8 +10,8 @@ jobs:
       actions: write
       contents: read
   python-coverage:
-    needs: build-lib
     name: Test Coverage
+    needs: build-lib
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
