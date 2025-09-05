@@ -40,9 +40,7 @@ jobs:
           else
             cmake -B build -G "Visual Studio 17 2022"
             cmake --build build --config Release
-            if ${{ inputs.run-tests && 'true' || 'false' }}; then
-              cmake --build build --config Release -t RUN_TESTS
-            fi
+            ${{ inputs.run-tests && 'cmake --build build --config Release -t RUN_TESTS' }}
             cmake --install build --config Release --prefix "build/install"
           fi
       - uses: actions/upload-artifact@v4

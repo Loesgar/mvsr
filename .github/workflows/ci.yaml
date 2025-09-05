@@ -4,14 +4,38 @@ on:
 permissions:
   contents: read
 jobs:
+  detect-changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      lib: ${{ steps.paths-filter.outputs.lib }}
+      python: ${{ steps.paths-filter.outputs.python }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: dorny/paths-filter@v3
+        id: paths-filter
+        with:
+          filters: |
+            lib:
+              - 'mvsr/**'
+            python:
+              - 'lang/python/**'
   build-lib:
-    uses: ./.github/workflows/lib.yaml
+    name: Build ${{ needs.detect-changes.outputs.lib == 'true' && 'and Test ' }}C++ Library
     permissions:
       actions: write
       contents: read
+    needs: detect-changes
+    if: needs.detect-changes.outputs.lib == 'true'
+    uses: ./.github/workflows/lib.yaml
+    with:
+      run-tests: needs.detect-changes.outputs.lib == 'true'
   python-coverage:
     name: Test Coverage
-    needs: build-lib
+    needs: [detect-changes, build-lib]
+    if: needs.detect-changes.outputs.python == 'true'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
@@ -21,9 +45,9 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         name: lib-ubuntu-latest
-        path: lang/python/artifacts
+        path: /tmp/artifact
     - name: Copy built library to package
-      run: cp -r lang/python/artifacts/lib lang/python/mvsr/lib
+      run: cp -r /tmp/artifact/lib lang/python/mvsr/lib
     - uses: wntrblm/nox@main
     - name: Run coverage tests
       working-directory: lang/python/test
