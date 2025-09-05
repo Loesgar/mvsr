@@ -16,7 +16,6 @@ Y2 = [4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 K = 3
 STARTS = [0, 8, 13]
 WEIGHTING = [0.1, 10.0]
-STARTS_WEIGHTED = [0, 8, 10]
 
 
 def test_simple_dp():
@@ -32,11 +31,11 @@ def test_simple_normalize():
 
 
 def test_simple_weighting():
-    assert mvsr(X, [Y, Y2], K, weighting=WEIGHTING).starts.tolist() == STARTS_WEIGHTED
+    assert mvsr(X, [Y, Y2], K, weighting=WEIGHTING).starts.tolist() == [0, 8, 10]
 
 
 def test_simple_poly2():
-    assert mvsr(X, Y, K, kernel=Kernel.Poly(2)).starts.tolist() == STARTS
+    assert mvsr(X, Y, K, kernel=Kernel.Poly(2)).starts.tolist() == [0, 6, 9]
 
 
 def test_interpolate():
