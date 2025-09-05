@@ -18,6 +18,7 @@
           packages = rec {
             default = mvsr;
             mvsr = pkgs.callPackage ./mvsr/package.nix { };
+            mvsr-no-tests = pkgs.callPackage ./mvsr/package.nix { enableTests = false; };
           };
 
           devShells = {
