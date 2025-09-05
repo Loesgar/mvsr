@@ -29,11 +29,38 @@ jobs:
       contents: read
     needs: detect-changes
     if: needs.detect-changes.outputs.lib == 'true'
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-13, macos-latest]
     uses: ./.github/workflows/lib.yaml
     with:
-      run-tests: needs.detect-changes.outputs.lib == 'true'
+      runner: ${{ matrix.os }}
+      run-tests: ${{ needs.detect-changes.outputs.lib == 'true' }}
+  python-test:
+    name: Test Python
+    needs: [detect-changes, build-lib]
+    if: needs.detect-changes.outputs.python == 'true'
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-13, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - uses: astral-sh/setup-uv@v6
+    - uses: actions/download-artifact@v4
+      with:
+        name: lib-${{ matrix.os }}
+        path: /tmp/artifact
+    - name: Copy built library to package
+      run: cp -r /tmp/artifact/${{ runner.os != 'Windows' && 'lib' || 'bin' }} lang/python/mvsr/lib
+    - uses: wntrblm/nox@main
+    - name: Run coverage tests
+      working-directory: lang/python/test
+      run: nox -s test_simple
   python-coverage:
-    name: Test Coverage
+    name: Test Python Coverage
     needs: [detect-changes, build-lib]
     if: needs.detect-changes.outputs.python == 'true'
     runs-on: ubuntu-latest

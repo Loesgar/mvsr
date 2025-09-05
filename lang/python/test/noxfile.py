@@ -17,6 +17,13 @@ PINNED_NUMPY_VERSION = "2.2.*"
 COVERAGE_CONFIG = Path(__file__).parents[1] / "pyproject.toml"
 
 
+@nox.session
+def test_simple(session: nox.Session):
+    session.install("pytest", "pytest-cov")
+    session.install("..")
+    session.run("pytest", "-v", "--no-cov", "-k", "simple")
+
+
 @nox.session(python=["3.10", "3.11", "3.12", "3.13"])
 @nox.parametrize("numpy", ["min", "pinned", "latest"])
 def test(session: nox.Session, numpy: str):
