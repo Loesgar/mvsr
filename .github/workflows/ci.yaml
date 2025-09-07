@@ -4,7 +4,7 @@ on:
 permissions:
   contents: read
 jobs:
-  detect-changes:
+  changes:
     name: Detect changes
     runs-on: ubuntu-latest
     outputs:
@@ -18,28 +18,34 @@ jobs:
         id: paths-filter
         with:
           filters: |
+            global: &global
+              - .github/workflows/ci.yaml
+              - .github/workflows/lib.yaml
+              - flake.*
             lib:
-              - 'mvsr/**'
+              - *global
+              - mvsr/**
             python:
-              - 'lang/python/**'
+              - *global
+              - lang/python/**
   build-lib:
-    name: Build ${{ needs.detect-changes.outputs.lib == 'true' && 'and Test ' }}C++ Library
+    name: Build ${{ needs.changes.outputs.lib == 'true' && 'and Test ' }}C++ Library
     permissions:
       actions: write
       contents: read
-    needs: detect-changes
-    if: needs.detect-changes.outputs.lib == 'true'
+    needs: changes
+    if: ${{ needs.changes.outputs.lib == 'true' || needs.changes.outputs.python == 'true'}}
     strategy:
       matrix:
         os: [ubuntu-latest, ubuntu-24.04-arm, macos-13, macos-latest]
     uses: ./.github/workflows/lib.yaml
     with:
       runner: ${{ matrix.os }}
-      run-tests: ${{ needs.detect-changes.outputs.lib == 'true' }}
+      run-tests: ${{ needs.changes.outputs.lib == 'true' }}
   python-test:
     name: Test Python
-    needs: [detect-changes, build-lib]
-    if: needs.detect-changes.outputs.python == 'true'
+    needs: [changes, build-lib]
+    if: needs.changes.outputs.python == 'true'
     strategy:
       matrix:
         os: [ubuntu-latest, ubuntu-24.04-arm, macos-13, macos-latest]
@@ -61,8 +67,8 @@ jobs:
       run: nox -s test_simple
   python-coverage:
     name: Test Python Coverage
-    needs: [detect-changes, build-lib]
-    if: needs.detect-changes.outputs.python == 'true'
+    needs: [changes, build-lib]
+    if: needs.changes.outputs.python == 'true'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
