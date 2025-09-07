@@ -26,7 +26,7 @@ def test_simple(session: nox.Session):
 
 @nox.session(python=["3.10", "3.11", "3.12", "3.13"])
 @nox.parametrize("numpy", ["min", "pinned", "latest"])
-def test(session: nox.Session, numpy: str):
+def test_versions(session: nox.Session, numpy: str):
     match numpy:
         case "min":
             assert isinstance(session.python, str)

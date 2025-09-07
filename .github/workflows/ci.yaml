@@ -58,6 +58,14 @@ jobs:
     with:
       runner: ${{ matrix.os }}
       nox-session: test_simple
+  python-versions:
+    name: Test Python + NumPy Versions
+    needs: [changes, build-lib]
+    if: needs.changes.outputs.python == 'true'
+    uses: ./.github/workflows/python.yaml
+    with:
+      runner: ubuntu-latest
+      nox-session: test_versions
   python-coverage:
     name: Test Python Coverage
     needs: [changes, build-lib]
