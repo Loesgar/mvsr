@@ -22,17 +22,17 @@ jobs:
               - .github/workflows/ci.yaml
               - .github/workflows/lib.yaml
               - flake.*
-            lib-direct: &lib-direct
+            lib_direct: &lib_direct
               - *global
               - mvsr/**
             python: &python
               - *global
               - lang/python/**
             lib:
-              - *lib-direct
+              - *lib_direct
               - *python
   build-lib:
-    name: Build ${{ needs.changes.outputs.lib-direct == 'true' && 'and Test ' }}C++ Library
+    name: Build ${{ needs.changes.outputs.lib_direct == 'true' && 'and Test ' || '' }}C++ Library
     permissions:
       actions: write
       contents: read
@@ -45,7 +45,7 @@ jobs:
     uses: ./.github/workflows/lib.yaml
     with:
       runner: ${{ matrix.os }}
-      run-tests: ${{ needs.changes.outputs.lib-direct == 'true' }}
+      run-tests: ${{ needs.changes.outputs.lib_direct }}
   python-test:
     name: Test Python
     needs: [changes, build-lib]
@@ -59,7 +59,7 @@ jobs:
       runner: ${{ matrix.os }}
       nox-session: test_simple
   python-versions:
-    name: Test Python + NumPy Versions
+    name: Test Python and NumPy Version Compatibility
     needs: [changes, build-lib]
     if: needs.changes.outputs.python == 'true'
     uses: ./.github/workflows/python.yaml
