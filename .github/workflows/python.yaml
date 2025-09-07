@@ -1,0 +1,31 @@
+name: Test Python
+on:
+  workflow_call:
+    inputs:
+      runner:
+        type: string
+        default: ubuntu-latest
+      nox-session:
+        type: string
+        required: true
+jobs:
+  test:
+    name: Test Python
+    runs-on: ${{ inputs.runner }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/download-artifact@v4
+        with:
+          name: lib-${{ inputs.runner }}
+          path: /tmp/artifact
+      - name: Copy built library to package
+        run: cp -r /tmp/artifact/${{ runner.os != 'Windows' && 'lib' || 'bin' }} lang/python/mvsr/lib
+      - uses: wntrblm/nox@main
+      - name: Run nox session
+        working-directory: lang/python/test
+        run: nox -s ${{ inputs.session }}
