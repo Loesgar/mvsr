@@ -48,4 +48,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: lib-${{ inputs.runner }}
-          path: ${{ runner.os != 'Windows' && 'result/*' || 'build/install/*' }}
+          path: ${{ runner.os != 'Windows' && 'mvsr/result/*' || 'mvsr/build/install/*' }}
