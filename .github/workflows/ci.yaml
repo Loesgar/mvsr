@@ -58,7 +58,7 @@ jobs:
       runner: ${{ matrix.os }}
       nox-session: test_simple
   python-versions-sessions:
-    name: Get Nox sessions
+    name: Get Nox Sessions
     needs: changes
     if: needs.changes.outputs.python == 'true'
     runs-on: ubuntu-latest
@@ -71,7 +71,7 @@ jobs:
         shell: bash
         working-directory: lang/python/test
         run: |
-          echo session=$(nox --json -l | jq -c '
+          echo sessions=$(nox --json -l | jq -c '
             [.[].session | select(startswith("test_versions"))]
           ') | tee --append $GITHUB_OUTPUT
   python-versions:

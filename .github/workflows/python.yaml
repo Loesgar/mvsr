@@ -29,4 +29,4 @@ jobs:
       - uses: wntrblm/nox@main
       - name: Run nox session
         working-directory: lang/python/test
-        run: nox -s ${{ inputs.nox-session }}
+        run: nox -s "${{ inputs.nox-session }}"
