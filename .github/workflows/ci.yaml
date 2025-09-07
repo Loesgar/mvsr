@@ -19,18 +19,16 @@ jobs:
         id: paths-filter
         with:
           filters: |
-            global: &global
+            lib-test: &lib-test
               - .github/workflows/ci.yaml
               - .github/workflows/lib.yaml
               - flake.*
-            lib-test: &lib-test
-              - *global
               - mvsr/**
             python: &python
-              - *global
-              - lang/python/**
-            lib-build:
               - *lib-test
+              - lang/python/**
+              - .github/workflows/python.yaml
+            lib-build:
               - *python
   build-lib:
     name: Build ${{ needs.changes.outputs.lib-test == 'true' && 'and Test ' || '' }}C++ Library
