@@ -36,6 +36,7 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.lib == 'true' || needs.changes.outputs.python == 'true'}}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, ubuntu-24.04-arm, macos-13, macos-latest]
     uses: ./.github/workflows/lib.yaml
@@ -47,6 +48,7 @@ jobs:
     needs: [changes, build-lib]
     if: needs.changes.outputs.python == 'true'
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, ubuntu-24.04-arm, macos-13, macos-latest]
     runs-on: ${{ matrix.os }}
