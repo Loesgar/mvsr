@@ -34,9 +34,11 @@ jobs:
           purge-last-accessed: 0
           purge-primary-key: never
       - name: Build library
+        shell: bash
+        working-directory: mvsr
         run: |
           if [ "$RUNNER_OS" != "Windows" ]; then
-            nix build .#${{ inputs.run-tests && 'mvsr' || 'mvsr-no-tests' }}
+            nix build ..#${{ inputs.run-tests && 'mvsr' || 'mvsr-no-tests' }}
           else
             cmake -B build -G "Visual Studio 17 2022"
             cmake --build build --config Release
