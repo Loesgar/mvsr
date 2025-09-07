@@ -22,27 +22,30 @@ jobs:
               - .github/workflows/ci.yaml
               - .github/workflows/lib.yaml
               - flake.*
-            lib:
+            lib-direct: &lib-direct
               - *global
               - mvsr/**
-            python:
+            python: &python
               - *global
               - lang/python/**
+            lib:
+              - *lib-direct
+              - *python
   build-lib:
-    name: Build ${{ needs.changes.outputs.lib == 'true' && 'and Test ' }}C++ Library
+    name: Build ${{ needs.changes.outputs.lib-direct == 'true' && 'and Test ' }}C++ Library
     permissions:
       actions: write
       contents: read
     needs: changes
-    if: ${{ needs.changes.outputs.lib == 'true' || needs.changes.outputs.python == 'true'}}
+    if: needs.changes.outputs.lib == 'true'
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-13, macos-latest, windows-latest] # , ubuntu-24.04-arm
+        os: [ubuntu-latest, macos-13, macos-latest] # , ubuntu-24.04-arm, windows-latest
     uses: ./.github/workflows/lib.yaml
     with:
       runner: ${{ matrix.os }}
-      run-tests: ${{ needs.changes.outputs.lib == 'true' }}
+      run-tests: ${{ needs.changes.outputs.lib-direct == 'true' }}
   python-test:
     name: Test Python
     needs: [changes, build-lib]
@@ -50,7 +53,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-13, macos-latest, windows-latest] # , ubuntu-24.04-arm
+        os: [ubuntu-latest, macos-13, macos-latest] # , ubuntu-24.04-arm, windows-latest
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v5
