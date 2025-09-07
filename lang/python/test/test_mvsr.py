@@ -38,7 +38,7 @@ def test_simple_poly2():
     assert mvsr(X, Y, K, kernel=Kernel.Poly(2)).starts.tolist() == [0, 6, 9]
 
 
-def test_interpolate():
+def test_simple_interpolate():
     c = STARTS[1] - 0.5
     cl = c - 0.25
     cr = c + 0.25
@@ -56,7 +56,7 @@ def test_interpolate():
             assert mvsr(X, Y, K, interpolate=interpolate)(x) == approx(y)
 
 
-def test_regression_and_segment():
+def test_simple_regression_and_segment():
     regression = mvsr(X, Y, K)
     assert len(regression) == len(regression.segments) == K
     assert regression[-K]
@@ -78,12 +78,12 @@ def test_regression_and_segment():
     assert regression(3.5) == approx(4.5)
 
 
-def test_keep_y_dims():
+def test_simple_keep_y_dims():
     assert isinstance(mvsr(X, Y, K)(0.0), float)
     assert len(y := mvsr(X, Y, K, keep_y_dims=True)(0.0)) == 1 and isinstance(y[0], float)
 
 
-def test_kernels():
+def test_simple_kernels():
     models = mvsr(X, Y, K)._models
 
     for kernel in (Kernel.Raw(0), Kernel.Poly(1)):
