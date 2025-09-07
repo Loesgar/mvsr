@@ -19,7 +19,9 @@ if (MVSC)
 else()
     add_compile_options(-Wall -Wextra -pedantic)
     add_compile_options(-Wno-vla -Wno-missing-field-initializers)
-    target_link_options(mvsr PRIVATE -static-libgcc -static-libstdc++)
+    if (NOT APPLE)
+        target_link_options(mvsr PRIVATE -static-libgcc -static-libstdc++)
+    endif()
 endif()
 
 set_target_properties(mvsr PROPERTIES PUBLIC_HEADER
