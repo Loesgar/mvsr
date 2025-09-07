@@ -10,7 +10,7 @@ on:
         required: true
 jobs:
   test:
-    name: Test Python
+    name: Test Python (${{ inputs.nox-session }})
     runs-on: ${{ inputs.runner }}
     permissions:
       contents: read
@@ -24,8 +24,9 @@ jobs:
           name: lib-${{ inputs.runner }}
           path: /tmp/artifact
       - name: Copy built library to package
-        run: cp -r /tmp/artifact/${{ runner.os != 'Windows' && 'lib' || 'bin' }} lang/python/mvsr/lib
+        run: |
+          cp -r /tmp/artifact/${{ runner.os != 'Windows' && 'lib' || 'bin' }} lang/python/mvsr/lib
       - uses: wntrblm/nox@main
       - name: Run nox session
         working-directory: lang/python/test
-        run: nox -s ${{ inputs.session }}
+        run: nox -s ${{ inputs.nox-session }}

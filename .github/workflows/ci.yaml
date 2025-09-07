@@ -57,14 +57,35 @@ jobs:
     with:
       runner: ${{ matrix.os }}
       nox-session: test_simple
+  python-versions-sessions:
+    name: Get Nox sessions
+    needs: changes
+    if: needs.changes.outputs.python == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      sessions: ${{ steps.get-sessions.outputs.sessions }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: wntrblm/nox@main
+      - id: get-sessions
+        shell: bash
+        working-directory: lang/python/test
+        run: |
+          echo session=$(nox --json -l | jq -c '
+            [.[].session | select(startswith("test_versions"))]
+          ') | tee --append $GITHUB_OUTPUT
   python-versions:
     name: Test Python and NumPy Version Compatibility
-    needs: [changes, build-lib]
+    needs: [changes, build-lib, python-versions-sessions]
     if: needs.changes.outputs.python == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        session: ${{ fromJson(needs.python-versions-sessions.outputs.sessions) }}
     uses: ./.github/workflows/python.yaml
     with:
       runner: ubuntu-latest
-      nox-session: test_versions
+      nox-session: ${{ matrix.session }}
   python-coverage:
     name: Test Python Coverage
     needs: [changes, build-lib]
