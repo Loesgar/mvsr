@@ -8,7 +8,8 @@ jobs:
     name: Detect changes
     runs-on: ubuntu-latest
     outputs:
-      lib: ${{ steps.paths-filter.outputs.lib }}
+      lib-build: ${{ steps.paths-filter.outputs.lib-build }}
+      lib-test: ${{ steps.paths-filter.outputs.lib-test }}
       python: ${{ steps.paths-filter.outputs.python }}
     steps:
       - uses: actions/checkout@v4
@@ -22,22 +23,22 @@ jobs:
               - .github/workflows/ci.yaml
               - .github/workflows/lib.yaml
               - flake.*
-            lib_direct: &lib_direct
+            lib-test: &lib-test
               - *global
               - mvsr/**
             python: &python
               - *global
               - lang/python/**
-            lib:
-              - *lib_direct
+            lib-build:
+              - *lib-test
               - *python
   build-lib:
-    name: Build ${{ needs.changes.outputs.lib_direct == 'true' && 'and Test ' || '' }}C++ Library
+    name: Build ${{ needs.changes.outputs.lib-test == 'true' && 'and Test ' || '' }}C++ Library
     permissions:
       actions: write
       contents: read
     needs: changes
-    if: needs.changes.outputs.lib == 'true'
+    if: needs.changes.outputs.lib-build == 'true'
     strategy:
       fail-fast: false
       matrix:
@@ -45,7 +46,7 @@ jobs:
     uses: ./.github/workflows/lib.yaml
     with:
       runner: ${{ matrix.os }}
-      run-tests: ${{ needs.changes.outputs.lib_direct }}
+      run-tests: ${{ needs.changes.outputs.lib-test == 'true' }}
   python-test:
     name: Test Python
     needs: [changes, build-lib]
