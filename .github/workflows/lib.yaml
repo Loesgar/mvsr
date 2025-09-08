@@ -38,7 +38,7 @@ jobs:
         working-directory: mvsr
         run: |
           if [ "$RUNNER_OS" != "Windows" ]; then
-            nix build ..#${{ inputs.run-tests && 'mvsr' || 'mvsr-no-tests' }}
+            nix build -L ..#${{ inputs.run-tests && 'mvsr' || 'mvsr-no-tests' }}
             cp -r result /tmp/artifact
             if [ "$RUNNER_OS" == "macOS" ]; then
               chmod -R +w /tmp/artifact/lib

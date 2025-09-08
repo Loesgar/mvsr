@@ -13,9 +13,9 @@ add_library(mvsr SHARED
 )
 target_include_directories(mvsr PRIVATE inc)
 
-if (MVSC)
+if (MSVC)
     target_compile_options(mvsr PRIVATE /W4)
-    target_link_options(msvr PRIVATE /MT)
+    target_link_options(mvsr PRIVATE /MT)
 else()
     target_compile_options(mvsr PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(mvsr PRIVATE -Wno-missing-field-initializers)
