@@ -2,11 +2,10 @@
 #define MVSR_HPP
 
 #include <algorithm>
-#include <cstdlib>
-
 #include <cmath>
+#include <cstdlib>
 #include <iterator>
-#include <vector>
+#include <memory>
 
 #include "mvsr_heap.hpp"
 #include "mvsr_list.hpp"
@@ -35,8 +34,9 @@ public:
      * @param other Other segmented regression.
      */
     Mvsr(const Mvsr<Scalar> &other)
-        : pieces(other.pieces), dimensions(other.dimensions), variants(other.variants),
-          offY(other.offY), segSize(other.segSize)
+        : dimensions(other.dimensions), variants(other.variants),
+          offY(other.offY), segSize(other.segSize), pieces(other.pieces),
+          tempMemory(new Scalar[2 * segSize + dimensions*variants])
     {
         queue = other.queue.copyByOrder(other.pieces, pieces);
     }
@@ -57,9 +57,10 @@ public:
      * the same order.
      */
     Mvsr(size_t dimensions, size_t variants)
-        : pieces(dimensions * (dimensions + variants) + offX), dimensions(dimensions),
-          variants(variants), offY(dimensions * dimensions + offX),
-          segSize(dimensions * (dimensions + variants) + offX)
+        : dimensions(dimensions), variants(variants), offY(dimensions * dimensions + offX),
+          segSize(dimensions * (dimensions + variants) + offX),
+          pieces(dimensions * (dimensions + variants) + offX),
+          tempMemory(new Scalar[2 * segSize + dimensions*variants])
     {
     }
 
@@ -138,16 +139,15 @@ public:
             Scalar err = INFINITY;
             size_t size = 0;
         };
-        std::vector<Entry> tvec;
-        tvec.resize(pieces.getSize() * numSegments);
-        Entry *curRow = tvec.data();
+        std::unique_ptr<Entry[]> tvec(new Entry[pieces.getSize() * numSegments]);
+        Entry *curRow = &tvec[0];
 
         // setup global regression (for col 1)
-        Scalar uniseg[segSize];
+        Scalar *uniseg = &tempMemory[dimensions * variants];
         segInit(uniseg, 0, nullptr);
 
         // iterate over every row
-        Scalar curSegDiff[segSize];
+        Scalar *curSegDiff = &tempMemory[dimensions * variants + segSize];
         auto segit = pieces.begin();
         for (size_t segidx = 1; segit != pieces.end(); ++segidx, ++segit, curRow += numSegments)
         {
@@ -159,7 +159,7 @@ public:
             // fill other columns
             std::copy(uniseg, uniseg + segSize, curSegDiff);
             size_t diff = segidx;
-            Entry *cmpRow = tvec.data();
+            Entry *cmpRow = &tvec[0];
             for (auto cmpIt = pieces.begin(); --diff != 0; ++cmpIt, cmpRow += numSegments)
             {
                 // compute additional error compared to row "cmp"
@@ -460,7 +460,7 @@ private:
     }
     Scalar segCalcError(const Scalar *seg) const
     {
-        Scalar params[dimensions * variants];
+        Scalar *params = &tempMemory[0];
         const Scalar *xm = &seg[offX];
         const Scalar *ym = &seg[offY];
         MatSolve(dimensions, variants, params, xm, ym);
@@ -483,16 +483,11 @@ private:
     }
     Scalar segGetMergedError(const Scalar *s1, const Scalar *s2) const
     {
-        Scalar merged[segSize];
+        Scalar *merged = &tempMemory[dimensions * variants];
         segAdd(merged, s1, s2);
 
         return segCalcError(merged);
     }
-
-    Heap<Scalar, Segment> queue;  // Priority queue with the merge costs
-    List<Segment, Scalar> pieces; // Double linked list, containing the segments
-    // Scalar rss = Scalar(0);              // Current summed squared error
-    // std::shared_ptr<Scalar[]> basemodel; // Parameter matrix for regression with k=1
 
     const size_t dimensions;
     const size_t variants;
@@ -502,6 +497,12 @@ private:
     constexpr static size_t offX = 2;
     const size_t offY;
     const size_t segSize;
+    
+    Heap<Scalar, Segment> queue;   // Priority queue with the merge costs
+    List<Segment, Scalar> pieces;  // Double linked list, containing the segments
+    // Scalar rss = Scalar(0);              // Current summed squared error
+    // std::shared_ptr<Scalar[]> basemodel; // Parameter matrix for regression with k=1
+    const std::unique_ptr<Scalar[]> tempMemory;// needed to store some matrices for calculations
 };
 
 #endif // guard
