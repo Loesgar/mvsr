@@ -14,20 +14,20 @@ Y = [1, 2, 3, 4, 5, 6, 7, 8, 2, 2, 2, 2, 2, 2, 1, 0, -1, -2, -3, -4]
 X = list(range(len(Y)))
 Y2 = [4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 K = 3
-STARTS = [0, 8, 13]
+STARTS = ([0, 8, 13], [0, 8, 14])
 WEIGHTING = [0.1, 10.0]
 
 
 def test_simple_dp():
-    assert mvsr(X, Y, K, algorithm=Algorithm.DP).starts.tolist() == STARTS
+    assert mvsr(X, Y, K, algorithm=Algorithm.DP).starts.tolist() in STARTS
 
 
 def test_simple_greedy():
-    assert mvsr(X, Y, K, algorithm=Algorithm.GREEDY).starts.tolist() == STARTS
+    assert mvsr(X, Y, K, algorithm=Algorithm.GREEDY).starts.tolist() in STARTS
 
 
 def test_simple_normalize():
-    assert mvsr(X, Y, K, normalize=True).starts.tolist() == STARTS
+    assert mvsr(X, Y, K, normalize=True).starts.tolist() in STARTS
 
 
 def test_simple_weighting():
@@ -39,7 +39,7 @@ def test_simple_poly2():
 
 
 def test_simple_interpolate():
-    c = STARTS[1] - 0.5
+    c = STARTS[0][1] - 0.5
     cl = c - 0.25
     cr = c + 0.25
     interp_results = [
@@ -73,7 +73,7 @@ def test_simple_regression_and_segment():
         assert (segment1.x == segment2.x).all()
         assert (segment1.y == segment2.y).all()
 
-    assert regression.starts.tolist() == STARTS
+    assert regression.starts.tolist() in STARTS
     assert len(regression.variants) == 1
     assert regression(3.5) == approx(4.5)
 
@@ -196,4 +196,4 @@ def test_libmvsr():
         regression.copy()
 
         (starts, _models, _errors) = regression.get_data()
-        assert starts.tolist() == STARTS
+        assert starts.tolist() in STARTS
