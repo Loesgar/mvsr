@@ -24,8 +24,8 @@ else()
     endif()
 endif()
 
-set_target_properties(mvsr PROPERTIES PUBLIC_HEADER
-    inc/mvsr.h
+target_include_directories(mvsr PUBLIC
+    inc
 )
 install(TARGETS mvsr
     LIBRARY DESTINATION lib
