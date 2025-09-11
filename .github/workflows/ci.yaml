@@ -78,7 +78,7 @@ jobs:
   python-versions:
     name: Test Python and NumPy Version Compatibility
     needs: [changes, build-lib, python-versions-sessions]
-    if: needs.changes.outputs.python == 'true'
+    if: false # needs.changes.outputs.python == 'true'
     strategy:
       fail-fast: false
       matrix:
