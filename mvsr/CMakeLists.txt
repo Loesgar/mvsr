@@ -15,7 +15,8 @@ target_include_directories(mvsr PRIVATE inc)
 
 if (MSVC)
     target_compile_options(mvsr PRIVATE /W4)
-    target_link_options(mvsr PRIVATE /MT)
+    set_property(TARGET foo PROPERTY
+             MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 else()
     target_compile_options(mvsr PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(mvsr PRIVATE -Wno-missing-field-initializers)
