@@ -36,7 +36,7 @@ public:
     Mvsr(const Mvsr<Scalar> &other)
         : dimensions(other.dimensions), variants(other.variants),
           offY(other.offY), segSize(other.segSize), pieces(other.pieces),
-          tempMemory(new Scalar[2 * segSize + dimensions*variants])
+          tempMemory(new Scalar[3 * dimensions*variants])
     {
         queue = other.queue.copyByOrder(other.pieces, pieces);
     }
@@ -60,7 +60,7 @@ public:
         : dimensions(dimensions), variants(variants), offY(dimensions * dimensions + offX),
           segSize(dimensions * (dimensions + variants) + offX),
           pieces(dimensions * (dimensions + variants) + offX),
-          tempMemory(new Scalar[2 * segSize + dimensions*variants])
+          tempMemory(new Scalar[3 * segSize])
     {
     }
 
@@ -143,11 +143,11 @@ public:
         Entry *curRow = &tvec[0];
 
         // setup global regression (for col 1)
-        Scalar *uniseg = &tempMemory[dimensions * variants];
+        Scalar *uniseg = &tempMemory[segSize];
         segInit(uniseg, 0, nullptr);
 
         // iterate over every row
-        Scalar *curSegDiff = &tempMemory[dimensions * variants + segSize];
+        Scalar *curSegDiff = &tempMemory[2 * segSize];
         auto segit = pieces.begin();
         for (size_t segidx = 1; segit != pieces.end(); ++segidx, ++segit, curRow += numSegments)
         {
@@ -172,7 +172,7 @@ public:
                 {
                     if (cmpRow[idx - 1].err + err < curRow[idx].err)
                     {
-                        curRow[idx] = {cmpRow[idx - 1].err + err, diff};
+                        curRow[idx] = { cmpRow[idx - 1].err + err, diff };
                     }
                 }
             }
@@ -456,7 +456,8 @@ private:
     {
         const Scalar *xm = sptr + offX;
         const Scalar *ym = sptr + offY;
-        MatSolve(dimensions, variants, out, xm, ym);
+        MatSolve(dimensions, variants, &tempMemory[0], xm, ym);
+        std::copy(&tempMemory[0], &tempMemory[dimensions*variants], out);
     }
     Scalar segCalcError(const Scalar *seg) const
     {
@@ -483,7 +484,7 @@ private:
     }
     Scalar segGetMergedError(const Scalar *s1, const Scalar *s2) const
     {
-        Scalar *merged = &tempMemory[dimensions * variants];
+        Scalar *merged = &tempMemory[segSize];
         segAdd(merged, s1, s2);
 
         return segCalcError(merged);

@@ -42,7 +42,7 @@ inline Scalar MatGsAAtPmulB(size_t width, size_t height, const Scalar *a, const 
  *
  * @param size height of a and b, width of a
  * @param widthb width of b
- * @param res output buffer
+ * @param res output buffer (size*(size+withb))
  * @param a input buffer for matrix a
  * @param b input buffer for matrix b
  */
@@ -74,7 +74,7 @@ inline void MatSolve(size_t size, size_t widthb, Scalar *res, const Scalar *a, c
     {
         // Copy to big matrix
         const size_t RowSize = size + widthb;
-        Scalar mat[size * RowSize];
+        Scalar *mat = res; //[size * RowSize];
 
         Scalar *curRow = mat;
         for (size_t y = 0; y < size; y++)
