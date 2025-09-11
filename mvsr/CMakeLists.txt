@@ -5,7 +5,7 @@ project(mvsr
 )
 
 set(CMAKE_CXX_STANDARD 20)
-set(WINDOWS_EXPORT_ALL_SYMBOLS ON)
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 add_library(mvsr SHARED
     src/mvsr.cpp
