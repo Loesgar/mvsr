@@ -2,9 +2,9 @@
 
 This library enables segmented regression, calculating a suitable piecewise function which minimizes the MSE to the input samples.
 
-To use this library, refer to a [supported programming language](Installation and Usage) of your choice.
+To use this library, refer to a [supported programming language](#installation-and-usage) of your choice.
 
-If you use this library in an academic paper (e.g. to analyze your data), please consider [citing our work](License and Contribution).
+If you use this library in an academic paper (e.g. to analyze your data), please consider [citing our work](#license-and-contribution).
 
 {TODO: Picture goes here}
 
@@ -41,9 +41,9 @@ We currently support the following languages (see the individual documentation f
 - [C](lang/c/README.md)
 - [C++](lang/cpp/README.md)
 - [Python](lang/python/README.md)
-<-- [Julia](lang/julia/README.md)->
-<-- [R/Rlang](lang/rlang/README.md)->
-<-- [Rust](lang/rust/README.md)->
+<!-- [Julia](lang/julia/README.md)->
+<!-- [R/Rlang](lang/rlang/README.md)->
+<!-- [Rust](lang/rust/README.md)->
 
 <!--end-docs-->
 ## License and Contribution
