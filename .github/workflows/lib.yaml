@@ -36,24 +36,27 @@ jobs:
       - name: Build library
         shell: bash
         working-directory: mvsr
+        env:
+          ARTIFACT: ${{ runner.temp }}/artifact
         run: |
           if [ "$RUNNER_OS" != "Windows" ]; then
             nix build -L ..#${{ inputs.run-tests && 'mvsr' || 'mvsr-no-tests' }}
-            cp -r result /tmp/artifact
+            mkdir -p build
+            cp -r result/ $ARTIFACT
             if [ "$RUNNER_OS" == "macOS" ]; then
-              chmod -R +w /tmp/artifact/lib
+              chmod -R +w $ARTIFACT/lib
               install_name_tool -change \
-                $(otool -L /tmp/artifact/lib/libmvsr.dylib | grep libc++.1.0 | awk '{print $1}') \
+                $(otool -L $ARTIFACT/lib/libmvsr.dylib | grep libc++.1.0 | awk '{print $1}') \
                 /usr/lib/libc++.1.dylib \
-                /tmp/artifact/lib/libmvsr.dylib
+                $ARTIFACT/lib/libmvsr.dylib
             fi
           else
             cmake -B build -G "Visual Studio 17 2022"
             cmake --build build --config Release
-            ${{ inputs.run-tests && 'cmake --build build --config Release -t RUN_TESTS' }}
-            cmake --install build --config Release --prefix "/tmp/artifact"
+            ${{ inputs.run-tests && 'cmake --build build --config Release -t RUN_TESTS' || ''}}
+            cmake --install build --config Release --prefix $ARTIFACT
           fi
       - uses: actions/upload-artifact@v4
         with:
           name: lib-${{ inputs.runner }}
-          path: /tmp/artifact/*
+          path: ${{ runner.temp }}/artifact/*

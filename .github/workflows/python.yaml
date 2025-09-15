@@ -22,10 +22,12 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: lib-${{ inputs.runner }}
-          path: /tmp/artifact
+          path: ${{ runner.temp }}/artifact
       - name: Copy built library to package
+        shell: bash
         run: |
-          cp -r /tmp/artifact/${{ runner.os != 'Windows' && 'lib' || 'bin' }} lang/python/mvsr/lib
+          cp -r $RUNNER_TEMP/artifact/${{ runner.os != 'Windows' && 'lib' || 'bin' }} \
+            lang/python/mvsr/lib
       - uses: wntrblm/nox@main
       - name: Run nox session
         working-directory: lang/python/test
