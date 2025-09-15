@@ -11,8 +11,6 @@
 #include "mvsr_list.hpp"
 #include "mvsr_mat.hpp"
 
-/// @TODO: consider using mdspan
-
 /**
  * @brief Segmented Regression object. Uses a greedy algorithm to realize the
  * segmented regression.
@@ -23,15 +21,32 @@ template <typename Scalar>
 class Mvsr
 {
 public:
+    /**
+     * @brief Struct to store a single segment. The involved matrices are stored
+     * in a variable sized array after the segment itselg (see mvsr_list).
+     */
     struct Segment : Heap<Scalar, Segment>::Reference
     {
         size_t sampleSize = 0;
     };
 
     /**
+     * @brief Creates an mvsr object for given from samples in the data parameter.
+     *
+     * @param dimensions Number of input dimensions.
+     * @param variants Number of variants (output functions with shared breakpoints).
+     */
+    Mvsr(size_t dimensions, size_t variants)
+        : dimensions(dimensions), variants(variants), offY(dimensions * dimensions + offX),
+          segSize(dimensions * (dimensions + variants) + offX),
+          pieces(dimensions * (dimensions + variants) + offX),
+          tempMemory(new Scalar[3 * segSize])
+    {}
+
+    /**
      * @brief Copy Constructor. Enables a deep copy to save the current state of the regression.
      *
-     * @param other Other segmented regression.
+     * @param other Other segmented regression object.
      */
     Mvsr(const Mvsr<Scalar> &other)
         : dimensions(other.dimensions), variants(other.variants),
@@ -40,31 +55,12 @@ public:
     {
         queue = other.queue.copyByOrder(other.pieces, pieces);
     }
+
     Mvsr(Mvsr &&) = default;
     Mvsr &operator=(Mvsr &&) & = default;
+    Mvsr &operator=(const Mvsr &) & = delete;
     ~Mvsr() = default;
 
-    Mvsr &operator=(const Mvsr &) & = delete;
-
-    /**
-     * @brief Creates an mvsr object from samples in the data parameter.
-     *
-     * @param dimensions Number of dimensions. For a $d$-degree polynomial regression this must be
-     * set to $d+1$.
-     * @param variants Number of variants. Typically 1.
-     * @param samples Number of samples in the data array.
-     * @param data Array of samples. Each sample needs the all xvalues and all variant results in
-     * the same order.
-     */
-    Mvsr(size_t dimensions, size_t variants)
-        : dimensions(dimensions), variants(variants), offY(dimensions * dimensions + offX),
-          segSize(dimensions * (dimensions + variants) + offX),
-          pieces(dimensions * (dimensions + variants) + offX),
-          tempMemory(new Scalar[3 * segSize])
-    {
-    }
-
-    /// @TODO: Use modern iterable type for data
     /**
      * @brief Places segments based on samples.
      *
@@ -76,6 +72,7 @@ public:
     {
         queue.clear();
         pieces.clear();
+        queue.reserve(sampleCount / minPerSeg);
         pieces.reserve(sampleCount / minPerSeg);
 
         const auto rowSize = dimensions + variants;
@@ -199,7 +196,16 @@ public:
             curRow = nextRow;
             --mergeIt;
         }
+
+        // delete queue so it gets rebuild in case od using greedy
+        queue.clear();
     }
+
+    /**
+     * @brief Optimize the positions of the breakpoints, used after greedy reduce.
+     *
+     * @param data The same data that was placed to the placeSegements call.
+     */
     void optimize(const Scalar *data) /// @TODO: Add parameter to determine opt-range
     {
         const auto optimizeBp = [=, this](Segment &s1, Segment &s2, size_t bpIdx)
@@ -268,44 +274,68 @@ public:
         {
             auto &&[entry, seg] = elements.pop();
             size_t startPos = entry.startPos;
-            // size_t endPos = entry.startPos + seg.sampleSize;
             auto piece = List<Segment, Scalar>::Iterator::FromElement(seg);
-            // auto n = std::next(piece);
             auto p = std::prev(piece);
             optimizeBp(*p, *piece, startPos);
         }
 
-        queue.clear();
-        // update heap after changes
-        // for (auto it = pieces.begin(); it != pieces.end(); ++it)
-        //     updateHeap(it);
+        // delete queue so it gets rebuild in case od using greedy
+        queue.clear()
     }
 
+    /**
+     * @brief Get the rss of a specific segment.
+     *
+     * @param s A reference to a segment of this Mvsr instance.
+     */
     Scalar getSegRss(const Segment &s) const
     {
         return segGetStartPtr(s)[offErr];
     }
+    /**
+     * @brief Get the model of a specific segment.
+     *
+     * @param s A reference to a segment of this Mvsr instance.
+     * @param out A pointer to an output array of size $dimensions*variants$.
+     */
     void getSegModel(const Segment &s, Scalar *out) const
     {
         segGetParams(segGetStartPtr(s), out);
     }
+    /**
+     * @brief Get the amount of source data samples belonging to a specific segment.
+     *
+     * @param s A reference to a segment of this Mvsr instance.
+     */
     size_t getSegSize(const Segment &s) const
     {
         return s.sampleSize;
     }
+    /**
+     * @brief Get the amount of segments.
+     */
     size_t getSegCount() const
     {
         return pieces.getSize();
     }
+    /**
+     * @brief Get the list of current segments.
+     */
     const List<Segment, Scalar> &get() const
     {
         return pieces;
     }
 
+    /**
+     * @brief Get the amount of (input) dimensions.
+     */
     size_t getDimensions() const
     {
         return dimensions;
     }
+    /**
+     * @brief Get the number of variants (output dimensions).
+     */
     size_t getVariants() const
     {
         return variants;
@@ -499,11 +529,11 @@ private:
     const size_t offY;
     const size_t segSize;
     
-    Heap<Scalar, Segment> queue;   // Priority queue with the merge costs
-    List<Segment, Scalar> pieces;  // Double linked list, containing the segments
-    // Scalar rss = Scalar(0);              // Current summed squared error
-    // std::shared_ptr<Scalar[]> basemodel; // Parameter matrix for regression with k=1
-    const std::unique_ptr<Scalar[]> tempMemory;// needed to store some matrices for calculations
+    Heap<Scalar, Segment> queue;                // Priority queue with the merge costs
+    List<Segment, Scalar> pieces;               // Double linked list, containing the segments
+    // Scalar rss = Scalar(0);                    // Current summed squared error
+    // std::shared_ptr<Scalar[]> basemodel;       // Parameter matrix for regression with k=1
+    const std::unique_ptr<Scalar[]> tempMemory; // needed to store some matrices for calculations
 };
 
 #endif // guard

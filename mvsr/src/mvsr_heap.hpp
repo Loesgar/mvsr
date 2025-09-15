@@ -1,5 +1,5 @@
-// A typical binary heap, but using reference tracking if the Val type derives
-// from Heap::Entry.
+// A typical binary heap, but using reference tracking (if the Val type derives
+// from Heap::Entry), in order to allow updates of values in the heap.
 
 #ifndef MVSR_HEAP_HPP
 #define MVSR_HEAP_HPP
@@ -165,7 +165,7 @@ public:
 
     void reserve(size_t n)
     {
-        data.reserve(n + 1);
+        data.reserve(n);
     }
     size_t getSize() const
     {
