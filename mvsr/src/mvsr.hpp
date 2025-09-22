@@ -280,7 +280,7 @@ public:
         }
 
         // delete queue so it gets rebuild in case od using greedy
-        queue.clear()
+        queue.clear();
     }
 
     /**

@@ -10,7 +10,7 @@ If you use this library in an academic paper (e.g. to analyze your data), please
 
 ## Overview
 
-This library enables segmented regression (also referred to as piecewise regression or min-$\epsilon$ segmented regression).
+This library enables segmented regression (also referred to as piecewise regression or min-ε regression).
 It generates a segmented regression function, based on models and input samples.
 The input samples consist of (typically noise-free) independent variables (x) and noisy, dependent variables (y).
 
@@ -29,7 +29,11 @@ The following features are actively supported by this library:
 - Calculation of the Function-Models and Errors
 - Automatically Deduce the Number of Segments
 - Multiple Input Dimensions
-- Multiple Variants (i.e. Multiple Output Functions with Shared Breakpoints)
+- Multiple Variants (i.e. Output Dimensions)
+
+Multi-variant segmented regression significantly differs to typical regression.
+When using multi-variant operation, the output functions for each variant will share the breakpoint positions.
+If the individual regression functions of the variants should not share the breakpoint positions, we reccomend conducting an individual single-variant regression for each variant.
 
 ## Installation and Usage
 
