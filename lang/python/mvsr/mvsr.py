@@ -390,7 +390,7 @@ def mvsr(
         interpolate = Interpolate.CLOSEST
 
     with Mvsr(x_data, y_data, samples_per_segment, Placement.ALL, dtype) as regression:
-        regression.reduce(k, alg=algorithm)
+        regression.reduce(k, alg=algorithm, score=score or Score.EXACT, metric=metric)
         if algorithm == Algorithm.GREEDY and dimensions > 1:
             regression.optimize()
 
