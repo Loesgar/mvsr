@@ -12,6 +12,7 @@ jobs:
       lib-build: ${{ steps.paths-filter.outputs.lib-build }}
       lib-test: ${{ steps.paths-filter.outputs.lib-test }}
       python: ${{ steps.paths-filter.outputs.python }}
+      docs: ${{ steps.paths-filter.outputs.docs }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,8 +30,13 @@ jobs:
               - *lib-test
               - lang/python/**
               - .github/workflows/python.yaml
+            docs: &docs
+              - *python
+              - docs/**
+              - .github/workflows/docs.yaml
             lib-build:
               - *python
+              - *docs
   build-lib:
     name: Build ${{ needs.changes.outputs.lib-test == 'true' && 'and Test ' || '' }}C++ Library
     permissions:
@@ -95,3 +101,14 @@ jobs:
     with:
       runner: ubuntu-latest
       nox-session: coverage
+  docs:
+    name: Build docs
+    permissions:
+      contents: read
+      id-token: write
+      pages: write
+    needs: [changes, build-lib]
+    if: needs.changes.outputs.docs == 'true'
+    uses: ./.github/workflows/docs.yaml
+    with:
+      version: latest
