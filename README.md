@@ -58,7 +58,7 @@ We strongly encourage you to share any changes and contribute to this project di
 If you are publishing a paper and use this library (e.g. to analyze your data), please consider to cite the following papers.
 They describe the analysis algorithm in more detail and evaluate the resulting speed and accuracy.
 
-```
+```bibtex
 @inproceedings{losser2025fast,
   title={Fast Min-ϵ Segmented Regression using Constant-Time Segment Merging},
   author={L{\"o}{\ss}er, Ansgar and Schlecht, Max and Schintke, Florian and Witzke, Joel and Weidlich, Matthias and Scheuermann, Bj{\"o}rn},
@@ -77,4 +77,3 @@ Special thanks for supporting this work goes to:
 - [Technical University of Darmstadt](https://www.tu-darmstadt.de/index.en.jsp)
 
 {TODO logos}
-
