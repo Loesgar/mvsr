@@ -33,7 +33,10 @@ def generate_from_readmes():
 
     lang_toc_paths = []
     for lang in list(doc_mapping.values())[1:]:
-        api_reference = publish_doctree(lang.with_name("api-reference.rst").read_text())
+        api_reference = publish_doctree(
+            lang.with_name("api-reference.rst").read_text(),
+            settings_overrides={"report_level": 5},
+        )
         title = api_reference.get("title").replace("MVSR ", "")
         lang_toc = f"""
             ```{{toctree}}

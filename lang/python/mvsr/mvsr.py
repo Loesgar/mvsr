@@ -14,6 +14,16 @@ from .libmvsr import Score as Score
 
 class Kernel:
     class Raw:
+        """Raw Kernel to be used as a base class for other Kernel types.
+
+        Implements pass-through transformation of x values and normalization of y values.
+        Does not implement interpolation.
+
+        Args:
+            translation_dimension: Index of the model dimension that translates the regression along
+                the y axis (required for normalization). Defaults to :obj:`None`.
+        """
+
         _translation_dimension: int | None = None
         _offsets: MvsrArray | None = None
         _factors: MvsrArray | None = None
@@ -22,6 +32,17 @@ class Kernel:
             self._translation_dimension = translation_dimension
 
         def normalize(self, y: MvsrArray):
+            """Normalize each y variant to a range of [0,1].
+
+            Args:
+                y (numpy.ndarray): Input y values. Shape :code:`(n_variants, n_samples)`
+
+            Raises:
+                RuntimeError: If :code:`translation_dimension` has not been specified.
+
+            Returns:
+                numpy.ndarray: Normalized y values.
+            """
             self._ensure_translation_dimension()
 
             self._offsets = cast(MvsrArray, np.min(y, axis=1))
@@ -40,6 +61,14 @@ class Kernel:
             return result
 
         def __call__(self, x: npt.ArrayLike) -> npt.NDArray[Any]:
+            """Convert input x values to numpy array.
+
+            Args:
+                x (numpy.typing.ArrayLike_): Input x values.
+
+            Returns:
+                numpy.ndarray: Internal X matrix to use with :class:`libmvsr.Mvsr`.
+            """
             return np.array(x, ndmin=2)
 
         def interpolate(self, segments: list["Segment"]) -> "Segment":
@@ -55,6 +84,17 @@ class Kernel:
                 )
 
     class Poly(Raw):
+        """Kernel for polynomial regression segments.
+
+        Bases: :class:`Kernel.Raw`
+
+        Inherited Methods: :meth:`normalize`, :meth:`denormalize`
+
+        Args:
+            degree: Degree.
+            combinations: Combinations.
+        """
+
         def __init__(self, degree: int = 1, combinations: bool = True):
             super().__init__(translation_dimension=0)
             self._degree = degree
@@ -287,14 +327,48 @@ def mvsr(
     *,  # Following arguments must be explicitly specified via names.
     kernel: Kernel.Raw = Kernel.Poly(1),
     algorithm: Algorithm = Algorithm.GREEDY,
-    score: Score | None = None,  # TODO: unused atm
-    metric: Metric = Metric.MSE,  # TODO: unused atm
+    score: Score | None = None,
+    metric: Metric = Metric.MSE,
     normalize: bool | None = None,
     weighting: npt.ArrayLike | None = None,
     dtype: valid_dtypes = np.float64,
     keep_y_dims: bool = False,
     interpolate: Interpolate | bool = False,
 ) -> Regression:
+    """Run multi-variant segmented regression on input data, reducing it to k piecewise segments.
+
+    Args:
+        x (numpy.typing.ArrayLike_): Array-like containing the x input values. This gets transformed
+            into the internal X matrix by the selected kernel. Values may be of any type.
+        y (numpy.typing.ArrayLike_): Array-like containing the y input values. Shape
+            :code:`(n_samples,)` or :code:`(n_variants, n_samples)`.
+        k: Target number of segments for the Regression.
+        kernel (:class:`Kernel.Raw`): Kernel used to transform x values into the internal X matrix,
+            as well as normalize and interpolate y values. Defaults to :obj:`Kernel.Poly()` with
+            :obj:`degree=1`.
+        algorithm: Algorithm used to reduce the number of segments. Defaults to
+            :obj:`Algorithm.GREEDY`.
+        score: Placeholder for k scoring method (not implemented yet).
+        metric: Placeholder for error metric (not implemented yet). Defaults to :obj:`Metric.MSE`.
+        normalize: Normalize y input values. If :obj:`None`, auto-enabled for multi-variant input
+            data. Defaults to :obj:`None`.
+        weighting (numpy.typing.ArrayLike_): Optional per-variant weights. Defaults to :obj:`None`.
+        dtype (numpy.float32_ | numpy.float64_): Internally used :obj:`numpy` data type. Defaults to
+            `numpy.float64`_.
+        keep_y_dims: If set to False, return scalar values when evaluating single-variant segments.
+            Defaults to :obj:`False`.
+        interpolate: Method used to interpolate between segments. :obj:`True` maps to
+            :obj:`Interpolate.INTERPOLATE`, :obj:`False` maps to :obj:`Interpolate.CLOSEST`.
+            Defaults to :obj:`False`.
+
+    Returns:
+        :class:`Regression` object containing k segments.
+
+    Raises:
+        ValueError: If input dimensions of x, y, weighting are incompatible.
+        RuntimeError: If normalization is enabled but the selected kernel does not support it.
+    """
+
     x_data = kernel(x)
     y = np.array(y, ndmin=2, dtype=dtype)
 
