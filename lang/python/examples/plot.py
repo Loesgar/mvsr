@@ -67,8 +67,8 @@ axs[0].set_ylim((-2.75, 11.00))
 axs[1].set_ylim((-2.75, 11.00))
 
 # Plot samples.
-axs[0].scatter(x,y[0], c='black', s=.1, alpha=.3)
-axs[1].scatter(x,y[1], c='black', s=.1, alpha=.3)
+axs[0].scatter(x,y[0], c='black', s=.5, alpha=.4, edgecolor="none")
+axs[1].scatter(x,y[1], c='black', s=.5, alpha=.4, edgecolor="none")
 
 # Plot result, remember lines of variants to use the same color later.
 # Style and interpolation style parameters can be given as one dict or 
@@ -107,7 +107,7 @@ for vi,(ax,v,l) in enumerate(zip(axs, regression.variants, [line_v1, line_v2])):
     vi += 1
     # Iterate over noighbouring segments to plot area in same color, semitransparently
     for s1,s2 in zip(v, v[1:]):
-        fill_area_between(ax, s1, s2, color=l.get_color(), alpha=.1)
+        fill_area_between(ax, s1, s2, color=l.get_color(), alpha=.1, edgecolor=None)
 
     for i,s in enumerate(v):
         i += 1
@@ -139,5 +139,5 @@ for vi,(ax,v,l) in enumerate(zip(axs, regression.variants, [line_v1, line_v2])):
 # export figure
 fig.set_size_inches((7,7))
 fig.tight_layout()
-fig.savefig("example.pdf")
+fig.savefig("example_plot.jpg", dpi=300)
 
