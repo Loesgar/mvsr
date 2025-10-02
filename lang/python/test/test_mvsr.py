@@ -5,14 +5,17 @@ import numpy as np
 import pytest
 from pytest import approx, raises
 
-from mvsr import Algorithm, Interpolate, Kernel, mvsr
+from mvsr import Algorithm, Kernel, Lerp, mvsr
 from mvsr.libmvsr import Metric, Mvsr, Score
+
+import matplotlib.pyplot as plt
 
 # pyright: basic
 
 Y = [1, 2, 3, 4, 5, 6, 7, 8, 2, 2, 2, 2, 2, 2, 1, 0, -1, -2, -3, -4]
 X = list(range(len(Y)))
 Y2 = [4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+X2 = [0,1,2,3,4,5,6,7,8,9,9,8,7,6,5,4,3,2,1,0]
 K = 3
 STARTS = ([0, 8, 13], [0, 8, 14])
 WEIGHTING = [0.1, 10.0]
@@ -43,23 +46,28 @@ def test_simple_interpolate():
     cl = c - 0.25
     cr = c + 0.25
     interp_results = [
-        (Interpolate.INTERPOLATE, interpolate := [(cl, 6.5), (c, 5.0), (cr, 3.5)]),
-        (True, interpolate),
-        (Interpolate.LEFT, [(cl, 8.25), (c, 8.5), (cr, 8.75)]),
-        (Interpolate.RIGHT, [(cl, 2.0), (c, 2.0), (cr, 2.0)]),
-        (Interpolate.CLOSEST, closest := [(cl, 8.25), (c - 1e-9, 8.5), (c, 2.0), (cr, 2.0)]),
-        (False, closest),
+        (None, interpolate := [(cl, 6.5), (c, 5.0), (cr, 3.5)]),
+        (Lerp.Left, [(cl, 8.25), (c, 8.5), (cr, 8.75)]),
+        (Lerp.Right, [(cl, 2.0), (c, 2.0), (cr, 2.0)]),
+        (Lerp.Closest, closest := [(cl, 8.25), (c - 1e-9, 8.5), (c + 1e-9, 2.0), (cr, 2.0)]),
+        (Lerp.Smooth,[(c, 5.25)]),
     ]
 
     for interpolate, results in interp_results:
         for x, y in results:
-            assert mvsr(X, Y, K, interpolate=interpolate)(x) == approx(y)
+            assert mvsr(X, Y, K, kernel=Kernel.Poly(1, lerp=interpolate))(x) == approx(y)
+    
+    reg = mvsr([[x,x2] for x,x2 in zip(X, X2)], Y, K, kernel=Kernel.Poly(1), sortkey=lambda x: x[0])
+    x = reg[0].range[1]+.5
+    with raises(RuntimeError, match="interpolation of multidimensional"):
+        reg(x)
 
 
 def test_simple_regression_and_segment():
     regression = mvsr(X, Y, K)
     assert len(regression) == len(regression.segments) == K
     assert regression[-K]
+    assert regression[-K:K]
     for index in (-(K + 1), K):
         with raises(IndexError, match="segment index"):
             assert regression[index]
@@ -78,9 +86,9 @@ def test_simple_regression_and_segment():
     assert regression(3.5) == approx(4.5)
 
 
-def test_simple_keep_y_dims():
+def test_simple_keepdims():
     assert isinstance(mvsr(X, Y, K)(0.0), float)
-    assert len(y := mvsr(X, Y, K, keep_y_dims=True)(0.0)) == 1 and isinstance(y[0], float)
+    assert len(y := mvsr(X, Y, K, keepdims=True)(0.0)) == 1 and isinstance(y[0], float)
 
 
 def test_simple_kernels():
@@ -99,7 +107,7 @@ def test_simple_kernels():
     assert len(mvsr(X, Y, K, kernel=Kernel.Raw()).segments) == 3
 
     with raises(RuntimeError, match="interpolation is not possible"):
-        regression = mvsr(X, Y, K, kernel=Kernel.Raw(), interpolate=True)
+        regression = mvsr(X, Y, K, kernel=Kernel.Raw(lerp=None))
         regression(regression.starts[1] - 0.5)
 
 
@@ -114,7 +122,6 @@ TESTDATA_MVSR = chain(
         [None],
         [np.float32, np.float64],
         [False, True],
-        [False, True],
     ),
     product(
         [[Y, Y2]],
@@ -126,19 +133,18 @@ TESTDATA_MVSR = chain(
         [None, WEIGHTING],
         [np.float32, np.float64],
         [False, True],
-        [False, True],
     ),
 )
 
 
 @pytest.mark.parametrize(
-    "y,kernel,algorithm,score,metric,normalize,weighting,dtype,keep_y_dims,interpolate",
+    "y,kernel,algorithm,score,metric,normalize,weighting,dtype,keepdims",
     TESTDATA_MVSR,
 )
 def test_mvsr(
-    y, kernel, algorithm, score, metric, normalize, weighting, dtype, keep_y_dims, interpolate
+    y, kernel, algorithm, score, metric, normalize, weighting, dtype, keepdims
 ):
-    match (len(y), kernel, normalize, bool(weighting), interpolate):
+    match (len(y), kernel, normalize, bool(weighting)):
         case (_, _, True, *_) | (2, _, _, *_) | (_, _, _, True, _) if (
             type(kernel) is Kernel.Raw and kernel._translation_dimension is None
         ):
@@ -160,8 +166,7 @@ def test_mvsr(
             normalize=normalize,
             weighting=weighting,
             dtype=dtype,
-            keep_y_dims=keep_y_dims,
-            interpolate=interpolate,
+            keepdims=keepdims,
         )
         for start in regression.starts[1:]:
             for offset in [-0.5, 0.5]:
@@ -197,3 +202,13 @@ def test_libmvsr():
 
         (starts, _models, _errors) = regression.get_data()
         assert starts.tolist() in STARTS
+
+def test_plot():
+    plt.close()
+    reg = mvsr(range(10), [1,2,3,4,5,5,4,3,2,1], 2)
+    assert reg.plot(plt.gca())
+    assert reg.plot(plt.gca(), style=[{}], istyle=[{}])
+    assert reg.plot(plt.gca(), style=[{}], istyle={'c':'blue'})
+    assert reg[0].plot(plt.gca())
+    assert reg[0].plot(plt.gca(), style=[{}])
+    
