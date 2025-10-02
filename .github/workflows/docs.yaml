@@ -1,0 +1,56 @@
+name: Build Documentation
+on:
+  workflow_call:
+    inputs:
+      version:
+        type: string
+        default: latest
+jobs:
+  build:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/download-artifact@v4
+        with:
+          name: lib-ubuntu-latest
+          path: ${{ runner.temp }}/artifact
+      - name: Copy built library to language bindings
+        run: |
+          cp -r $RUNNER_TEMP/artifact/lib lang/python/mvsr/lib
+      - name: Build sphinx documentation
+        working-directory: docs
+        run: uv run sphinx-build -- src build
+      - name: Fetch existing gh-pages branch
+        uses: actions/checkout@v5
+        with:
+          ref: gh-pages
+          path: gh-pages
+          persist-credentials: false
+        continue-on-error: true
+      - name: Overwrite ${{ inputs.subdir }} gh-pages version
+        run: |
+          mkdir -p gh-pages
+          rm -rf "gh-pages/${{ inputs.subdir }}"
+          cp -r docs/build "gh-pages/${{ inputs.subdir }}"
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: gh-pages
+  deploy:
+    name: Deploy Documentation
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      id-token: write
+      pages: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.output.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deploy

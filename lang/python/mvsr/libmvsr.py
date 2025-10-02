@@ -128,21 +128,33 @@ class InternalError(Exception):
 
 
 class Placement(IntEnum):
+    """Method used to place initial segments."""
+
     ALL = 0
 
 
 class Algorithm(IntEnum):
+    """Algorithm used to reduce the number of segments."""
+
     GREEDY = 0
+    """Fast Greedy Algorithm ( :math:`O(n \\log n)` )."""
     DP = 1
+    """Dynamic Program ( :math:`O(n^2)` )."""
 
 
 class Metric(IntEnum):
+    """Metric used to calculate the error."""
+
     MSE = 0
+    """Mean Squared Error."""
 
 
 class Score(IntEnum):
+    """Scoring method used to optimize the number of segments."""
+
     EXACT = 0
     CHI = 1
+    """Calinski-Harabasz index."""
 
 
 class Mvsr:

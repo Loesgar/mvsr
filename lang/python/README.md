@@ -7,7 +7,10 @@ This describes the Python API of the MVSR-project. Consider reading the [general
 
 ## Usage
 
-### Special Use-Cases
+### Advanced Usage
+
+<!--replace-in-docs ### [API Reference](project:./api-reference.rst) -->
+### [API Reference](https://loesgar.github.io/msvr/python/api-reference)
 
 ### Internals
 
