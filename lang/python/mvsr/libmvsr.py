@@ -153,7 +153,7 @@ class Score(IntEnum):
     """Scoring method used to optimize the number of segments."""
 
     EXACT = 0
-    CHI = 1
+    #CHI = 1
     """Calinski-Harabasz index."""
 
 
