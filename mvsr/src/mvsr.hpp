@@ -70,7 +70,6 @@ public:
      */
     void placeSegments(const Scalar *data, size_t sampleCount, size_t minPerSeg)
     {
-        queue.clear();
         pieces.clear();
         queue.reserve(sampleCount / minPerSeg);
         pieces.reserve(sampleCount / minPerSeg);
@@ -128,6 +127,7 @@ public:
      */
     void reduceDP(size_t numSegments)
     {
+        queue.clear();
         if (numSegments == 0 || pieces.getSize() <= numSegments) return;
 
         // setup result table
@@ -180,7 +180,7 @@ public:
         for (size_t i = 0; i < numSegments; i++)
         {
             auto nextRow = curRow - (curRow->size * numSegments + 1);
-            if (curRow->size > 1)
+            if (curRow->size != 0)
             {
                 for (size_t i = 1; i < curRow->size; i++)
                 {
@@ -190,11 +190,10 @@ public:
                     pieces.remove(prev);
                     mergeIt->sampleSize += prev->sampleSize;
                 }
-                if (i != numSegments-1)
-                    segGetStartPtr(*mergeIt)[offErr] = curRow->err - nextRow->err;
+                segGetStartPtr(*mergeIt)[offErr] = curRow->err - nextRow->err;
+                --mergeIt;
             }
             curRow = nextRow;
-            --mergeIt;
         }
 
         // delete queue so it gets rebuild in case od using greedy
