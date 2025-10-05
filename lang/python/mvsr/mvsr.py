@@ -429,7 +429,7 @@ def mvsr(
     k: int,
     *,  # Following arguments must be explicitly specified via names.
     kernel: Kernel.Raw = Kernel.Poly(1),
-    algorithm: Algorithm = Algorithm.GREEDY,
+    algorithm: Algorithm | None = None,
     score: Score | None = None,
     metric: Metric = Metric.MSE,
     normalize: bool | None = None,
@@ -485,6 +485,9 @@ def mvsr(
     samples_per_segment = dimensions if algorithm == Algorithm.GREEDY else 1
     n_variants, _n_samples_y = y_data.shape
     keepdims = n_variants > 1 or keepdims
+
+    if algorithm is None:
+        algorithm = Algorithm.DP if dimensions * k * 10 > _n_samples_x else Algorithm.GREEDY
 
     with Mvsr(x_data, y_data, samples_per_segment, Placement.ALL, dtype) as regression:
         regression.reduce(k, alg=algorithm, score=score or Score.EXACT, metric=metric)
