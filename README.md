@@ -33,7 +33,7 @@ The following features are actively supported by this library:
 
 Multi-variant segmented regression significantly differs to typical regression.
 When using multi-variant operation, the output functions for each variant will share the breakpoint positions.
-If the individual regression functions of the variants should not share the breakpoint positions, we reccomend conducting an individual single-variant regression for each variant.
+If the individual regression functions of the variants should not share the breakpoint positions, we recommend conducting an individual single-variant regression for each variant.
 
 ## Installation and Usage
 

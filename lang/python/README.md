@@ -2,13 +2,14 @@
 
 <!--hide-in-docs-->
 This describes the Python API of the MVSR-project. Consider reading the [general documentation](../../README.md).
-If you use this project to analyse you data, consider [citing our paper](../../README.md#license-and-contribution).
+
+If you use this project to analyze you data, consider [citing our paper](../../README.md#license-and-contribution).
 
 ## Installation
 
 The easiest way is to use the provided, precompiled python packages from [PyPi](https://pypi.org/project/mvsr/) using pip or uv.
 Alternatively These packages are also available on the release page.
-We provide these packages for all common systems, namely ARM (aarch64) and x86 (x86_64) for Linux, Windows and MaxOS.
+We provide these packages for all common systems, namely ARM (aarch64) and x86 (x86_64) for Linux, Windows and MacOS.
 
 If your system is not supported, you will have to [build the library yourself](#manual-builds).
 The only needed dependency is numpy (optionally matplotlib for convenient plotting).
@@ -47,19 +48,19 @@ for segment in regression:              # iterate over segments
 The mvsr function computes the piecewise predictor function and returns a Regression object to access this information.
 It enables iterating over segments, iterating over variants, predicting values for other predictor values and also easy pretty plotting, using matplotlib.
 <!--replace-in-docs ### [API Reference](project:./api-reference.rst) -->
-The functions to handle the regression object are listed in the [API Reference](https://loesgar.github.io/msvr/python/api-reference), a practical usecase is shown in the [plotting example](examples/plot.py).
+The functions to handle the regression object are listed in the [API Reference](https://loesgar.github.io/msvr/python/api-reference), a practical use case is shown in the [plotting example](examples/plot.py).
 
 ### Parameters
 
-This is a short formal description of the interactions of all functions paramters to the main function.
+This is a short formal description of the interactions of all functions parameters to the main function.
 The first three arguments were already used in the last snipped: the predictor values (x), the response values (y) and the desired amount of segments (k).
 
 #### Predictor Values (x)
 
 This is always a sorted list of predictor values of an arbitrary type.
 These values are preprocessed by a kernel object.
-By default the 'Poly' kernel is used to enable piecwise linear regression.
-This behavior can be changed by changing the kernel to 'Poly(0)' (piecewise constant), 'Poly(d)' (piecweise polynomial of degree 'd') or 'Raw' (provide your own Vandermonde-Matrix).
+By default the 'Poly' kernel is used to enable piecewise linear regression.
+This behavior can be changed by changing the kernel to 'Poly(0)' (piecewise constant), 'Poly(d)' (piecewise polynomial of degree 'd') or 'Raw' (provide your own Vandermonde-Matrix).
 You can even provide a [custom kernel](#custom-kernel) by yourself.
 
 The Poly Kernel also supports multiple input dimensions.
@@ -90,14 +91,14 @@ Named parameters must be provided by their names directly.
 **kernel**:
 This enables to use an own kernel object.
 Its 'lerp' parameter also enables tweaking the behavior in between the segments.
-Provided alues are 'Lerp.Closest', 'Lerp.Left', 'Lerp.Right' and 'Lerp.Smooth', but you can also provide an own function to lerp between neighbouring segments (see the [plotting example](examples/plot.py)).
+Provided values are 'Lerp.Closest', 'Lerp.Left', 'Lerp.Right' and 'Lerp.Smooth', but you can also provide an own function to lerp between neighboring segments (see the [plotting example](examples/plot.py)).
 
 **algorithm**:
 This defines how the regression algorithm works.
 There are two options, a very fast and accurate heuristic ('Algorithm.GREEDY') and a dynamic program ('Algorithm.DP').
-Most of the time the heuristic is recommmended, especially for large sample sets, since its accuracy increases in these cases.
+Most of the time the heuristic is recommended, especially for large sample sets, since its accuracy increases in these cases.
 However, the dynamic program guarantees to find the solution with the smallest error relative to the provided sample set.
-In some usecases with few samples this can be worth the high resource consumption.
+In some use cases with few samples this can be worth the high resource consumption.
 Notice that compute time and amount of memory needed for DP scale much worse with a growing number of samples.
 If not amount of samples, but the compute time is the limiting factor, we *always* recommend using more samples with the greedy approach instead of less samples with the dynamic program.
 For an in-depth analysis and an explanation of the algorithms see [this research paper](../../README.md#license-and-contribution).
@@ -112,7 +113,7 @@ The error metric which is minimized by the regression algorithm.
 Currently only the mean squared error ('Metric.MSE') is supported.
 
 **normalize**:
-Defines wether the data is normalized (see feature scaling).
+Defines whether the data is normalized (see feature scaling).
 If True, min-max normalization is performed on the response values before the regression is calculated.
 The resulting regression models are denormalized in the result, making this process completely transparent.
 This option is recommended if multiple variants are used, by default it is only enabled for mult-variant regression.
@@ -121,7 +122,7 @@ This option is recommended if multiple variants are used, by default it is only 
 This parameter is an iterable type, containing as many values as there are variants (output dimensions).
 It multiplies the response values with the corresponding weight after normalization (if applied).
 As a result, minimizing the error of a variant with a higher weight becomes more important.
-The placement of the breakpoints depends more heavily on the varaints with higher weights.
+The placement of the breakpoints depends more heavily on the variants with higher weights.
 The resulting models are *unweighted*, making this process transparent, similar to normalization.
 It is not recommended to apply weighting without normalization.
 By default weighting for every variant is '1.0'.
@@ -130,13 +131,13 @@ By default weighting for every variant is '1.0'.
 A numpy type for the underlying regression calculation.
 Currently we support 'numpy.float32' and 'numpy.float64'.
 These two types are the only two exported by the underlying C-API at this point in time.
-Depending on your hardware numpy.float32 can be faster, but is less accurate.
+Depending on your hardware 'numpy.float32' can be faster, but is less accurate.
 If you want to use a custom type for the underlying calculation, consider using the low-level C++ API directly.
 
 **keepdims**:
-Defines wether an array will be returned as a response value if only one variant is in use.
+Defines whether an array will be returned as a response value if only one variant is in use.
 It can be useful when doing additional calculations with the response value(s).
-Notice that this value will internally be always set to False if you use the Regression.variants property, since the resulting objects can never contain multiple variants.
+Notice that this value will internally be always set to False if you use the 'Regression.variants' property, since the resulting objects can never contain multiple variants.
 By default this parameter is 'False'.
 
 **sortkey**:
@@ -180,17 +181,17 @@ flowchart TD;
 
 ### Lerping
 
-Predicting useful values between segments depends on many attributes, like the used data type, data source, continouity of the function at the breakpoint, etc.
+Predicting useful values between segments depends on many attributes, like the used data type, data source, continuity of the function at the breakpoint, etc.
 To enable a higher level of versatility, the implemented kernels implement a lerp functionality.
-The lerp parameter is a function with two input parameters, a singel predictor value and a list of (normally two) neighbouring segments.
+The lerp parameter is a function with two input parameters, a singel predictor value and a list of (normally two) neighboring segments.
 The return value of this function should be list defining a weighting value for each of the input segments at the given predictor value.
 Normally these values should add up to 1.0.
 The following functions are already implemented:
 
 **Lerp.Closest**:
-This is the default behvior for Raw Kernels.
+This is the default behavior for Raw Kernels.
 It always uses the segment that is closest to the predictor value.
-To determine the closest segment, the euclidean distance to all samples is measured, and the segment of the closest sample is used.
+To determine the closest segment, the Euclidean distance to all samples is measured, and the segment of the closest sample is used.
 
 **Lerp.Left**:
 This function always uses the left segment until the next one begins.
@@ -199,8 +200,8 @@ This function always uses the left segment until the next one begins.
 This function always uses the right segment until the next one begins.
 
 **Lerp.Smooth**:
-This is a typical function for continous transition between two segments.
-It is based on a cubic function ($3x^^2-2x^^3$) and is comparable to known ease-in, ease-out smoothin functions.
+This is a typical function for continuous transition between two segments.
+It is based on a cubic function ($3x^2-2x^3$) and is comparable to known ease-in, ease-out smoothing functions.
 
 You can also provide an own function.
 This is demonstrated in the [plotting example](examples/plot.py).
@@ -218,14 +219,14 @@ For example:
  2. Custom normalization:
     If you need a special form of normalization, you can implement your own 'normalize' and 'denormalize' functions.
  3. Custom interpolation:
-    If a special form of interpolation is needed for you usecase, which is not achievable with a lerp function, you can provide an own 'interpolate' function.
+    If a special form of interpolation is needed for you use case, which is not achievable with a lerp function, you can provide an own 'interpolate' function.
     This is e.g. done by the Poly Kernel to enable linear interpolation between two samples.
 
 If you decide to implement your own kernel function, it is strongly recommended to inherit an existing kernel.
-The Poly kernel is itself inheriting the behaviour of the Raw kernel.
+The Poly kernel is itself inheriting the behavior of the Raw kernel.
 This enables reusing the existing features.
 
-The Raw kernel implements the lerp functionality (by passing through the lerp function), min-max normalization and denormalization (by defining the x dimension that is suspect translation additionally to the scaling), and preprocessing of a Vandermonde matrix.
+The Raw kernel implements the lerp functionality (by passing through the lerp function), min-max normalization and denormalization (by defining the x-dimension that is subject to translation, in addition to the scaling), and preprocessing of a Vandermonde matrix.
 The Poly kernel additionally implements data preprocessing for polynomial regression and a special interpolation between the samples.
 
 ## Manual Builds
