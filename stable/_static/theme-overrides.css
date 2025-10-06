@@ -1,0 +1,63 @@
+body {
+    --sidebar-caption-font-size: var(--font-size--normal);
+    --toc-title-font-size: var(--font-size--normal);
+    --toc-font-size: var(--sidebar-item-font-size);
+    --admonition-font-size: var(--font-size--normal);
+    --admonition-title-font-size: var(--font-size--normal);
+    --color-api-name: #e87d0d;
+}
+
+/* Fixes to field list, see #104636 */
+dl.field-list {
+    display: grid;
+    grid-template-columns: auto minmax(80%, 95%);
+}
+
+dl.field-list>dd>p:last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: calc(67em / 2)) {
+    dl.field-list {
+        grid-template-columns: unset;
+    }
+}
+
+.main>.toc-drawer {
+    width: auto;
+}
+
+h1,
+h2,
+h3 {
+    margin-top: 1.75rem;
+    margin-bottom: 1rem;
+}
+
+h1 {
+    font-size: 2em;
+}
+
+h2 {
+    font-size: 1.5em;
+}
+
+h3 {
+    font-size: 1.25em;
+}
+
+h4,
+h5,
+h6 {
+    margin-top: 1.25rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.125em;
+}
+
+.sidebar-brand-text {
+    font-size: 1.4rem;
+}
+
+dl dt {
+    font-weight: bold !important
+}

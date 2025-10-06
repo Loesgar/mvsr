@@ -1,0 +1,13 @@
+# C API
+
+
+
+## Installation
+
+## Usage
+
+```{toctree}
+:hidden:
+
+C API Reference <api-reference>
+```
