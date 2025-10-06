@@ -1,16 +1,25 @@
-name: Test Python
+name: Build and Test Python
 on:
   workflow_call:
     inputs:
       runner:
         type: string
         default: ubuntu-latest
+      build_wheel:
+        type: boolean
+        default: false
       nox-session:
         type: string
-        required: true
 jobs:
   test:
-    name: Test Python (${{ inputs.nox-session }})
+    name: >-
+      ${{
+        inputs.build_wheel && 'Build '
+      }}${{
+        inputs.build_wheel && inputs.nox-session != '' && 'and '
+      }}${{
+        inputs.nox-session != '' && format('Test Python ({0})', inputs.nox-session)
+      }}
     runs-on: ${{ inputs.runner }}
     permissions:
       contents: read
@@ -28,7 +37,18 @@ jobs:
         run: |
           cp -r $RUNNER_TEMP/artifact/${{ runner.os != 'Windows' && 'lib' || 'bin' }} \
             lang/python/mvsr/lib
+      - name: Build wheel
+        if: inputs.build_wheel
+        working-directory: lang/python
+        run: uv build --wheel
+      - uses: actions/upload-artifact@v4
+        if: inputs.build_wheel
+        with:
+          name: python-${{ inputs.runner }}
+          path: lang/python/dist/*.whl
       - uses: wntrblm/nox@main
+        if: ${{ inputs.nox-session != '' }}
       - name: Run nox session
+        if: ${{ inputs.nox-session != '' }}
         working-directory: lang/python/test
         run: nox -s "${{ inputs.nox-session }}"

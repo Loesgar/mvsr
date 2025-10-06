@@ -73,9 +73,10 @@ jobs:
       sessions: ${{ steps.get-sessions.outputs.sessions }}
     steps:
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
       - uses: wntrblm/nox@main
       - id: get-sessions
-        shell: bash
         working-directory: lang/python/test
         run: |
           echo sessions=$(nox --json -l | jq -c '
