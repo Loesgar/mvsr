@@ -90,8 +90,8 @@ Named parameters must be provided by their names directly.
 
 **kernel**:
 This enables to use an own kernel object.
-Its 'lerp' parameter also enables tweaking the behavior in between the segments.
-Provided values are 'Lerp.Closest', 'Lerp.Left', 'Lerp.Right' and 'Lerp.Smooth', but you can also provide an own function to lerp between neighboring segments (see the [plotting example](examples/plot.py)).
+Its 'model_interpolation' parameter also enables tweaking the behavior in between the segments.
+Provided values are 'Interpolate.Closest', 'Interpolate.Left', 'Interpolate.Right' and 'Interpolate.Smooth', but you can also provide an own function to interpolate between neighboring segment models (see the [plotting example](examples/plot.py)).
 
 **algorithm**:
 This defines how the regression algorithm works.
@@ -107,10 +107,6 @@ Per default the algorithm is chosen based on the number of input samples, effect
 **score**:
 This parameter defines how the amount of segments is determined, if [parameter k](#Segment Count) is not uniquely defined.
 It is not yet supported.
-
-**metric**:
-The error metric which is minimized by the regression algorithm.
-Currently only the mean squared error ('Metric.MSE') is supported.
 
 **normalize**:
 Defines whether the data is normalized (see feature scaling).
@@ -179,29 +175,33 @@ flowchart TD;
     Preprocessing2-->|within segment| Segment;
 ```
 
-### Lerping
+### Interpolate
 
 Predicting useful values between segments depends on many attributes, like the used data type, data source, continuity of the function at the breakpoint, etc.
-To enable a higher level of versatility, the implemented kernels implement a lerp functionality.
-The lerp parameter is a function with two input parameters, a singel predictor value and a list of (normally two) neighboring segments.
-The return value of this function should be list defining a weighting value for each of the input segments at the given predictor value.
+To enable a higher level of versatility, the implemented kernels implement a default interpolation functionality.
+The 'model_interpolation' parameter is a function with two input parameters, a single predictor value and a list of (normally two) neighboring segments.
+The return value of this function should be a list defining a weighting value for each of the input segments at the given predictor value.
 Normally these values should add up to 1.0.
 The following functions are already implemented:
 
-**Lerp.Closest**:
+**Interpolate.Closest**:
 This is the default behavior for Raw Kernels.
 It always uses the segment that is closest to the predictor value.
 To determine the closest segment, the Euclidean distance to all samples is measured, and the segment of the closest sample is used.
 
-**Lerp.Left**:
+**Interpolate.Left**:
 This function always uses the left segment until the next one begins.
 
-**Lerp.Right**:
+**Interpolate.Right**:
 This function always uses the right segment until the next one begins.
 
-**Lerp.Smooth**:
+**Interpoalte.Linear**:
+This function implements lerping between between two segment models.
+
+**Interpolate.Smooth**:
 This is a typical function for continuous transition between two segments.
 It is based on a cubic function ($3x^2-2x^3$) and is comparable to known ease-in, ease-out smoothing functions.
+It is similar to linear interpolation (lerp), but less harsh at the edges of the segments.
 
 You can also provide an own function.
 This is demonstrated in the [plotting example](examples/plot.py).
@@ -219,14 +219,14 @@ For example:
  2. Custom normalization:
     If you need a special form of normalization, you can implement your own 'normalize' and 'denormalize' functions.
  3. Custom interpolation:
-    If a special form of interpolation is needed for you use case, which is not achievable with a lerp function, you can provide an own 'interpolate' function.
+    If a special form of interpolation is needed for you use case, which is not achievable with a 'model_interpolate' function, you can provide an own 'interpolate' function.
     This is e.g. done by the Poly Kernel to enable linear interpolation between two samples.
 
 If you decide to implement your own kernel function, it is strongly recommended to inherit an existing kernel.
 The Poly kernel is itself inheriting the behavior of the Raw kernel.
 This enables reusing the existing features.
 
-The Raw kernel implements the lerp functionality (by passing through the lerp function), min-max normalization and denormalization (by defining the x-dimension that is subject to translation, in addition to the scaling), and preprocessing of a Vandermonde matrix.
+The Raw kernel implements the model interpolation functionality (by passing through the 'model_interpolation' parameter), min-max normalization and denormalization (by defining the x-dimension that is subject to translation, in addition to the scaling), and preprocessing of a Vandermonde matrix.
 The Poly kernel additionally implements data preprocessing for polynomial regression and a special interpolation between the samples.
 
 ## Manual Builds
