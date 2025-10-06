@@ -1,4 +1,3 @@
-import sys
 from bisect import bisect
 from typing import TYPE_CHECKING, Any, Callable, Iterator, Sequence, cast
 
@@ -352,6 +351,8 @@ class Regression:
         ]
 
     def plot(self, ax, xvals=1000, *, style={}, istyle=None):
+        import matplotlib
+
         def testmapping(**a):
             pass
 
@@ -370,23 +371,22 @@ class Regression:
 
         # get one istyle per variant
         if istyle is None:
-            istyle = [{**s, 'linestyle':'dotted', 'alpha':0.5} for s in style]
+            istyle = [{**s, "linestyle": "dotted", "alpha": 0.5} for s in style]
         else:
             try:
                 testmapping(**istyle)
                 istyle = [istyle] * self._y.shape[0]
             except:
                 pass
-        
+
         # instantiate styles
-        mpl = sys.modules.get('matplotlib')
-        norm_kwargs = mpl.cbook.normalize_kwargs
-        l2d = mpl.lines.Line2D
-        for a,s,i in zip(ax,style,istyle):
+        norm_kwargs = matplotlib.cbook.normalize_kwargs
+        l2d = matplotlib.lines.Line2D
+        for a, s, i in zip(ax, style, istyle):
             snorm = norm_kwargs(s, l2d)
             inorm = norm_kwargs(i, l2d)
             changing_props = a._get_lines._getdefaults(
-                {k:v if v is not None else inorm[k] for k,v in snorm.items() if k in inorm}
+                {k: v if v is not None else inorm[k] for k, v in snorm.items() if k in inorm}
             )
             s.clear()
             i.clear()
@@ -397,24 +397,35 @@ class Regression:
         try:
             _ = iter(xvals)
         except TypeError:
-            xvals = [(self._x[0] + (self._x[-1] * i - self._x[0] * i) / (xvals - 1)) for i in range(xvals)]
+            xvals = [
+                (self._x[0] + (self._x[-1] * i - self._x[0] * i) / (xvals - 1))
+                for i in range(xvals)
+            ]
 
         # plot segments
         idx = [self.get_segment_index(x) for x in xvals]
-        segs = {k:i+1 for i,k in enumerate(idx)}
+        segs = {k: i + 1 for i, k in enumerate(idx)}
         results = [[]] * len(segs)
-        for seg,idxend in segs.items():
+        for seg, idxend in segs.items():
             if len(seg) == 1:
-                seg_x = np.array([self._x[self._starts[seg[0]]]] + [x for i,x in zip(idx, xvals[:idxend]) if i == seg] + [self._x[self._ends[seg[0]]]])
+                seg_x = np.array(
+                    [self._x[self._starts[seg[0]]]]
+                    + [x for i, x in zip(idx, xvals[:idxend]) if i == seg]
+                    + [self._x[self._ends[seg[0]]]]
+                )
                 yvals = np.array([self[seg[0]](x, keepdims=True) for x in seg_x]).T
             else:
-                seg_x = [x for i,x in zip(idx, xvals[:idxend]) if i == seg]
+                seg_x = [x for i, x in zip(idx, xvals[:idxend]) if i == seg]
                 cur_seg = self.get_segment_by_index(seg)
                 yvals = [cur_seg(x, keepdims=True) for x in seg_x]
-                
+
                 # pre- and append neighbouring segment values
                 seg_x = np.array([self[seg[0]]._x[-1]] + seg_x + [self[seg[-1]]._x[0]])
-                yvals = np.array([self[seg[0]](seg_x[0], keepdims=True)] + yvals + [self[seg[1]](seg_x[-1], keepdims=True)])
+                yvals = np.array(
+                    [self[seg[0]](seg_x[0], keepdims=True)]
+                    + yvals
+                    + [self[seg[1]](seg_x[-1], keepdims=True)]
+                )
 
                 yvals = yvals.T
 
