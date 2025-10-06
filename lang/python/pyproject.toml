@@ -5,6 +5,9 @@ requires-python = ">=3.10"
 readme = "README.md"
 dependencies = ["numpy>=1.21"]
 
+[project.optional-dependencies]
+matplotlib = ["matplotlib"]
+
 [dependency-groups]
 dev = ["hatchling", "auditwheel", "ruff", "pytest", "pytest-cov", "nox", "matplotlib"]
 
