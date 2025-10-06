@@ -1,6 +1,6 @@
 [project]
 name = "mvsr-docs"
-version = "0.1"
+version = "0"
 requires-python = ">=3.12"
 dependencies = [
     "mvsr",

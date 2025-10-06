@@ -260,7 +260,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "matplotlib", marker = "extra == 'matplotlib'" },
+    { name = "matplotlib", marker = "extra == 'matplotlib'", specifier = ">=3.5" },
     { name = "numpy", specifier = ">=1.21" },
 ]
 provides-extras = ["matplotlib"]
@@ -278,7 +278,7 @@ dev = [
 
 [[package]]
 name = "mvsr-docs"
-version = "0.1.0"
+version = "0"
 source = { virtual = "." }
 dependencies = [
     { name = "docutils" },
