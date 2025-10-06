@@ -78,6 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      id-token: write
     strategy:
       fail-fast: false
       matrix:
@@ -95,13 +96,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          LIB_NAME="lib-${{ matrix.os }}-$GITHUB_REF_NAME.zip"
+          LIB_NAME="libmvsr-${GITHUB_REF_NAME:1}-${{ matrix.os }}.zip"
           zip -r $LIB_NAME lib-${{ matrix.os }}
-          gh release upload $GITHUB_REF_NAME $LIB_NAME
-          WHEEL_NAME=$(ls "python-${{ matrix.os }}")
-          gh release upload $GITHUB_REF_NAME $WHEEL_NAME
+          gh release upload $GITHUB_REF_NAME $LIB_NAME --repo $GITHUB_REPOSITORY
+          WHEEL_NAME="python-${{ matrix.os }}/$(ls python-${{ matrix.os }})"
+          gh release upload $GITHUB_REF_NAME $WHEEL_NAME --repo $GITHUB_REPOSITORY
           echo "WHEEL_NAME=$WHEEL_NAME" >> $GITHUB_ENV
       - name: Publish To PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          packages: ${{ env.WHEEL_NAME }}
+          packages-dir: python-${{ matrix.os }}
