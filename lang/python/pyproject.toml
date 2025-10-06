@@ -30,6 +30,7 @@ line-length = 100
 
 [tool.pyright]
 typeCheckingMode = "strict"
+exclude = ["examples"]
 reportMissingParameterType = "warning"
 reportUnnecessaryTypeIgnoreComment = "warning"
 reportPrivateUsage = false

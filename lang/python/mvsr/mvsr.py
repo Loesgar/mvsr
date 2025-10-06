@@ -212,7 +212,7 @@ class Kernel:
             self._segments = segments
 
         def __call__(self, x: npt.ArrayLike):
-            xs = cast(Iterable, x)
+            xs = cast(Iterable[Any], x)
             kernel_xs = self._kernel(x)
             interpolation_weights = np.array(
                 [self._model_interpolation(x, self._segments) for x in xs]
@@ -247,10 +247,10 @@ class Segment:
         self._kernel = kernel
         self._keepdims = keepdims
 
-    def __call__(self, x: Any, keepdims=None):
+    def __call__(self, x: Any, keepdims: bool | None = None):
         return self.predict([x], keepdims=keepdims)[0]
 
-    def predict(self, xs: npt.ArrayLike, keepdims=None):
+    def predict(self, xs: npt.ArrayLike, keepdims: bool | None = None):
         result = (self._model @ self._kernel(xs)).T
         keepdims = self._keepdims if keepdims is None else keepdims
         return result if keepdims else result[:, 0]
@@ -269,7 +269,7 @@ class Segment:
     def samplecount(self):
         return len(self._x)
 
-    def get_model(self, keepdims=None):
+    def get_model(self, keepdims: bool | None = None):
         keepdims = self._keepdims if keepdims is None else keepdims
         result = self._model.copy()
         return result if len(result) > 1 or keepdims else result[0]
@@ -301,7 +301,7 @@ class Segment:
         if _is_mapping(style):
             styles = [style] * self._y.shape[0]
         else:
-            style = cast(list[dict[str, Any]], style)
+            style = cast(list[dict[str, Any] | None], style)
             styles = [{} if s is None else s for s in style]
 
         if not _is_iter(xs):
@@ -310,7 +310,7 @@ class Segment:
         xs = cast(npt.ArrayLike, xs)
 
         ys = np.matmul(self._model, self._kernel(xs))
-        return [ax.plot(xs, y, **style) for ax, y, style in zip(axes, ys, styles)]
+        return [ax.plot(xs, y, **style) for ax, y, style in zip(axes, ys, styles)]  # pyright: ignore
 
 
 class Regression:
@@ -396,7 +396,7 @@ class Regression:
         if _is_mapping(style):
             styles = [style] * self._y.shape[0]
         else:
-            style = cast(list[dict[str, Any]], style)
+            style = cast(list[dict[str, Any] | None], style)
             styles = [{} if s is None else s for s in style]
 
         default_istyle = {"linestyle": "dotted", "alpha": 0.5}
@@ -406,7 +406,7 @@ class Regression:
             if _is_mapping(istyle):
                 istyles = [istyle] * self._y.shape[0]
             else:
-                istyle = cast(list[dict[str, Any]], style)
+                istyle = cast(list[dict[str, Any] | None], style)
                 istyles = [
                     {**style, **default_istyle} if i is None else i
                     for i, style in zip(istyle, styles)
@@ -416,9 +416,8 @@ class Regression:
         for ax, style, istyle in zip(axes, styles, istyles):
             snorm = normalize_kwargs(style, Line2D)
             inorm = normalize_kwargs(istyle, Line2D)
-            changing_props = ax._get_lines._getdefaults(  # pyright: ignore[reportAttributeAccessIssue]
-                kw={k: v if v is not None else inorm[k] for k, v in snorm.items() if k in inorm},
-                ignore=frozenset(),
+            changing_props: dict[str, Any] = ax_get_defaults(
+                ax, {k: v if v is not None else inorm[k] for k, v in snorm.items() if k in inorm}
             )
             style.clear()
             istyle.clear()
@@ -436,7 +435,7 @@ class Regression:
         for x in xs:
             segments.setdefault(self.get_segment_index(x), []).append(x)
 
-        results = [[]] * len(segments)
+        results: list[list[list[Line2D]]] = [[]] * len(segments)
         for segment_index, segment_xs in segments.items():
             segment = self.get_segment_by_index(segment_index)
             ys = segment.predict(segment_xs, keepdims=True)
@@ -455,7 +454,7 @@ class Regression:
 
             plot_styles = istyles if is_interpolated else styles
             for result, ax, variant_ys, style in zip(results, axes, ys.T, plot_styles):
-                result.append(ax.plot(segment_xs, variant_ys, **style))
+                result.append(ax.plot(segment_xs, variant_ys, **style))  # pyright: ignore
 
         return results
 
@@ -486,6 +485,10 @@ class Regression:
 
     def __iter__(self) -> Iterator[Segment]:
         return (self[i] for i in range(len(self)))
+
+
+def ax_get_defaults(ax: "Axes", kw: dict[str, Any]):
+    return cast(dict[str, Any], ax._get_lines._getdefaults(kw=kw, ignore=frozenset()))  # pyright: ignore
 
 
 def _is_iter(value: Any):
