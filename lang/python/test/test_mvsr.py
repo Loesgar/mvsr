@@ -1,16 +1,15 @@
+import random
 from contextlib import nullcontext as does_not_raise
 from itertools import chain, product
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 from pytest import approx, raises
 
-from mvsr import Algorithm, Kernel, Interpolate, mvsr
+from mvsr import Algorithm, Interpolate, Kernel, mvsr
 from mvsr.libmvsr import Metric, Mvsr, Score
 
-import matplotlib.pyplot as plt
-
-import random
 rand_uniform = random.Random()
 rand_uniform.seed(1)
 
@@ -18,7 +17,7 @@ rand_uniform.seed(1)
 Y = [1, 2, 3, 4, 5, 6, 7, 8, 2, 2, 2, 2, 2, 2, 1, 0, -1, -2, -3, -4]
 X = list(range(len(Y)))
 Y2 = [4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-X2 = [rand_uniform.uniform(0,20) for _ in range(len(Y))]
+X2 = [rand_uniform.uniform(0, 20) for _ in range(len(Y))]
 K = 3
 STARTS = ([0, 8, 13], [0, 8, 14])
 WEIGHTING = [0.1, 10.0]
@@ -41,7 +40,7 @@ def test_simple_weighting():
 
 
 def test_simple_poly2():
-    assert mvsr(X, Y, K, kernel=Kernel.Poly(2)).starts.tolist() == [0,8,13]#[0, 6, 9]
+    assert mvsr(X, Y, K, kernel=Kernel.Poly(2)).starts.tolist() == [0, 8, 13]  # [0, 6, 9]
 
 
 def test_simple_interpolate():
@@ -49,22 +48,22 @@ def test_simple_interpolate():
     cl = c - 0.25
     cr = c + 0.25
     interp_results = [
-        (None, interpolate := [(cl, 6.5), (c, 5.0), (cr, 3.5)]),
+        (None, interp := [(cl, 6.5), (c, 5.0), (cr, 3.5)]),
         (Interpolate.left, [(cl, 8.25), (c, 8.5), (cr, 8.75)]),
         (Interpolate.right, [(cl, 2.0), (c, 2.0), (cr, 2.0)]),
-        (Interpolate.closest, closest := [(cl, 8.25), (c - 1e-9, 8.5), (c + 1e-9, 2.0), (cr, 2.0)]),
+        (Interpolate.closest, [(cl, 8.25), (c - 1e-9, 8.5), (c + 1e-9, 2.0), (cr, 2.0)]),
         (Interpolate.linear, [(c, 5.25)]),
         (Interpolate.smooth, [(c, 5.25)]),
     ]
 
-    for interpolate, results in interp_results:
+    for interp, results in interp_results:
         for x, y in results:
-            assert mvsr(X, Y, K, kernel=Kernel.Poly(1, model_interpolation=interpolate))(x) == approx(y)
-    
-    reg = mvsr([[x,x2] for x,x2 in zip(X, X2)], Y, K, kernel=Kernel.Poly(1), sortkey=lambda x: x[0])
-    x = reg[0].range[1]+.5
+            assert mvsr(X, Y, K, kernel=Kernel.Poly(1, model_interpolation=interp))(x) == approx(y)
+
+    regression = mvsr(list(zip(X, X2)), Y, K, kernel=Kernel.Poly(1), sortkey=lambda x: x[0])
+    x = regression[0].range[1] + 0.5
     with raises(RuntimeError, match="interpolation of multidimensional"):
-        reg(x)
+        regression(x)
 
 
 def test_simple_regression_and_segment():
@@ -145,9 +144,7 @@ TESTDATA_MVSR = chain(
     "y,kernel,algorithm,score,metric,normalize,weighting,dtype,keepdims",
     TESTDATA_MVSR,
 )
-def test_mvsr(
-    y, kernel, algorithm, score, metric, normalize, weighting, dtype, keepdims
-):
+def test_mvsr(y, kernel, algorithm, score, metric, normalize, weighting, dtype, keepdims):
     match (len(y), kernel, normalize, bool(weighting)):
         case (_, _, True, *_) | (2, _, _, *_) | (_, _, _, True, _) if (
             type(kernel) is Kernel.Raw and kernel._translation_dimension is None
@@ -207,12 +204,12 @@ def test_libmvsr():
         (starts, _models, _errors) = regression.get_data()
         assert starts.tolist() in STARTS
 
+
 def test_plot():
+    regression = mvsr(range(10), [1, 2, 3, 4, 5, 5, 4, 3, 2, 1], 2)
+    assert regression.plot(plt.gca())
+    assert regression.plot(plt.gca(), style=[{}], istyle=[{}])
+    assert regression.plot(plt.gca(), style=[{}], istyle={"c": "blue"})
+    assert regression[0].plot(plt.gca())
+    assert regression[0].plot(plt.gca(), style=[{}])
     plt.close()
-    reg = mvsr(range(10), [1,2,3,4,5,5,4,3,2,1], 2)
-    assert reg.plot(plt.gca())
-    assert reg.plot(plt.gca(), style=[{}], istyle=[{}])
-    assert reg.plot(plt.gca(), style=[{}], istyle={'c':'blue'})
-    assert reg[0].plot(plt.gca())
-    assert reg[0].plot(plt.gca(), style=[{}])
-    
