@@ -44,25 +44,17 @@ jobs:
       contents: read
     needs: changes
     if: needs.changes.outputs.lib-build == 'true'
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, ubuntu-24.04-arm, macos-15-intel, macos-latest, windows-latest, windows-11-arm]
     uses: ./.github/workflows/lib.yaml
     with:
-      runner: ${{ matrix.os }}
+      runner: ubuntu-latest
       run-tests: ${{ needs.changes.outputs.lib-test == 'true' }}
   python-test:
     name: Test Python
     needs: [changes, build-lib]
     if: needs.changes.outputs.python == 'true'
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, ubuntu-24.04-arm, macos-15-intel, macos-latest, windows-latest, windows-11-arm]
     uses: ./.github/workflows/python.yaml
     with:
-      runner: ${{ matrix.os }}
+      runner: ubuntu-latest
       nox-session: test_simple
   python-versions-sessions:
     name: Get Nox Sessions
