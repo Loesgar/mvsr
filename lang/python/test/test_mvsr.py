@@ -8,7 +8,7 @@ import pytest
 from pytest import approx, raises
 
 from mvsr import Algorithm, Interpolate, Kernel, mvsr
-from mvsr.libmvsr import Metric, Mvsr, Score
+from mvsr.libmvsr import Mvsr, Score
 
 rand_uniform = random.Random()
 rand_uniform.seed(1)
@@ -120,7 +120,6 @@ TESTDATA_MVSR = chain(
         [Kernel.Raw(), Kernel.Raw(0), *(Kernel.Poly(d) for d in range(1, 3))],
         Algorithm,
         Score,
-        Metric,
         [None, False, True],
         [None],
         [np.float32, np.float64],
@@ -131,7 +130,6 @@ TESTDATA_MVSR = chain(
         [Kernel.Raw(), Kernel.Raw(0), *(Kernel.Poly(d) for d in range(1, 3))],
         Algorithm,
         Score,
-        Metric,
         [None, False, True],
         [None, WEIGHTING],
         [np.float32, np.float64],
@@ -141,10 +139,10 @@ TESTDATA_MVSR = chain(
 
 
 @pytest.mark.parametrize(
-    "y,kernel,algorithm,score,metric,normalize,weighting,dtype,keepdims",
+    "y,kernel,algorithm,score,normalize,weighting,dtype,keepdims",
     TESTDATA_MVSR,
 )
-def test_mvsr(y, kernel, algorithm, score, metric, normalize, weighting, dtype, keepdims):
+def test_mvsr(y, kernel, algorithm, score, normalize, weighting, dtype, keepdims):
     match (len(y), kernel, normalize, bool(weighting)):
         case (_, _, True, *_) | (2, _, _, *_) | (_, _, _, True, _) if (
             type(kernel) is Kernel.Raw and kernel._translation_dimension is None
@@ -163,7 +161,6 @@ def test_mvsr(y, kernel, algorithm, score, metric, normalize, weighting, dtype, 
             kernel=kernel,
             algorithm=algorithm,
             score=score,
-            metric=metric,
             normalize=normalize,
             weighting=weighting,
             dtype=dtype,
