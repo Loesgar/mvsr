@@ -1,0 +1,102 @@
+name: Release
+on:
+  release:
+    types: [published]
+permissions:
+  contents: read
+jobs:
+  build-lib:
+    name: Build and Test C++ Library
+    permissions:
+      actions: write
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest] # ubuntu-24.04-arm, macos-13, macos-latest, 
+    uses: ./.github/workflows/lib.yaml
+    with:
+      runner: ${{ matrix.os }}
+      run-tests: true
+  python-test:
+    name: Build and Test Python Bindings
+    needs: build-lib
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest] # ubuntu-24.04-arm, macos-13, macos-latest, 
+    uses: ./.github/workflows/python.yaml
+    with:
+      runner: ${{ matrix.os }}
+      build_wheel: true
+      nox-session: test_simple
+  python-versions-sessions:
+    name: Get Nox Sessions
+    runs-on: ubuntu-latest
+    outputs:
+      sessions: ${{ steps.get-sessions.outputs.sessions }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: wntrblm/nox@main
+      - id: get-sessions
+        working-directory: lang/python/test
+        run: |
+          echo sessions=$(nox --json -l | jq -c '
+            [.[].session | select(startswith("test_versions"))]
+          ') | tee --append $GITHUB_OUTPUT
+  python-versions:
+    name: Test Python and NumPy Version Compatibility
+    needs: [build-lib, python-versions-sessions]
+    strategy:
+      fail-fast: false
+      matrix:
+        session: ${{ fromJson(needs.python-versions-sessions.outputs.sessions) }}
+    uses: ./.github/workflows/python.yaml
+    with:
+      runner: ubuntu-latest
+      nox-session: ${{ matrix.session }}
+  python-coverage:
+    name: Test Python Coverage
+    needs: build-lib
+    uses: ./.github/workflows/python.yaml
+    with:
+      runner: ubuntu-latest
+      nox-session: coverage
+  docs:
+    name: Build Documentation
+    permissions:
+      contents: write
+    needs: build-lib
+    uses: ./.github/workflows/docs.yaml
+    with:
+      version: stable
+  upload_binaries:
+    name: Upload Release Binaries
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest] # ubuntu-24.04-arm, macos-13, macos-latest, 
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: lib-${{ matrix.os }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: python-${{ matrix.os }}
+      - name: Upload $${{ matrix.os }} Binaries to ${{ github.ref_name }}
+        run: |
+          LIB_NAME="lib-${{ matrix.os }}-$GITHUB_REF_NAME.zip"
+          zip -r  lib-${{ matrix.os }}
+          gh release upload $GITHUB_REF_NAME $LIB_NAME
+          WHEEL_NAME=$(ls "python-${{ matrix.os }}")
+          gh release upload $GITHUB_REF_NAME $WHEEL_NAME
+          echo "WHEEL_NAME=$WHEEL_NAME" >> $GITHUB_ENV
+      - name: Publish To PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages: ${{ env.WHEEL_NAME }}
