@@ -1,9 +1,10 @@
-import mvsr
-import matplotlib as mpl
+import random
+
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.collections import PolyCollection
 
-import sys
+import mvsr
 
 ########################################
 #             GENERATE DATA            #
@@ -28,7 +29,6 @@ y_true = [
     [ 0 * i +  6 for i in x[bp[1]+bp[3]-bp[2]:]]
 ]
 # Add gaussian noise to y values.
-import random
 seed = 1
 sigma = 1.0
 r = random.Random()
@@ -51,7 +51,7 @@ def LerpSmooth(x, segs):
     return [1-res,res]                  # weighting of the two models
 
 # Calculate segmented regression
-regression = mvsr.mvsr(x,y,3, kernel=mvsr.Kernel.Poly(1, lerp=LerpSmooth))
+regression = mvsr.mvsr(x,y,3, kernel=mvsr.Kernel.Poly(1, model_interpolation=LerpSmooth))
 
 ########################################
 #            PLOT REGRESSION           #
@@ -91,7 +91,7 @@ def fill_area_between(ax, s1, s2, **kwargs):
 
     # Draw the Polygon, pass kwargs as styling options.
     ax.add_collection(
-        mpl.collections.PolyCollection(
+        PolyCollection(
             (np.array([
                 [x_start, y_start[0]],
                 [x_start, y_start[1]],
