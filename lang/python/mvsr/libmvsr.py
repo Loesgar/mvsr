@@ -150,11 +150,13 @@ class Metric(IntEnum):
 
 
 class Score(IntEnum):
-    """Scoring method used to optimize the number of segments."""
+    """Scoring method used to determine the number of segments."""
 
     EXACT = 0
-    #CHI = 1
-    """Calinski-Harabasz index."""
+    """Output the exact number of segments provided."""
+
+    # CHI = 1
+    # """Calinski-Harabasz index."""
 
 
 class Mvsr:
