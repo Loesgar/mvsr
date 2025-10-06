@@ -417,7 +417,8 @@ class Regression:
             snorm = normalize_kwargs(style, Line2D)
             inorm = normalize_kwargs(istyle, Line2D)
             changing_props = ax._get_lines._getdefaults(  # pyright: ignore[reportAttributeAccessIssue]
-                {k: v if v is not None else inorm[k] for k, v in snorm.items() if k in inorm}
+                kw={k: v if v is not None else inorm[k] for k, v in snorm.items() if k in inorm},
+                ignore=frozenset(),
             )
             style.clear()
             istyle.clear()
