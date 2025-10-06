@@ -511,12 +511,11 @@ def mvsr(
     kernel: Kernel.Raw = Kernel.Poly(1),
     algorithm: Algorithm | None = None,
     score: Score | None = None,
-    metric: Metric = Metric.MSE,
     normalize: bool | None = None,
     weighting: npt.ArrayLike | None = None,
     dtype: valid_dtypes = np.float64,
     keepdims: bool = False,
-    sortkey = None
+    sortkey: Callable[[Any], SupportsRichComparison] | None = None,
 ) -> Regression:
     """Run multi-variant segmented regression on input data, reducing it to k piecewise segments.
 
@@ -532,16 +531,15 @@ def mvsr(
         algorithm: Algorithm used to reduce the number of segments. Defaults to
             :obj:`Algorithm.GREEDY`.
         score: Placeholder for k scoring method (not implemented yet).
-        metric: Placeholder for error metric (not implemented yet). Defaults to :obj:`Metric.MSE`.
         normalize: Normalize y input values. If :obj:`None`, auto-enabled for multi-variant input
             data. Defaults to :obj:`None`.
         weighting (numpy.typing.ArrayLike_): Optional per-variant weights. Defaults to :obj:`None`.
-        dtype (numpy.float32_ | numpy.float64_): Internally used :obj:`numpy` data type. Defaults to
-            `numpy.float64`_.
+        dtype (numpy.float32_ | numpy.float64_): Internally used :obj:`numpy` data type.
+            Defaults to `numpy.float64`_.
         keepdims: If set to False, return scalar values when evaluating single-variant segments.
             Defaults to :obj:`False`.
-        sortkey: If the x values are not compareable, this function returns a key to sort.
-            Defaults to :obj:`None`.
+        sortkey: If the x values are not comparable, this function is used to extract a comparison
+            key for each of them. Defaults to :obj:`None`.
 
     Returns:
         :class:`Regression` object containing k segments.
@@ -570,7 +568,7 @@ def mvsr(
         algorithm = Algorithm.DP if dimensions * k * 10 > n_samples_x else Algorithm.GREEDY
 
     with Mvsr(x_data, y_data, samples_per_segment, Placement.ALL, dtype) as regression:
-        regression.reduce(k, alg=algorithm, score=score or Score.EXACT, metric=metric)
+        regression.reduce(k, alg=algorithm, score=score or Score.EXACT)
         if algorithm == Algorithm.GREEDY and dimensions > 1:
             regression.optimize()
 
