@@ -91,7 +91,7 @@ Named parameters must be provided by their names directly.
 **kernel**:
 This enables to use an own kernel object.
 Its 'model_interpolation' parameter also enables tweaking the behavior in between the segments.
-Provided values are 'Interpolate.Closest', 'Interpolate.Left', 'Interpolate.Right' and 'Interpolate.Smooth', but you can also provide an own function to interpolate between neighboring segment models (see the [plotting example](examples/plot.py)).
+Provided values are 'Interpolate.closest', 'Interpolate.left', 'Interpolate.right', 'Interpolate.linear' and 'Interpolate.smooth', but you can also provide an own function to interpolate between neighboring segment models (see the [plotting example](examples/plot.py)).
 
 **algorithm**:
 This defines how the regression algorithm works.
@@ -184,21 +184,21 @@ The return value of this function should be a list defining a weighting value fo
 Normally these values should add up to 1.0.
 The following functions are already implemented:
 
-**Interpolate.Closest**:
+**Interpolate.closest**:
 This is the default behavior for Raw Kernels.
 It always uses the segment that is closest to the predictor value.
 To determine the closest segment, the Euclidean distance to all samples is measured, and the segment of the closest sample is used.
 
-**Interpolate.Left**:
+**Interpolate.left**:
 This function always uses the left segment until the next one begins.
 
-**Interpolate.Right**:
+**Interpolate.right**:
 This function always uses the right segment until the next one begins.
 
-**Interpoalte.Linear**:
+**Interpoalte.linear**:
 This function implements lerping between between two segment models.
 
-**Interpolate.Smooth**:
+**Interpolate.smooth**:
 This is a typical function for continuous transition between two segments.
 It is based on a cubic function ($3x^2-2x^3$) and is comparable to known ease-in, ease-out smoothing functions.
 It is similar to linear interpolation (lerp), but less harsh at the edges of the segments.

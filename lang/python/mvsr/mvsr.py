@@ -38,6 +38,12 @@ class Interpolate:
         return result
 
     @staticmethod
+    def linear(x, segments):
+        distance = segments[1].x[0] - segments[0].x[-1]
+        x_normalized = (x - segments[0].x[-1]) / distance
+        return [1 - x_normalized] + [0] * (len(segments) - 2) + [x_normalized]
+
+    @staticmethod
     def smooth(x, segments):
         distance = segments[1].x[0] - segments[0].x[-1]
         x_normalized = (x - segments[0].x[-1]) / distance
