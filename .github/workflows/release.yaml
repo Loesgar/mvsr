@@ -102,7 +102,23 @@ jobs:
           WHEEL_NAME="python-${{ matrix.os }}/$(ls python-${{ matrix.os }})"
           gh release upload $GITHUB_REF_NAME $WHEEL_NAME --repo $GITHUB_REPOSITORY
           echo "WHEEL_NAME=$WHEEL_NAME" >> $GITHUB_ENV
-      - name: Publish To PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+      - uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: python-${{ matrix.os }}
+  upload_sdist:
+    name: Upload Python Source Distribution
+    needs: [upload_binaries]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v6
+      - name: Upload sdist
+        working-directory: lang/python
+        run: uv build --sdist
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: lang/python/dist
