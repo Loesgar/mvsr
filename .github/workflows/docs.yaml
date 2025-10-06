@@ -40,7 +40,8 @@ jobs:
               git checkout --orphan gh-pages
               git rm -rf .
           fi
-          echo '<html><head><meta http-equiv="refresh" content="0; url=stable/"></head></html>' \
+          touch .nojekyll
+          echo "<html><head><meta http-equiv="refresh" content="0; url=stable/"></head></html>" \
               > index.html
       - name: Overwrite ${{ inputs.version }} gh-pages version
         run: |
