@@ -14,11 +14,11 @@ jobs:
   test:
     name: >-
       ${{
-        inputs.build_wheel && 'Build '
+        inputs.build_wheel && 'Build ' || ''
       }}${{
-        inputs.build_wheel && inputs.nox-session != '' && 'and '
+        inputs.build_wheel && inputs.nox-session != '' && 'and ' || ''
       }}${{
-        inputs.nox-session != '' && format('Test Python ({0})', inputs.nox-session)
+        inputs.nox-session != '' && format('Test Python ({0})', inputs.nox-session) || ''
       }}
     runs-on: ${{ inputs.runner }}
     permissions:

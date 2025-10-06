@@ -74,6 +74,7 @@ jobs:
       version: stable
   upload_binaries:
     name: Upload Release Binaries
+    needs: [build-lib, python-test, python-versions, python-coverage, docs]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -85,13 +86,17 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: lib-${{ matrix.os }}
+          path: lib-${{ matrix.os }}
       - uses: actions/download-artifact@v4
         with:
           name: python-${{ matrix.os }}
+          path: python-${{ matrix.os }}
       - name: Upload $${{ matrix.os }} Binaries to ${{ github.ref_name }}
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           LIB_NAME="lib-${{ matrix.os }}-$GITHUB_REF_NAME.zip"
-          zip -r  lib-${{ matrix.os }}
+          zip -r $LIB_NAME lib-${{ matrix.os }}
           gh release upload $GITHUB_REF_NAME $LIB_NAME
           WHEEL_NAME=$(ls "python-${{ matrix.os }}")
           gh release upload $GITHUB_REF_NAME $WHEEL_NAME
