@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 from pytest import approx, raises
 
-from mvsr import Algorithm, Kernel, Lerp, mvsr
+from mvsr import Algorithm, Kernel, Interpolate, mvsr
 from mvsr.libmvsr import Metric, Mvsr, Score
 
 import matplotlib.pyplot as plt
@@ -50,15 +50,16 @@ def test_simple_interpolate():
     cr = c + 0.25
     interp_results = [
         (None, interpolate := [(cl, 6.5), (c, 5.0), (cr, 3.5)]),
-        (Lerp.Left, [(cl, 8.25), (c, 8.5), (cr, 8.75)]),
-        (Lerp.Right, [(cl, 2.0), (c, 2.0), (cr, 2.0)]),
-        (Lerp.Closest, closest := [(cl, 8.25), (c - 1e-9, 8.5), (c + 1e-9, 2.0), (cr, 2.0)]),
-        (Lerp.Smooth,[(c, 5.25)]),
+        (Interpolate.left, [(cl, 8.25), (c, 8.5), (cr, 8.75)]),
+        (Interpolate.right, [(cl, 2.0), (c, 2.0), (cr, 2.0)]),
+        (Interpolate.closest, closest := [(cl, 8.25), (c - 1e-9, 8.5), (c + 1e-9, 2.0), (cr, 2.0)]),
+        (Interpolate.linear, [(c, 5.25)]),
+        (Interpolate.smooth, [(c, 5.25)]),
     ]
 
     for interpolate, results in interp_results:
         for x, y in results:
-            assert mvsr(X, Y, K, kernel=Kernel.Poly(1, lerp=interpolate))(x) == approx(y)
+            assert mvsr(X, Y, K, kernel=Kernel.Poly(1, model_interpolation=interpolate))(x) == approx(y)
     
     reg = mvsr([[x,x2] for x,x2 in zip(X, X2)], Y, K, kernel=Kernel.Poly(1), sortkey=lambda x: x[0])
     x = reg[0].range[1]+.5
@@ -110,7 +111,7 @@ def test_simple_kernels():
     assert len(mvsr(X, Y, K, kernel=Kernel.Raw()).segments) == 3
 
     with raises(RuntimeError, match="interpolation is not possible"):
-        regression = mvsr(X, Y, K, kernel=Kernel.Raw(lerp=None))
+        regression = mvsr(X, Y, K, kernel=Kernel.Raw(model_interpolation=None))
         regression(regression.starts[1] - 0.5)
 
 
