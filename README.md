@@ -75,5 +75,3 @@ Special thanks for supporting this work goes to:
 - [SFB-FONDA](https://fonda.hu-berlin.de/) (Collaborative Research Center CRC-1404)
 - [DFG](https://www.dfg.de/en) (German Research Foundation)
 - [Technical University of Darmstadt](https://www.tu-darmstadt.de/index.en.jsp)
-
-{TODO logos}

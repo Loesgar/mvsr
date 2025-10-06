@@ -124,7 +124,7 @@ for vi,(ax,v,l) in enumerate(zip(axs, regression.variants, [line_v1, line_v2])):
             ha='center', size='small'
         )
         # Print MSEs
-        ax.text(sum(s.range)/2, -2.25,
+        ax.text(sum(s.range)/2, -2.4,
             f'$\\mathit{{MSE}}_{i}={s.mse:.2f}$',
             ha='center', size='xx-small'
         )
@@ -137,7 +137,7 @@ for vi,(ax,v,l) in enumerate(zip(axs, regression.variants, [line_v1, line_v2])):
     #)
 
 # export figure
-fig.set_size_inches((7,7))
+fig.set_size_inches((7,4.5))
 fig.tight_layout()
 fig.savefig("example_plot.jpg", dpi=300)
 
