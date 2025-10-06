@@ -252,7 +252,7 @@ wheels = [
 
 [[package]]
 name = "mvsr"
-version = "0.1.0"
+version = "0.1.1"
 source = { editable = "../lang/python" }
 dependencies = [
     { name = "numpy" },

@@ -63,6 +63,7 @@ class CustomBuildHook(BuildHookInterface[BuilderConfig]):
         platform_tag = get_platform().replace("-", "_").replace(".", "_")
 
         if platform.system() == "Linux":
+            platform_tag = platform_tag.replace("linux", "manylinux2014")
             dummy_wheel_path = Path(gettempdir()) / "dummy.whl"
             with ZipFile(dummy_wheel_path, "w", strict_timestamps=False) as zip_file:
                 records_str = ""
