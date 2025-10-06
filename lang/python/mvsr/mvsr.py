@@ -1,5 +1,5 @@
 from bisect import bisect
-from typing import TYPE_CHECKING, Any, Callable, Iterator, Sequence, cast
+from typing import TYPE_CHECKING, Any, Callable, Iterable, Iterator, Sequence, cast, overload
 
 import numpy as np
 import numpy.typing as npt
@@ -15,18 +15,20 @@ if TYPE_CHECKING:
 else:
     SupportsRichComparison = object
 
+_ModelInterpolation = Callable[[npt.ArrayLike, list["Segment"]], list[float]]
+
 
 class Interpolate:
     @staticmethod
-    def left(_x, segments):
+    def left(_x: npt.ArrayLike, segments: list["Segment"]):
         return [1.0] + [0.0] * (len(segments) - 1)
 
     @staticmethod
-    def right(_x, segments):
+    def right(_x: npt.ArrayLike, segments: list["Segment"]):
         return [0.0] * (len(segments) - 1) + [1.0]
 
     @staticmethod
-    def closest(x, segments):
+    def closest(x: npt.ArrayLike, segments: list["Segment"]):
         index = np.argmin(
             [
                 min([sum((np.array(x, ndmin=1) - np.array(sx, ndmin=1)) ** 2) for sx in segment.x])
@@ -35,20 +37,20 @@ class Interpolate:
         )
         result = np.zeros((len(segments)))
         result[index] = 1.0
-        return result
+        return result.tolist()
 
     @staticmethod
-    def linear(x, segments):
+    def linear(x: npt.ArrayLike, segments: list["Segment"]):
         distance = segments[1].x[0] - segments[0].x[-1]
-        x_normalized = (x - segments[0].x[-1]) / distance
-        return [1 - x_normalized] + [0] * (len(segments) - 2) + [x_normalized]
+        x_normalized: float = (x - segments[0].x[-1]) / distance
+        return [1 - x_normalized] + [0.0] * (len(segments) - 2) + [x_normalized]
 
     @staticmethod
-    def smooth(x, segments):
+    def smooth(x: npt.ArrayLike, segments: list["Segment"]):
         distance = segments[1].x[0] - segments[0].x[-1]
         x_normalized = (x - segments[0].x[-1]) / distance
-        result = 3 * x_normalized**2 - 2 * x_normalized**3
-        return [1 - result] + [0] * (len(segments) - 2) + [result]
+        result: float = 3 * x_normalized**2 - 2 * x_normalized**3
+        return [1 - result] + [0.0] * (len(segments) - 2) + [result]
 
 
 class Kernel:
@@ -69,7 +71,9 @@ class Kernel:
         _factors: MvsrArray | None = None
 
         def __init__(
-            self, translation_dimension: int | None = None, model_interpolation=Interpolate.closest
+            self,
+            translation_dimension: int | None = None,
+            model_interpolation: _ModelInterpolation | None = Interpolate.closest,
         ):
             self._translation_dimension = translation_dimension
             self._model_interpolation = model_interpolation
@@ -117,7 +121,7 @@ class Kernel:
 
         def interpolate(self, segments: list["Segment"]) -> "Segment":
             if self._model_interpolation:
-                interpolator = Kernel.ModelInterpolater(self, self._model_interpolation, segments)
+                interpolator = Kernel.ModelInterpolator(self, self._model_interpolation, segments)
                 return interpolator.interpolate(segments)
 
             raise RuntimeError(
@@ -143,7 +147,7 @@ class Kernel:
             model_interpolation: Function to interpolate between neighbouring segments.
         """
 
-        def __init__(self, degree: int = 1, model_interpolation=None):
+        def __init__(self, degree: int = 1, model_interpolation: _ModelInterpolation | None = None):
             super().__init__(translation_dimension=0, model_interpolation=model_interpolation)
             self._degree = degree
 
@@ -190,17 +194,29 @@ class Kernel:
                 np.empty(0), np.empty(0), model, np.empty(0), self, segments[0]._keepdims
             )
 
-    # Helper  to support lerping between multiple models, should not be used as input kernel
-    class ModelInterpolater:
-        def __init__(self, kernel, lerp, segments):
+    class ModelInterpolator:
+        """Helper to support interpolating between multiple models.
+
+        Should not be used as input kernel.
+        """
+
+        def __init__(
+            self,
+            kernel: "Kernel.Raw",
+            model_interpolation: _ModelInterpolation,
+            segments: list["Segment"],
+        ):
             self._kernel = kernel
-            self._lerp = lerp
+            self._model_interpolation = model_interpolation
             self._segments = segments
 
         def __call__(self, x: npt.ArrayLike):
-            kx = self._kernel(x)
-            lx = np.array([self._lerp(x, self._segments) for x in x]).T
-            return np.concatenate([kx * l for l in lx])
+            xs = cast(Iterable, x)
+            kernel_xs = self._kernel(x)
+            interpolation_weights = np.array(
+                [self._model_interpolation(x, self._segments) for x in xs]
+            )
+            return np.concatenate([kernel_xs * weight for weight in interpolation_weights.T])
 
         def interpolate(self, segments: list["Segment"]):
             return Segment(
@@ -208,7 +224,7 @@ class Kernel:
                 np.empty(0),
                 np.concatenate([segment.get_model(True) for segment in segments], axis=1),
                 np.empty(0),
-                Kernel.ModelInterpolater(self._kernel, self._lerp, segments),
+                Kernel.ModelInterpolator(self._kernel, self._model_interpolation, segments),
                 segments[0]._keepdims,
             )
 
@@ -220,7 +236,7 @@ class Segment:
         y: MvsrArray,
         model: MvsrArray,
         errors: MvsrArray,
-        kernel: Kernel.Raw | Kernel.ModelInterpolater,
+        kernel: Kernel.Raw | Kernel.ModelInterpolator,
         keepdims: bool,
     ):
         self._x = x
