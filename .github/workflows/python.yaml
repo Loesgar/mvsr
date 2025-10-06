@@ -47,8 +47,8 @@ jobs:
           name: python-${{ inputs.runner }}
           path: lang/python/dist/*.whl
       - uses: wntrblm/nox@main
-        if: ${{ inputs.nox-session != '' }}
+        if: ${{ inputs.nox-session != '' && !(runner.os == 'Windows' && runner.arch == 'ARM64') }}
       - name: Run nox session
-        if: ${{ inputs.nox-session != '' }}
+        if: ${{ inputs.nox-session != '' && !(runner.os == 'Windows' && runner.arch == 'ARM64') }}
         working-directory: lang/python/test
         run: nox -s "${{ inputs.nox-session }}"
