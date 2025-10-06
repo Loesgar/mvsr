@@ -622,11 +622,16 @@ wheels = [
 
 [[package]]
 name = "mvsr"
-version = "0.1"
+version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "numpy", version = "2.3.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+]
+
+[package.optional-dependencies]
+matplotlib = [
+    { name = "matplotlib" },
 ]
 
 [package.dev-dependencies]
@@ -641,7 +646,11 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "numpy", specifier = ">=1.21" }]
+requires-dist = [
+    { name = "matplotlib", marker = "extra == 'matplotlib'" },
+    { name = "numpy", specifier = ">=1.21" },
+]
+provides-extras = ["matplotlib"]
 
 [package.metadata.requires-dev]
 dev = [

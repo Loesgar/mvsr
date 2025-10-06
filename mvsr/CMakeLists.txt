@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.15)
 
 project(mvsr
+    DESCRIPTION "Library for Fast Segmented Regression"
     HOMEPAGE_URL https://github.com/Loesgar/mvsr
+    VERSION 0.1.0
 )
 
 set(CMAKE_CXX_STANDARD 20)
