@@ -521,20 +521,20 @@ def mvsr(
         weighting = np.array(weighting, dtype=dtype)
         y_data *= weighting[:, np.newaxis]
 
-    dimensions, _n_samples_x = x_data.shape
+    dimensions, n_samples_x = x_data.shape
     samples_per_segment = dimensions if algorithm == Algorithm.GREEDY else 1
     n_variants, _n_samples_y = y_data.shape
     keepdims = n_variants > 1 or keepdims
 
     if algorithm is None:
-        algorithm = Algorithm.DP if dimensions * k * 10 > _n_samples_x else Algorithm.GREEDY
+        algorithm = Algorithm.DP if dimensions * k * 10 > n_samples_x else Algorithm.GREEDY
 
     with Mvsr(x_data, y_data, samples_per_segment, Placement.ALL, dtype) as regression:
         regression.reduce(k, alg=algorithm, score=score or Score.EXACT, metric=metric)
         if algorithm == Algorithm.GREEDY and dimensions > 1:
             regression.optimize()
 
-        (starts, models, errors) = regression.get_data()
+        (starts, models, _errors) = regression.get_data()
         if weighting is not None:
             models /= weighting
         if normalize:
@@ -543,15 +543,16 @@ def mvsr(
             models = np.transpose(models, (0, 2, 1))
 
         # Need to recalculate error in order to get errors per variant
-        errors = np.array([[np.sum((np.matmul(model[vi], x_data[:,s:e])-vy[s:e])**2) for vi,vy in enumerate(y)] for s,e,model in zip(starts, (list(starts)+[len(x)])[1:], models)])
-        
+        errors = np.array(
+            [
+                [
+                    np.sum((np.matmul(model[i], x_data[:, start:end]) - variant_ys[start:end]) ** 2)
+                    for i, variant_ys in enumerate(y)
+                ]
+                for start, end, model in zip(starts, [*starts[1:], n_samples_x], models)
+            ]
+        )
+
         return Regression(
-            x,
-            y,
-            kernel,
-            np.array(starts, dtype=np.uintp),
-            models,
-            errors,
-            keepdims,
-            sortkey
+            x, y, kernel, np.array(starts, dtype=np.uintp), models, errors, keepdims, sortkey
         )
