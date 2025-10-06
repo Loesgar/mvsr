@@ -34,21 +34,23 @@ jobs:
         working-directory: gh-pages
         run: |
           if git ls-remote --exit-code origin gh-pages; then
-              git fetch origin gh-pages:gh-pages
+              git fetch origin gh-pages
+              git checkout gh-pages
           else
               git checkout --orphan gh-pages
+              git rm -rf .
           fi
-          echo '<html><head><meta http-equiv="refresh" content="0; url=/stable/"></head></html>' \
+          echo '<html><head><meta http-equiv="refresh" content="0; url=stable/"></head></html>' \
               > index.html
-      - name: Overwrite ${{ inputs.subdir }} gh-pages version
+      - name: Overwrite ${{ inputs.version }} gh-pages version
         run: |
-          rm -rf "gh-pages/${{ inputs.subdir }}"
-          cp -r docs/build "gh-pages/${{ inputs.subdir }}"
+          rm -rf "gh-pages/${{ inputs.version }}"
+          cp -r docs/build "gh-pages/${{ inputs.version }}"
       - name: Update gh-pages
         working-directory: gh-pages
         run: |
           git config user.name "mvsr-docs[bot]"
           git config user.email "mvsr-docs[bot]@github.com"
           git add .
-          git commit -m "Update ${{ inputs.subdir }} docs"
+          git commit -m "Update ${{ inputs.version }} docs"
           git push origin gh-pages
