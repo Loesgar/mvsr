@@ -41,7 +41,7 @@ jobs:
               git rm -rf .
           fi
           touch .nojekyll
-          echo "<html><head><meta http-equiv="refresh" content="0; url=stable/"></head></html>" \
+          echo '<html><head><meta http-equiv="refresh" content="0; url=stable/"></head></html>' \
               > index.html
       - name: Overwrite ${{ inputs.version }} gh-pages version
         run: |
