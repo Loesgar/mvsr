@@ -105,9 +105,7 @@ jobs:
   docs:
     name: Build docs
     permissions:
-      contents: read
-      id-token: write
-      pages: write
+      contents: write
     needs: [changes, build-lib]
     if: needs.changes.outputs.docs == 'true'
     uses: ./.github/workflows/docs.yaml
