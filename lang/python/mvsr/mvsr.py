@@ -319,7 +319,7 @@ class Regression:
         models: MvsrArray,
         errors: MvsrArray,
         keepdims: bool,
-        sortkey = None
+        sortkey: Callable[[Any], SupportsRichComparison] | None = None,
     ):
         self._x = x = np.array(x, dtype=object)
         self._y = y
@@ -328,21 +328,25 @@ class Regression:
         self._models = models
         self._errors = errors
         self._keepdims = keepdims
-        self._sortkey = (lambda x: x) if sortkey is None else sortkey
+        self._sortkey: Callable[[Any], Any] = (lambda x: x) if sortkey is None else sortkey
 
         self._ends = np.concatenate((starts[1:], np.array([x.shape[0]], dtype=np.uintp))) - 1
         self._samplecounts = self._ends - self._starts
         self._start_values = x[self._starts]
         self._end_values = x[self._ends]
 
-    def get_segment_index(self, x: Any):
+    def get_segment_index(self, x: Any) -> tuple[int, ...]:
         index = bisect(self._start_values[1:], self._sortkey(x), key=self._sortkey)
         if self._sortkey(self._end_values[index]) < self._sortkey(x):
             return (index, index + 1)
         return (index,)
 
-    def get_segment_by_index(self, index):
-        return self[index[0]] if len(index) == 1 else self._kernel.interpolate([self[i] for i in index])
+    def get_segment_by_index(self, index: tuple[int, ...]):
+        return (
+            self[index[0]]
+            if len(index) == 1
+            else self._kernel.interpolate([self[i] for i in index])
+        )
 
     def get_segment(self, x: Any):
         index = self.get_segment_index(x)
@@ -361,13 +365,13 @@ class Regression:
         return [
             Regression(
                 self._x,
-                self._y[variant:variant+1],
+                self._y[variant : variant + 1],
                 self._kernel,
                 self._starts,
-                self._models[:, variant:variant+1, :],
-                self._errors[:, variant:variant+1],
+                self._models[:, variant : variant + 1, :],
+                self._errors[:, variant : variant + 1],
                 False,
-                self._sortkey
+                self._sortkey,
             )
             for variant in range(self._y.shape[0])
         ]
@@ -460,6 +464,11 @@ class Regression:
 
     def __len__(self):
         return len(self._end_values)
+
+    @overload
+    def __getitem__(self, index: int) -> Segment: ...
+    @overload
+    def __getitem__(self, index: slice) -> list[Segment]: ...
 
     def __getitem__(self, index: int | slice):
         if isinstance(index, slice):
