@@ -19,9 +19,8 @@ COVERAGE_CONFIG = Path(__file__).parents[1] / "pyproject.toml"
 
 @nox.session
 def test_simple(session: nox.Session):
-    session.install("matplotlib")
     session.install("pytest", "pytest-cov")
-    session.install("..")
+    session.install("..[matplotlib]")
     session.run("pytest", "-v", "--no-cov", "-k", "simple")
 
 
@@ -37,10 +36,8 @@ def test_versions(session: nox.Session, numpy: str):
         case "latest":
             numpy_version = "numpy"
 
-    session.install("matplotlib")
-    session.install(numpy_version, "--no-build")
+    session.install("..[matplotlib]", numpy_version)
     session.run("python", "-c", 'import numpy; print("numpy version:", numpy.version.version)')
-    session.install("..")
 
     session.install("pytest", "pytest-cov")
     session.run("pytest", "-v", "--no-cov")
@@ -48,7 +45,6 @@ def test_versions(session: nox.Session, numpy: str):
 
 @nox.session
 def coverage(session: nox.Session):
-    session.install("matplotlib")
     session.install("pytest", "pytest-cov")
-    session.install("..")
+    session.install("..[matplotlib]")
     session.run("pytest", "-v", "--cov-config", COVERAGE_CONFIG)
