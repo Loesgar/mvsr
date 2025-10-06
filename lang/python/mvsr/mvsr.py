@@ -12,6 +12,7 @@ from .libmvsr import Score as Score
 
 if TYPE_CHECKING:
     from _typeshed import SupportsRichComparison
+    from matplotlib.axes import Axes
 else:
     SupportsRichComparison = object
 
@@ -246,10 +247,13 @@ class Segment:
         self._kernel = kernel
         self._keepdims = keepdims
 
-    def __call__(self, x: Any, *, keepdims=None):
-        result = np.matmul(self._model, self._kernel([x])).T[0]
+    def __call__(self, x: Any, keepdims=None):
+        return self.predict([x], keepdims=keepdims)[0]
+
+    def predict(self, xs: npt.ArrayLike, keepdims=None):
+        result = (self._model @ self._kernel(xs)).T
         keepdims = self._keepdims if keepdims is None else keepdims
-        return result if keepdims else result[0]
+        return result if keepdims else result[:, 0]
 
     @property
     def rss(self):
@@ -284,30 +288,30 @@ class Segment:
     def y(self):
         return self._y.copy()
 
-    def plot(self, ax, xvals=1000, style={}):
-        def testmapping(**a):
-            pass
-
-        # get one axis object per variant
-        try:
-            _ = iter(ax)
-        except TypeError:
+    def plot(
+        self,
+        ax: "Axes" | Iterable["Axes"],
+        xs: int | npt.ArrayLike = 1000,
+        style: dict[str, Any] | Iterable[dict[str, Any] | None] = {},
+    ):
+        if not _is_iter(ax):
             ax = [ax] * self._y.shape[0]
+        axes = cast(Iterable["Axes"], ax)
 
-        # get one style per variant
-        try:
-            testmapping(**style)
-            style = [style] * self._y.shape[0]
-        except:
-            pass
+        if _is_mapping(style):
+            styles = [style] * self._y.shape[0]
+        else:
+            style = cast(list[dict[str, Any]], style)
+            styles = [{} if s is None else s for s in style]
 
-        try:
-            _ = iter(xvals)
-        except TypeError:
-            xvals = [(self._x[0] + (self._x[-1] * i - self._x[0] * i) / (xvals - 1)) for i in range(xvals)]
+        if not _is_iter(xs):
+            xs = cast(int, xs)
+            xs = [(self._x[0] + (self._x[-1] * i - self._x[0] * i) / (xs - 1)) for i in range(xs)]
+        xs = cast(npt.ArrayLike, xs)
 
-        yvals = np.matmul(self._model, self._kernel(xvals))
-        return [ax.plot(xvals, y, **sty) for ax,y,sty in zip(ax,yvals,style)]
+        ys = np.matmul(self._model, self._kernel(xs))
+        return [ax.plot(xs, y, **style) for ax, y, style in zip(axes, ys, styles)]
+
 
 class Regression:
     def __init__(
@@ -349,8 +353,7 @@ class Regression:
         )
 
     def get_segment(self, x: Any):
-        index = self.get_segment_index(x)
-        return self.get_segment_by_index(index)
+        return self.get_segment_by_index(self.get_segment_index(x))
 
     @property
     def starts(self):
@@ -376,87 +379,83 @@ class Regression:
             for variant in range(self._y.shape[0])
         ]
 
-    def plot(self, ax, xvals=1000, *, style={}, istyle=None):
-        import matplotlib
+    def plot(
+        self,
+        ax: "Axes" | Iterable["Axes"],
+        xs: int | npt.ArrayLike | Iterable[Any] = 1000,
+        style: dict[str, Any] | Iterable[dict[str, Any] | None] = {},
+        istyle: dict[str, Any] | Iterable[dict[str, Any] | None] | None = None,
+    ):
+        from matplotlib.cbook import normalize_kwargs
+        from matplotlib.lines import Line2D
 
-        def testmapping(**a):
-            pass
-
-        # get one axis object per variant
-        try:
-            _ = iter(ax)
-        except TypeError:
+        if not _is_iter(ax):
             ax = [ax] * self._y.shape[0]
+        axes = cast(Iterable["Axes"], ax)
 
-        # get one style per variant
-        try:
-            testmapping(**style)
-            style = [style] * self._y.shape[0]
-        except:
-            pass
-
-        # get one istyle per variant
-        if istyle is None:
-            istyle = [{**s, "linestyle": "dotted", "alpha": 0.5} for s in style]
+        if _is_mapping(style):
+            styles = [style] * self._y.shape[0]
         else:
-            try:
-                testmapping(**istyle)
-                istyle = [istyle] * self._y.shape[0]
-            except:
-                pass
+            style = cast(list[dict[str, Any]], style)
+            styles = [{} if s is None else s for s in style]
+
+        default_istyle = {"linestyle": "dotted", "alpha": 0.5}
+        if istyle is None:
+            istyles = [{**style, **default_istyle} for style in styles]
+        else:
+            if _is_mapping(istyle):
+                istyles = [istyle] * self._y.shape[0]
+            else:
+                istyle = cast(list[dict[str, Any]], style)
+                istyles = [
+                    {**style, **default_istyle} if i is None else i
+                    for i, style in zip(istyle, styles)
+                ]
 
         # instantiate styles
-        norm_kwargs = matplotlib.cbook.normalize_kwargs
-        l2d = matplotlib.lines.Line2D
-        for a, s, i in zip(ax, style, istyle):
-            snorm = norm_kwargs(s, l2d)
-            inorm = norm_kwargs(i, l2d)
-            changing_props = a._get_lines._getdefaults(
+        for ax, style, istyle in zip(axes, styles, istyles):
+            snorm = normalize_kwargs(style, Line2D)
+            inorm = normalize_kwargs(istyle, Line2D)
+            changing_props = ax._get_lines._getdefaults(  # pyright: ignore[reportAttributeAccessIssue]
                 {k: v if v is not None else inorm[k] for k, v in snorm.items() if k in inorm}
             )
-            s.clear()
-            i.clear()
-            s.update(changing_props | snorm)
-            i.update(changing_props | inorm)
+            style.clear()
+            istyle.clear()
+            style.update(changing_props | snorm)
+            istyle.update(changing_props | inorm)
 
         # find desired xvals
-        try:
-            _ = iter(xvals)
-        except TypeError:
-            xvals = [
-                (self._x[0] + (self._x[-1] * i - self._x[0] * i) / (xvals - 1))
-                for i in range(xvals)
-            ]
+        if not _is_iter(xs):
+            xs = cast(int, xs)
+            xs = [(self._x[0] + (self._x[-1] * i - self._x[0] * i) / (xs - 1)) for i in range(xs)]
+        xs = cast(Iterable[Any], xs)
 
         # plot segments
-        idx = [self.get_segment_index(x) for x in xvals]
-        segs = {k: i + 1 for i, k in enumerate(idx)}
-        results = [[]] * len(segs)
-        for seg, idxend in segs.items():
-            if len(seg) == 1:
-                seg_x = np.array(
-                    [self._x[self._starts[seg[0]]]]
-                    + [x for i, x in zip(idx, xvals[:idxend]) if i == seg]
-                    + [self._x[self._ends[seg[0]]]]
-                )
-                yvals = np.array([self[seg[0]](x, keepdims=True) for x in seg_x]).T
-            else:
-                seg_x = [x for i, x in zip(idx, xvals[:idxend]) if i == seg]
-                cur_seg = self.get_segment_by_index(seg)
-                yvals = [cur_seg(x, keepdims=True) for x in seg_x]
+        segments: dict[tuple[int, ...], list[Any]] = {}
+        for x in xs:
+            segments.setdefault(self.get_segment_index(x), []).append(x)
 
-                # pre- and append neighbouring segment values
-                seg_x = np.array([self[seg[0]]._x[-1]] + seg_x + [self[seg[-1]]._x[0]])
-                yvals = np.array(
-                    [self[seg[0]](seg_x[0], keepdims=True)]
-                    + yvals
-                    + [self[seg[1]](seg_x[-1], keepdims=True)]
+        results = [[]] * len(segments)
+        for segment_index, segment_xs in segments.items():
+            segment = self.get_segment_by_index(segment_index)
+            ys = segment.predict(segment_xs, keepdims=True)
+
+            if is_interpolated := len(segment_index) != 1:
+                prev_segment = self[segment_index[0]]
+                next_segment = self[segment_index[-1]]
+                segment_xs = [prev_segment.x[-1], *segment_xs, next_segment.x[0]]
+                ys = np.array(
+                    [
+                        prev_segment(segment_xs[0], keepdims=True),
+                        *ys,
+                        next_segment(segment_xs[-1], keepdims=True),
+                    ]
                 )
 
-                yvals = yvals.T
+            plot_styles = istyles if is_interpolated else styles
+            for result, ax, variant_ys, style in zip(results, axes, ys.T, plot_styles):
+                result.append(ax.plot(segment_xs, variant_ys, **style))
 
-            for res, a, var_y, sty in zip(results, ax, yvals, (style if len(seg) == 1 else istyle)):
-                res.append(a.plot(seg_x, var_y, **sty))
         return results
 
     def __call__(self, x: Any):
@@ -486,6 +485,22 @@ class Regression:
 
     def __iter__(self) -> Iterator[Segment]:
         return (self[i] for i in range(len(self)))
+
+
+def _is_iter(value: Any):
+    try:
+        _ = iter(value)
+        return True
+    except TypeError:
+        return False
+
+
+def _is_mapping(value: Any):
+    try:
+        _ = {**value}
+        return True
+    except TypeError:
+        return False
 
 
 def mvsr(
