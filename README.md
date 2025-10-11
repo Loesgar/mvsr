@@ -1,6 +1,11 @@
-# Fast Min-$\epsilon$ Segmented Regression using Constant-Time Segment Merging
+# Fast Min-ε Segmented Regression using Constant-Time Segment Merging
 
-The extended evaluation regarding parameter d can be found [in the evald folder](evald/evaluation.pdf).
+This branch contains the original evaluation code for the ICML paper.
+**If you want to use our algorithm yourself, consider using our library, check out the [main project site](https://github.com/Loesgar/mvsr).**
+
+The extended evaluation regarding parameter $d$ ~~can be found [in the evald folder](evald/evaluation.pdf)~~ is now part of the appendix of the [final camera-ready version of the paper](https://proceedings.mlr.press/v267/losser25a.html).
+
+---------------------------------------------------------------------
 
 This repository enables the execution of the evaluation. To achieve this, there are two separate steps involved:
 
