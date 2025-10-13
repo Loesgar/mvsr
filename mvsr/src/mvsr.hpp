@@ -230,7 +230,7 @@ public:
                 Scalar curErr1 = s1p[offErr];
                 Scalar curErr2 = s2p[offErr];
                 Scalar curErr = curErr1 + curErr2;
-                if (curErr < err)
+                if (!(curErr >= err))
                 {
                     err = curErr;
                     err1 = curErr1;

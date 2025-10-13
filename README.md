@@ -59,12 +59,19 @@ If you are publishing a paper and use this library (e.g. to analyze your data), 
 They describe the analysis algorithm in more detail and evaluate the resulting speed and accuracy.
 
 ```bibtex
-@inproceedings{losser2025fast,
-  title={Fast Min-ϵ Segmented Regression using Constant-Time Segment Merging},
-  author={L{\"o}{\ss}er, Ansgar and Schlecht, Max and Schintke, Florian and Witzke, Joel and Weidlich, Matthias and Scheuermann, Bj{\"o}rn},
-  booktitle={Forty-second International Conference on Machine Learning (ICML)},
-  pages={1--12},
-  year={2025}
+@InProceedings{pmlr-v267-losser25a,
+  title = 	 {Fast Min-$ε$ Segmented Regression using Constant-Time Segment Merging},
+  author =       {L\"{o}{\ss}er, Ansgar and Schlecht, Max and Schintke, Florian and Witzke, Joel and Weidlich, Matthias and Scheuermann, Bj\"{o}rn},
+  booktitle = 	 {Proceedings of the 42nd International Conference on Machine Learning},
+  pages = 	 {40312--40327},
+  year = 	 {2025},
+  editor = 	 {Singh, Aarti and Fazel, Maryam and Hsu, Daniel and Lacoste-Julien, Simon and Berkenkamp, Felix and Maharaj, Tegan and Wagstaff, Kiri and Zhu, Jerry},
+  volume = 	 {267},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {13--19 Jul},
+  publisher =    {PMLR},
+  pdf = 	 {https://raw.githubusercontent.com/mlresearch/v267/main/assets/losser25a/losser25a.pdf},
+  url = 	 {https://proceedings.mlr.press/v267/losser25a.html},
 }
 ```
 

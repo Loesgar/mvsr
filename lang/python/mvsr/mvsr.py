@@ -564,12 +564,12 @@ def mvsr(
         y_data *= weighting[:, np.newaxis]
 
     dimensions, n_samples_x = x_data.shape
+    if algorithm is None:
+        algorithm = Algorithm.DP if dimensions * k * 10 > n_samples_x else Algorithm.GREEDY
+
     samples_per_segment = dimensions if algorithm == Algorithm.GREEDY else 1
     n_variants, _n_samples_y = y_data.shape
     keepdims = n_variants > 1 or keepdims
-
-    if algorithm is None:
-        algorithm = Algorithm.DP if dimensions * k * 10 > n_samples_x else Algorithm.GREEDY
 
     with Mvsr(x_data, y_data, samples_per_segment, Placement.ALL, dtype) as regression:
         regression.reduce(k, alg=algorithm, score=score or Score.EXACT)
