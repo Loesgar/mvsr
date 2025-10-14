@@ -77,9 +77,7 @@ class CustomBuildHook(BuildHookInterface[BuilderConfig]):
                 platform_tag = f"{wheel_info.overall_policy.name}_{platform_tag}"
 
         elif platform.system() == "Darwin":
-            product_version = "_".join(
-                subprocess.check_output(["sw_vers", "-productVersion"]).decode().split(".")[:2]
-            )
-            platform_tag = f"macosx_{product_version}_{platform.uname().machine}"
+            version, _, architecture = platform.mac_ver()[0]
+            platform_tag = f"macosx_{version.split('.')[0]}_0_{architecture}"
 
         return platform_tag
