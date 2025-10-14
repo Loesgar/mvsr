@@ -16,7 +16,7 @@ The only needed dependency is numpy (optionally matplotlib for convenient plotti
 
 ## Usage
 
-There are two APIs, 'mvsr' (high-level) and 'libmvsr' (low-level).
+There are two APIs, `mvsr` (high-level) and `libmvsr` (low-level).
 The low-level API is not documented, but it closely resembles the exported C-API from the core library.
 The direct usage of the low-level API is discouraged, the following documentation will focus on the high-level API.
 
@@ -55,12 +55,12 @@ The functions to handle the regression object are listed in the [API Reference](
 This is a short formal description of the interactions of all functions parameters to the main function.
 The first three arguments were already used in the last snipped: the predictor values (x), the response values (y) and the desired amount of segments (k).
 
-#### Predictor Values (x)
+#### Predictor Values `x`
 
 This is always a sorted list of predictor values of an arbitrary type.
 These values are preprocessed by a kernel object.
-By default the 'Poly' kernel is used to enable piecewise linear regression.
-This behavior can be changed by changing the kernel to 'Poly(0)' (piecewise constant), 'Poly(d)' (piecewise polynomial of degree 'd') or 'Raw' (provide your own Vandermonde-Matrix).
+By default the `Poly` kernel is used to enable piecewise linear regression.
+This behavior can be changed by changing the kernel to `Poly(0)` (piecewise constant), `Poly(d)` (piecewise polynomial of degree `d`) or `Raw` (provide your own Vandermonde-Matrix).
 You can even provide a [custom kernel](#custom-kernel) by yourself.
 
 The Poly Kernel also supports multiple input dimensions.
@@ -68,7 +68,7 @@ This is achieved by supplying an iterable type (e.g. a list) for each input samp
 Notice that some functionality (e.g. calculating a response value) relies on being able to compare the predictor values.
 If you do not want to implement a comparison function for you type, consider using the sortkey parameter.
 
-#### Response Values (y)
+#### Response Values `y`
 
 This parameter is an iterable (e.g. a list) of numbers.
 There must be exactly one response value for each predictor value.
@@ -79,7 +79,7 @@ This results in a mulit-variant segmented regression (in simple terms, there are
 All variants share the same breakpoints, i.e. their segments start and end at the same positions.
 If the variants should not share the breakpoint positions, it is recommended to conduct a dedicated segmented regression for each variant.
 
-#### Segment Count (k)
+#### Segment Count `k`
 
 The amount of desired output segments.
 Future versions will enable automatic deduction of this parameter.
@@ -90,12 +90,12 @@ Named parameters must be provided by their names directly.
 
 **kernel**:
 This enables to use an own kernel object.
-Its 'model_interpolation' parameter also enables tweaking the behavior in between the segments.
-Provided values are 'Interpolate.closest', 'Interpolate.left', 'Interpolate.right', 'Interpolate.linear' and 'Interpolate.smooth', but you can also provide an own function to interpolate between neighboring segment models (see the [plotting example](examples/plot.py)).
+Its `model_interpolation` parameter also enables tweaking the behavior in between the segments.
+Provided values are `Interpolate.closest`, `Interpolate.left`, `Interpolate.right`, `Interpolate.linear` and `Interpolate.smooth`, but you can also provide an own function to interpolate between neighboring segment models (see the [plotting example](examples/plot.py)).
 
 **algorithm**:
 This defines how the regression algorithm works.
-There are two options, a very fast and accurate heuristic ('Algorithm.GREEDY') and a dynamic program ('Algorithm.DP').
+There are two options, a very fast and accurate heuristic (`Algorithm.GREEDY`) and a dynamic program (`Algorithm.DP`).
 Most of the time the heuristic is recommended, especially for large sample sets, since its accuracy increases in these cases.
 However, the dynamic program guarantees to find the solution with the smallest error relative to the provided sample set.
 In some use cases with few samples this can be worth the high resource consumption.
@@ -121,28 +121,28 @@ As a result, minimizing the error of a variant with a higher weight becomes more
 The placement of the breakpoints depends more heavily on the variants with higher weights.
 The resulting models are *unweighted*, making this process transparent, similar to normalization.
 It is not recommended to apply weighting without normalization.
-By default weighting for every variant is '1.0'.
+By default weighting for every variant is `1.0`.
 
 **dtype**:
 A numpy type for the underlying regression calculation.
-Currently we support 'numpy.float32' and 'numpy.float64'.
+Currently we support `numpy.float32` and `numpy.float64`.
 These two types are the only two exported by the underlying C-API at this point in time.
-Depending on your hardware 'numpy.float32' can be faster, but is less accurate.
+Depending on your hardware `numpy.float32` can be faster, but is less accurate.
 If you want to use a custom type for the underlying calculation, consider using the low-level C++ API directly.
 
 **keepdims**:
 Defines whether an array will be returned as a response value if only one variant is in use.
 It can be useful when doing additional calculations with the response value(s).
-Notice that this value will internally be always set to False if you use the 'Regression.variants' property, since the resulting objects can never contain multiple variants.
-By default this parameter is 'False'.
+Notice that this value will internally be always set to `False` if you use the `Regression.variants` property, since the resulting objects can never contain multiple variants.
+By default this parameter is `False`.
 
 **sortkey**:
 A callable (e.g. a function) taking one predictor value as an input.
 It is used to be able to handle complex, non-comparable types as predictor values.
 The function must return a value that can be compared.
 This is necessary in order to determine which segment a predictor value belongs to.
-The [predictor value list](#predictor-values-(x)) must also be in sorted order relative to the resulting key, otherwise the behavior is undefined.
-By default this value is 'None' and behaves as if the input value is returned.
+The [predictor value list](#predictor-values-x) must also be in sorted order relative to the resulting key, otherwise the behavior is undefined.
+By default this value is `None` and behaves as if the input value is returned.
 
 ## Advanced Usage
 
@@ -179,7 +179,7 @@ flowchart TD;
 
 Predicting useful values between segments depends on many attributes, like the used data type, data source, continuity of the function at the breakpoint, etc.
 To enable a higher level of versatility, the implemented kernels implement a default interpolation functionality.
-The 'model_interpolation' parameter is a function with two input parameters, a single predictor value and a list of (normally two) neighboring segments.
+The `model_interpolation` parameter is a function with two input parameters, a single predictor value and a list of (normally two) neighboring segments.
 The return value of this function should be a list defining a weighting value for each of the input segments at the given predictor value.
 Normally these values should add up to 1.0.
 The following functions are already implemented:
@@ -217,16 +217,16 @@ For example:
  1. Special predictor value data type:
     If you use a data type that can not easily be extended, needs special preprocessing or can not be assigned a suitable sortkey function, you can implement your own data preprocessing.
  2. Custom normalization:
-    If you need a special form of normalization, you can implement your own 'normalize' and 'denormalize' functions.
+    If you need a special form of normalization, you can implement your own `normalize` and `denormalize` functions.
  3. Custom interpolation:
-    If a special form of interpolation is needed for you use case, which is not achievable with a 'model_interpolate' function, you can provide an own 'interpolate' function.
+    If a special form of interpolation is needed for you use case, which is not achievable with a `model_interpolate` function, you can provide an own `interpolate` function.
     This is e.g. done by the Poly Kernel to enable linear interpolation between two samples.
 
 If you decide to implement your own kernel function, it is strongly recommended to inherit an existing kernel.
 The Poly kernel is itself inheriting the behavior of the Raw kernel.
 This enables reusing the existing features.
 
-The Raw kernel implements the model interpolation functionality (by passing through the 'model_interpolation' parameter), min-max normalization and denormalization (by defining the x-dimension that is subject to translation, in addition to the scaling), and preprocessing of a Vandermonde matrix.
+The Raw kernel implements the model interpolation functionality (by passing through the `model_interpolation` parameter), min-max normalization and denormalization (by defining the x-dimension that is subject to translation, in addition to the scaling), and preprocessing of a Vandermonde matrix.
 The Poly kernel additionally implements data preprocessing for polynomial regression and a special interpolation between the samples.
 
 ## Manual Builds
