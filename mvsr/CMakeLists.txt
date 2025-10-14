@@ -13,7 +13,10 @@ add_library(mvsr SHARED
     src/mvsr.cpp
     inc/mvsr.h
 )
-target_include_directories(mvsr PRIVATE inc)
+target_include_directories(mvsr PUBLIC inc)
+set_property(TARGET mvsr PROPERTY PUBLIC_HEADER
+    inc/mvsr.h
+)
 
 if (MSVC)
     target_compile_options(mvsr PRIVATE /W4)
@@ -27,9 +30,6 @@ else()
     endif()
 endif()
 
-target_include_directories(mvsr PUBLIC
-    inc
-)
 install(TARGETS mvsr
     LIBRARY DESTINATION lib
     PUBLIC_HEADER DESTINATION inc
