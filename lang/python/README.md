@@ -90,8 +90,7 @@ Named parameters must be provided by their names directly.
 
 **`kernel`**<br>
 This enables to use an own kernel object.
-Its `model_interpolation` parameter also enables tweaking the behavior in between the segments.
-Provided values are `Interpolate.closest`, `Interpolate.left`, `Interpolate.right`, `Interpolate.linear` and `Interpolate.smooth`, but you can also provide an own function to interpolate between neighboring segment models (see the [plotting example](examples/plot.py)).
+Its `model_interpolation` parameter also enables tweaking the behavior in between the segments (see [Interpolation](#interpolation)).
 
 **`algorithm`**<br>
 This defines how the regression algorithm works.
@@ -101,7 +100,7 @@ However, the dynamic program guarantees to find the solution with the smallest e
 In some use cases with few samples this can be worth the high resource consumption.
 Notice that compute time and amount of memory needed for DP scale much worse with a growing number of samples.
 If not amount of samples, but the compute time is the limiting factor, we *always* recommend using more samples with the greedy approach instead of less samples with the dynamic program.
-For an in-depth analysis and an explanation of the algorithms see [this research paper](../../README.md#license-and-contribution).
+For an in-depth analysis and an explanation of the algorithms see [our research paper](../../README.md#license-and-contribution).
 Per default the algorithm is chosen based on the number of input samples, effective input dimensions, and the desired amount segments.
 
 **`score`**<br>
@@ -175,11 +174,11 @@ flowchart TD;
     Preprocessing2-->|within segment| Segment;
 ```
 
-### Interpolate
+### Interpolation
 
 Predicting useful values between segments depends on many attributes, like the used data type, data source, continuity of the function at the breakpoint, etc.
 To enable a higher level of versatility, the implemented kernels implement a default interpolation functionality.
-The `model_interpolation` parameter is a function with two input parameters, a single predictor value and a list of (normally two) neighboring segments.
+The `model_interpolation` parameter of `Kernel.Raw` objects is a function with two input parameters, a single predictor value and a list of (normally two) neighboring segments.
 The return value of this function should be a list defining a weighting value for each of the input segments at the given predictor value.
 Normally these values should add up to 1.0.
 The following functions are already implemented:
@@ -206,7 +205,7 @@ It is similar to linear interpolation (lerp), but less harsh at the edges of the
 You can also provide an own function.
 This is demonstrated in the [plotting example](examples/plot.py).
 
-Notice, that the Poly kernel is also able to use a lerp function, but by default will instead linearly interpolate between the last sample of the previous segment and the first sample of the next one.
+Notice, that the Poly kernel is also able to use a `model_interpolation` function, but by default will instead linearly interpolate between the last sample of the previous segment and the first sample of the next one.
 Such functionality can be implemented with a custom kernel.
 
 ### Custom Kernel
