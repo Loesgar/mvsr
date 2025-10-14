@@ -6,7 +6,7 @@ To use this library, refer to a [supported programming language](#installation-a
 
 If you use this library in an academic paper (e.g. to analyze your data), please consider [citing our work](#license-and-contribution).
 
-[![Example for a multi-variant with synthetic data and custom interpolation.](lang/python/examples/example_plot.jpg) see code](lang/python/examples/plot.py)
+[![Example for a multi-variant with synthetic data and custom interpolation.](lang/python/examples/example_plot.jpg) `lang/python/examples/plot.py`](lang/python/examples/plot.py)
 
 ## Overview
 
