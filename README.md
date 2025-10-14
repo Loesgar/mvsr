@@ -45,11 +45,10 @@ We currently support the following languages (see the individual documentation f
 - [C](lang/c/README.md)
 - [C++](lang/cpp/README.md)
 - [Python](lang/python/README.md)
-<!-- [Julia](lang/julia/README.md)->
-<!-- [R/Rlang](lang/rlang/README.md)->
-<!-- [Rust](lang/rust/README.md)->
+<!-- [Julia](lang/julia/README.md)-->
+<!-- [R/Rlang](lang/rlang/README.md)-->
+<!-- [Rust](lang/rust/README.md)-->
 
-<!--end-docs-->
 ## License and Contribution
 
 The whole project is licensed under Mozilla Public License (MPL 2.0). This enables everyone to use, link and share this work (see [LICENSE](LICENSE)).
@@ -75,6 +74,7 @@ They describe the analysis algorithm in more detail and evaluate the resulting s
 }
 ```
 
+<!--end-docs-->
 ## Thanks
 
 Special thanks for supporting this work goes to:
