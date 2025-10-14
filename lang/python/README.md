@@ -24,9 +24,9 @@ Mainly only one function (mvsr) is used.
 The following snippet shows a minimal working example.
 
 ```python
-import mvsr # import the library
+from mvsr import mvsr
 
-regression = mvsr.mvsr(
+regression = mvsr(
     [1,2,3,4,5,6],   # predictor values (x) of samples (one dimension)
     [1,2,3,8,7,6],   # response values (y) of samples (one variant)
     2                # number of desired segments (k)

@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.collections import PolyCollection
 
-import mvsr
+from mvsr import mvsr, Kernel
 
 ########################################
 #             GENERATE DATA            #
@@ -39,10 +39,10 @@ y = [[r.gauss(y,sigma) for y in yv] for yv in y_true]
 #         CALCULATE REGRESSION         #
 ########################################
 
-# Define custom lerping between segments.
+# Define custom interpolation between segments.
 # This is not necessary and here only done for pretty plotting.
-# It looks similar to using mvsr.Lerp.Smooth as input to 'lerp'.
-def LerpSmooth(x, segs):
+# It looks similar to using Interpolate.Smooth as input to 'model_interpolation'.
+def interpolate_smooth(x, segs):
     import math
     cur = x - segs[0].x[-1]             # distance between x and left segment
     dist = segs[1].x[0] - segs[0].x[-1] # distance between segments
@@ -51,7 +51,7 @@ def LerpSmooth(x, segs):
     return [1-res,res]                  # weighting of the two models
 
 # Calculate segmented regression
-regression = mvsr.mvsr(x,y,3, kernel=mvsr.Kernel.Poly(1, model_interpolation=LerpSmooth))
+regression = mvsr(x,y,3, kernel=Kernel.Poly(1, model_interpolation=interpolate_smooth))
 
 ########################################
 #            PLOT REGRESSION           #
