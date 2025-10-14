@@ -7,7 +7,7 @@ If you use this project to analyze you data, consider [citing our paper](../../R
 
 ## Installation
 
-The easiest way is to use the provided, precompiled python packages from [PyPi](https://pypi.org/project/mvsr/) using pip or uv.
+The easiest way is to use the provided, precompiled python packages from [PyPI](https://pypi.org/project/mvsr/) using pip or uv.
 Alternatively These packages are also available on the release page.
 We provide these packages for all common systems, namely ARM (aarch64) and x86 (x86_64) for Linux, Windows and MacOS.
 
