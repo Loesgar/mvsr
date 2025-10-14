@@ -31,6 +31,7 @@ build-backend = "hatchling.build"
 packages = ["mvsr"]
 [tool.hatch.build.targets.sdist.force-include]
 "../../mvsr/CMakeLists.txt" = "libmvsr/CMakeLists.txt"
+"../../mvsr/inc" = "libmvsr/inc"
 "../../mvsr/src" = "libmvsr/src"
 [tool.hatch.build.targets.wheel]
 artifacts = ["*/lib/*.so", "*/lib/*.dylib", "*/lib/*.dll"]
