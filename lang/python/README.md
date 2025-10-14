@@ -88,12 +88,12 @@ Future versions will enable automatic deduction of this parameter.
 
 Named parameters must be provided by their names directly.
 
-**kernel**:
+**`kernel`**<br>
 This enables to use an own kernel object.
 Its `model_interpolation` parameter also enables tweaking the behavior in between the segments.
 Provided values are `Interpolate.closest`, `Interpolate.left`, `Interpolate.right`, `Interpolate.linear` and `Interpolate.smooth`, but you can also provide an own function to interpolate between neighboring segment models (see the [plotting example](examples/plot.py)).
 
-**algorithm**:
+**`algorithm`**<br>
 This defines how the regression algorithm works.
 There are two options, a very fast and accurate heuristic (`Algorithm.GREEDY`) and a dynamic program (`Algorithm.DP`).
 Most of the time the heuristic is recommended, especially for large sample sets, since its accuracy increases in these cases.
@@ -104,17 +104,17 @@ If not amount of samples, but the compute time is the limiting factor, we *alway
 For an in-depth analysis and an explanation of the algorithms see [this research paper](../../README.md#license-and-contribution).
 Per default the algorithm is chosen based on the number of input samples, effective input dimensions, and the desired amount segments.
 
-**score**:
+**`score`**<br>
 This parameter defines how the amount of segments is determined, if [parameter k](#Segment Count) is not uniquely defined.
 It is not yet supported.
 
-**normalize**:
+**`normalize`**<br>
 Defines whether the data is normalized (see feature scaling).
 If True, min-max normalization is performed on the response values before the regression is calculated.
 The resulting regression models are denormalized in the result, making this process completely transparent.
 This option is recommended if multiple variants are used, by default it is only enabled for mult-variant regression.
 
-**weighting**:
+**`weighting`**<br>
 This parameter is an iterable type, containing as many values as there are variants (output dimensions).
 It multiplies the response values with the corresponding weight after normalization (if applied).
 As a result, minimizing the error of a variant with a higher weight becomes more important.
@@ -123,20 +123,20 @@ The resulting models are *unweighted*, making this process transparent, similar 
 It is not recommended to apply weighting without normalization.
 By default weighting for every variant is `1.0`.
 
-**dtype**:
+**`dtype`**<br>
 A numpy type for the underlying regression calculation.
 Currently we support `numpy.float32` and `numpy.float64`.
 These two types are the only two exported by the underlying C-API at this point in time.
 Depending on your hardware `numpy.float32` can be faster, but is less accurate.
 If you want to use a custom type for the underlying calculation, consider using the low-level C++ API directly.
 
-**keepdims**:
+**`keepdims`**<br>
 Defines whether an array will be returned as a response value if only one variant is in use.
 It can be useful when doing additional calculations with the response value(s).
 Notice that this value will internally be always set to `False` if you use the `Regression.variants` property, since the resulting objects can never contain multiple variants.
 By default this parameter is `False`.
 
-**sortkey**:
+**`sortkey`**<br>
 A callable (e.g. a function) taking one predictor value as an input.
 It is used to be able to handle complex, non-comparable types as predictor values.
 The function must return a value that can be compared.
@@ -184,21 +184,21 @@ The return value of this function should be a list defining a weighting value fo
 Normally these values should add up to 1.0.
 The following functions are already implemented:
 
-**Interpolate.closest**:
+**`Interpolate.closest`**<br>
 This is the default behavior for Raw Kernels.
 It always uses the segment that is closest to the predictor value.
 To determine the closest segment, the Euclidean distance to all samples is measured, and the segment of the closest sample is used.
 
-**Interpolate.left**:
+**`Interpolate.left`**<br>
 This function always uses the left segment until the next one begins.
 
-**Interpolate.right**:
+**`Interpolate.right`**<br>
 This function always uses the right segment until the next one begins.
 
-**Interpoalte.linear**:
+**`Interpolate.linear`**<br>
 This function implements lerping between between two segment models.
 
-**Interpolate.smooth**:
+**`Interpolate.smooth`**<br>
 This is a typical function for continuous transition between two segments.
 It is based on a cubic function ($3x^2-2x^3$) and is comparable to known ease-in, ease-out smoothing functions.
 It is similar to linear interpolation (lerp), but less harsh at the edges of the segments.
