@@ -261,7 +261,7 @@
 <p>If you use this project to analyze you data, consider <a class="reference internal" href="#../../README.md#license-and-contribution"><span class="xref myst">citing our paper</span></a>.</p>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
-<p>The easiest way is to use the provided, precompiled python packages from <a class="reference external" href="https://pypi.org/project/mvsr/"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyPi</span></code></a> using pip or uv.
+<p>The easiest way is to use the provided, precompiled python packages from <a class="reference external" href="https://pypi.org/project/mvsr/"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyPI</span></code></a> using pip or uv.
 Alternatively These packages are also available on the release page.
 We provide these packages for all common systems, namely ARM (aarch64) and x86 (x86_64) for Linux, Windows and MacOS.</p>
 <p>If your system is not supported, you will have to <a class="reference internal" href="#manual-builds"><span class="xref myst">build the library yourself</span></a>.
@@ -269,14 +269,14 @@ The only needed dependency is numpy (optionally matplotlib for convenient plotti
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
-<p>There are two APIs, ‘mvsr’ (high-level) and ‘libmvsr’ (low-level).
+<p>There are two APIs, <code class="docutils literal notranslate"><span class="pre">mvsr</span></code> (high-level) and <code class="docutils literal notranslate"><span class="pre">libmvsr</span></code> (low-level).
 The low-level API is not documented, but it closely resembles the exported C-API from the core library.
 The direct usage of the low-level API is discouraged, the following documentation will focus on the high-level API.</p>
 <p>Mainly only one function (mvsr) is used.
 The following snippet shows a minimal working example.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">mvsr</span> <span class="c1"># import the library</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mvsr</span><span class="w"> </span><span class="kn">import</span> <span class="n">mvsr</span>
 
-<span class="n">regression</span> <span class="o">=</span> <span class="n">mvsr</span><span class="o">.</span><span class="n">mvsr</span><span class="p">(</span>
+<span class="n">regression</span> <span class="o">=</span> <span class="n">mvsr</span><span class="p">(</span>
     <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span>   <span class="c1"># predictor values (x) of samples (one dimension)</span>
     <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span>   <span class="c1"># response values (y) of samples (one variant)</span>
     <span class="mi">2</span>                <span class="c1"># number of desired segments (k)</span>
@@ -305,11 +305,11 @@ It enables iterating over segments, iterating over variants, predicting values f
 <p>This is a short formal description of the interactions of all functions parameters to the main function.
 The first three arguments were already used in the last snipped: the predictor values (x), the response values (y) and the desired amount of segments (k).</p>
 <section id="predictor-values-x">
-<h4>Predictor Values (x)<a class="headerlink" href="#predictor-values-x" title="Link to this heading">¶</a></h4>
+<h4>Predictor Values <code class="docutils literal notranslate"><span class="pre">x</span></code><a class="headerlink" href="#predictor-values-x" title="Link to this heading">¶</a></h4>
 <p>This is always a sorted list of predictor values of an arbitrary type.
 These values are preprocessed by a kernel object.
-By default the ‘Poly’ kernel is used to enable piecewise linear regression.
-This behavior can be changed by changing the kernel to ‘Poly(0)’ (piecewise constant), ‘Poly(d)’ (piecewise polynomial of degree ‘d’) or ‘Raw’ (provide your own Vandermonde-Matrix).
+By default the <code class="docutils literal notranslate"><span class="pre">Poly</span></code> kernel is used to enable piecewise linear regression.
+This behavior can be changed by changing the kernel to <code class="docutils literal notranslate"><span class="pre">Poly(0)</span></code> (piecewise constant), <code class="docutils literal notranslate"><span class="pre">Poly(d)</span></code> (piecewise polynomial of degree <code class="docutils literal notranslate"><span class="pre">d</span></code>) or <code class="docutils literal notranslate"><span class="pre">Raw</span></code> (provide your own Vandermonde-Matrix).
 You can even provide a <a class="reference internal" href="#custom-kernel"><span class="xref myst">custom kernel</span></a> by yourself.</p>
 <p>The Poly Kernel also supports multiple input dimensions.
 This is achieved by supplying an iterable type (e.g. a list) for each input sample.
@@ -317,7 +317,7 @@ Notice that some functionality (e.g. calculating a response value) relies on bei
 If you do not want to implement a comparison function for you type, consider using the sortkey parameter.</p>
 </section>
 <section id="response-values-y">
-<h4>Response Values (y)<a class="headerlink" href="#response-values-y" title="Link to this heading">¶</a></h4>
+<h4>Response Values <code class="docutils literal notranslate"><span class="pre">y</span></code><a class="headerlink" href="#response-values-y" title="Link to this heading">¶</a></h4>
 <p>This parameter is an iterable (e.g. a list) of numbers.
 There must be exactly one response value for each predictor value.</p>
 <p>It is also possible to provide a list of response value lists.
@@ -327,61 +327,60 @@ All variants share the same breakpoints, i.e. their segments start and end at th
 If the variants should not share the breakpoint positions, it is recommended to conduct a dedicated segmented regression for each variant.</p>
 </section>
 <section id="segment-count-k">
-<h4>Segment Count (k)<a class="headerlink" href="#segment-count-k" title="Link to this heading">¶</a></h4>
+<h4>Segment Count <code class="docutils literal notranslate"><span class="pre">k</span></code><a class="headerlink" href="#segment-count-k" title="Link to this heading">¶</a></h4>
 <p>The amount of desired output segments.
 Future versions will enable automatic deduction of this parameter.</p>
 </section>
 <section id="named-parameters">
 <h4>Named Parameters<a class="headerlink" href="#named-parameters" title="Link to this heading">¶</a></h4>
 <p>Named parameters must be provided by their names directly.</p>
-<p><strong>kernel</strong>:
+<p><strong><code class="docutils literal notranslate"><span class="pre">kernel</span></code></strong><br>
 This enables to use an own kernel object.
-Its ‘model_interpolation’ parameter also enables tweaking the behavior in between the segments.
-Provided values are ‘Interpolate.closest’, ‘Interpolate.left’, ‘Interpolate.right’, ‘Interpolate.linear’ and ‘Interpolate.smooth’, but you can also provide an own function to interpolate between neighboring segment models (see the <a class="reference internal" href="#examples/plot.py"><span class="xref myst">plotting example</span></a>).</p>
-<p><strong>algorithm</strong>:
+Its <code class="docutils literal notranslate"><span class="pre">model_interpolation</span></code> parameter also enables tweaking the behavior in between the segments (see <a class="reference internal" href="#interpolation"><span class="xref myst">Interpolation</span></a>).</p>
+<p><strong><code class="docutils literal notranslate"><span class="pre">algorithm</span></code></strong><br>
 This defines how the regression algorithm works.
-There are two options, a very fast and accurate heuristic (‘Algorithm.GREEDY’) and a dynamic program (‘Algorithm.DP’).
+There are two options, a very fast and accurate heuristic (<code class="docutils literal notranslate"><span class="pre">Algorithm.GREEDY</span></code>) and a dynamic program (<code class="docutils literal notranslate"><span class="pre">Algorithm.DP</span></code>).
 Most of the time the heuristic is recommended, especially for large sample sets, since its accuracy increases in these cases.
 However, the dynamic program guarantees to find the solution with the smallest error relative to the provided sample set.
 In some use cases with few samples this can be worth the high resource consumption.
 Notice that compute time and amount of memory needed for DP scale much worse with a growing number of samples.
 If not amount of samples, but the compute time is the limiting factor, we <em>always</em> recommend using more samples with the greedy approach instead of less samples with the dynamic program.
-For an in-depth analysis and an explanation of the algorithms see <a class="reference internal" href="#../../README.md#license-and-contribution"><span class="xref myst">this research paper</span></a>.
+For an in-depth analysis and an explanation of the algorithms see <a class="reference internal" href="#../../README.md#license-and-contribution"><span class="xref myst">our research paper</span></a>.
 Per default the algorithm is chosen based on the number of input samples, effective input dimensions, and the desired amount segments.</p>
-<p><strong>score</strong>:
+<p><strong><code class="docutils literal notranslate"><span class="pre">score</span></code></strong><br>
 This parameter defines how the amount of segments is determined, if [parameter k](#Segment Count) is not uniquely defined.
 It is not yet supported.</p>
-<p><strong>normalize</strong>:
+<p><strong><code class="docutils literal notranslate"><span class="pre">normalize</span></code></strong><br>
 Defines whether the data is normalized (see feature scaling).
 If True, min-max normalization is performed on the response values before the regression is calculated.
 The resulting regression models are denormalized in the result, making this process completely transparent.
 This option is recommended if multiple variants are used, by default it is only enabled for mult-variant regression.</p>
-<p><strong>weighting</strong>:
+<p><strong><code class="docutils literal notranslate"><span class="pre">weighting</span></code></strong><br>
 This parameter is an iterable type, containing as many values as there are variants (output dimensions).
 It multiplies the response values with the corresponding weight after normalization (if applied).
 As a result, minimizing the error of a variant with a higher weight becomes more important.
 The placement of the breakpoints depends more heavily on the variants with higher weights.
 The resulting models are <em>unweighted</em>, making this process transparent, similar to normalization.
 It is not recommended to apply weighting without normalization.
-By default weighting for every variant is ‘1.0’.</p>
-<p><strong>dtype</strong>:
+By default weighting for every variant is <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p>
+<p><strong><code class="docutils literal notranslate"><span class="pre">dtype</span></code></strong><br>
 A numpy type for the underlying regression calculation.
-Currently we support ‘numpy.float32’ and ‘numpy.float64’.
+Currently we support <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> and <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code>.
 These two types are the only two exported by the underlying C-API at this point in time.
-Depending on your hardware ‘numpy.float32’ can be faster, but is less accurate.
+Depending on your hardware <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> can be faster, but is less accurate.
 If you want to use a custom type for the underlying calculation, consider using the low-level C++ API directly.</p>
-<p><strong>keepdims</strong>:
+<p><strong><code class="docutils literal notranslate"><span class="pre">keepdims</span></code></strong><br>
 Defines whether an array will be returned as a response value if only one variant is in use.
 It can be useful when doing additional calculations with the response value(s).
-Notice that this value will internally be always set to False if you use the ‘Regression.variants’ property, since the resulting objects can never contain multiple variants.
-By default this parameter is ‘False’.</p>
-<p><strong>sortkey</strong>:
+Notice that this value will internally be always set to <code class="docutils literal notranslate"><span class="pre">False</span></code> if you use the <code class="docutils literal notranslate"><span class="pre">Regression.variants</span></code> property, since the resulting objects can never contain multiple variants.
+By default this parameter is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<p><strong><code class="docutils literal notranslate"><span class="pre">sortkey</span></code></strong><br>
 A callable (e.g. a function) taking one predictor value as an input.
 It is used to be able to handle complex, non-comparable types as predictor values.
 The function must return a value that can be compared.
 This is necessary in order to determine which segment a predictor value belongs to.
-The <a class="reference internal" href="#predictor-values-(x)"><span class="xref myst">predictor value list</span></a> must also be in sorted order relative to the resulting key, otherwise the behavior is undefined.
-By default this value is ‘None’ and behaves as if the input value is returned.</p>
+The <a class="reference internal" href="#predictor-values-x"><span class="xref myst">predictor value list</span></a> must also be in sorted order relative to the resulting key, otherwise the behavior is undefined.
+By default this value is <code class="docutils literal notranslate"><span class="pre">None</span></code> and behaves as if the input value is returned.</p>
 </section>
 </section>
 </section>
@@ -413,31 +412,31 @@ The graphic below displays this dataflow.</p>
 
     Regression--&gt;|predict| Preprocessing2--&gt;|between segments| Interpolation--&gt;Segment;
     Preprocessing2--&gt;|within segment| Segment;
-    </pre><section id="interpolate">
-<h3>Interpolate<a class="headerlink" href="#interpolate" title="Link to this heading">¶</a></h3>
+    </pre><section id="interpolation">
+<h3>Interpolation<a class="headerlink" href="#interpolation" title="Link to this heading">¶</a></h3>
 <p>Predicting useful values between segments depends on many attributes, like the used data type, data source, continuity of the function at the breakpoint, etc.
 To enable a higher level of versatility, the implemented kernels implement a default interpolation functionality.
-The ‘model_interpolation’ parameter is a function with two input parameters, a single predictor value and a list of (normally two) neighboring segments.
+The <code class="docutils literal notranslate"><span class="pre">model_interpolation</span></code> parameter of <code class="docutils literal notranslate"><span class="pre">Kernel.Raw</span></code> objects is a function with two input parameters, a single predictor value and a list of (normally two) neighboring segments.
 The return value of this function should be a list defining a weighting value for each of the input segments at the given predictor value.
 Normally these values should add up to 1.0.
 The following functions are already implemented:</p>
-<p><strong>Interpolate.closest</strong>:
+<p><strong><code class="docutils literal notranslate"><span class="pre">Interpolate.closest</span></code></strong><br>
 This is the default behavior for Raw Kernels.
 It always uses the segment that is closest to the predictor value.
 To determine the closest segment, the Euclidean distance to all samples is measured, and the segment of the closest sample is used.</p>
-<p><strong>Interpolate.left</strong>:
+<p><strong><code class="docutils literal notranslate"><span class="pre">Interpolate.left</span></code></strong><br>
 This function always uses the left segment until the next one begins.</p>
-<p><strong>Interpolate.right</strong>:
+<p><strong><code class="docutils literal notranslate"><span class="pre">Interpolate.right</span></code></strong><br>
 This function always uses the right segment until the next one begins.</p>
-<p><strong>Interpoalte.linear</strong>:
+<p><strong><code class="docutils literal notranslate"><span class="pre">Interpolate.linear</span></code></strong><br>
 This function implements lerping between between two segment models.</p>
-<p><strong>Interpolate.smooth</strong>:
+<p><strong><code class="docutils literal notranslate"><span class="pre">Interpolate.smooth</span></code></strong><br>
 This is a typical function for continuous transition between two segments.
 It is based on a cubic function ($3x^2-2x^3$) and is comparable to known ease-in, ease-out smoothing functions.
 It is similar to linear interpolation (lerp), but less harsh at the edges of the segments.</p>
 <p>You can also provide an own function.
 This is demonstrated in the <a class="reference internal" href="#examples/plot.py"><span class="xref myst">plotting example</span></a>.</p>
-<p>Notice, that the Poly kernel is also able to use a lerp function, but by default will instead linearly interpolate between the last sample of the previous segment and the first sample of the next one.
+<p>Notice, that the Poly kernel is also able to use a <code class="docutils literal notranslate"><span class="pre">model_interpolation</span></code> function, but by default will instead linearly interpolate between the last sample of the previous segment and the first sample of the next one.
 Such functionality can be implemented with a custom kernel.</p>
 </section>
 <section id="custom-kernel">
@@ -448,15 +447,15 @@ For example:</p>
 <li><p>Special predictor value data type:
 If you use a data type that can not easily be extended, needs special preprocessing or can not be assigned a suitable sortkey function, you can implement your own data preprocessing.</p></li>
 <li><p>Custom normalization:
-If you need a special form of normalization, you can implement your own ‘normalize’ and ‘denormalize’ functions.</p></li>
+If you need a special form of normalization, you can implement your own <code class="docutils literal notranslate"><span class="pre">normalize</span></code> and <code class="docutils literal notranslate"><span class="pre">denormalize</span></code> functions.</p></li>
 <li><p>Custom interpolation:
-If a special form of interpolation is needed for you use case, which is not achievable with a ‘model_interpolate’ function, you can provide an own ‘interpolate’ function.
+If a special form of interpolation is needed for you use case, which is not achievable with a <code class="docutils literal notranslate"><span class="pre">model_interpolate</span></code> function, you can provide an own <code class="docutils literal notranslate"><span class="pre">interpolate</span></code> function.
 This is e.g. done by the Poly Kernel to enable linear interpolation between two samples.</p></li>
 </ol>
 <p>If you decide to implement your own kernel function, it is strongly recommended to inherit an existing kernel.
 The Poly kernel is itself inheriting the behavior of the Raw kernel.
 This enables reusing the existing features.</p>
-<p>The Raw kernel implements the model interpolation functionality (by passing through the ‘model_interpolation’ parameter), min-max normalization and denormalization (by defining the x-dimension that is subject to translation, in addition to the scaling), and preprocessing of a Vandermonde matrix.
+<p>The Raw kernel implements the model interpolation functionality (by passing through the <code class="docutils literal notranslate"><span class="pre">model_interpolation</span></code> parameter), min-max normalization and denormalization (by defining the x-dimension that is subject to translation, in addition to the scaling), and preprocessing of a Vandermonde matrix.
 The Poly kernel additionally implements data preprocessing for polynomial regression and a special interpolation between the samples.</p>
 </section>
 </section>
@@ -527,16 +526,16 @@ The Poly kernel additionally implements data preprocessing for polynomial regres
 <li><a class="reference internal" href="#usage">Usage</a><ul>
 <li><a class="reference internal" href="#api-reference"><span class="xref myst">API Reference</span></a></li>
 <li><a class="reference internal" href="#parameters">Parameters</a><ul>
-<li><a class="reference internal" href="#predictor-values-x">Predictor Values (x)</a></li>
-<li><a class="reference internal" href="#response-values-y">Response Values (y)</a></li>
-<li><a class="reference internal" href="#segment-count-k">Segment Count (k)</a></li>
+<li><a class="reference internal" href="#predictor-values-x">Predictor Values <code class="docutils literal notranslate"><span class="pre">x</span></code></a></li>
+<li><a class="reference internal" href="#response-values-y">Response Values <code class="docutils literal notranslate"><span class="pre">y</span></code></a></li>
+<li><a class="reference internal" href="#segment-count-k">Segment Count <code class="docutils literal notranslate"><span class="pre">k</span></code></a></li>
 <li><a class="reference internal" href="#named-parameters">Named Parameters</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li><a class="reference internal" href="#advanced-usage">Advanced Usage</a><ul>
-<li><a class="reference internal" href="#interpolate">Interpolate</a></li>
+<li><a class="reference internal" href="#interpolation">Interpolation</a></li>
 <li><a class="reference internal" href="#custom-kernel">Custom Kernel</a></li>
 </ul>
 </li>
