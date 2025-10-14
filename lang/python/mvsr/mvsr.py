@@ -178,7 +178,7 @@ class Kernel:
 
             if x_start.shape[0] > self._degree + 1 or x_end.shape[0] > self._degree + 1:
                 raise RuntimeError(
-                    f"interpolation of multidimensional data without lerp "
+                    f"interpolation of multidimensional data without 'model_interpolation' "
                     f"is not possible with '{self.__class__.__name__}' kernel"
                 )
 
@@ -531,7 +531,7 @@ def mvsr(
         k: Target number of segments for the Regression.
         kernel (:class:`Kernel.Raw`): Kernel used to transform x values into the internal X matrix,
             as well as normalize and interpolate y values. Defaults to :obj:`Kernel.Poly()` with
-            :obj:`degree=1` and :obj:`lerp=None`.
+            :obj:`degree=1` and :obj:`model_interpolation=None`.
         algorithm: Algorithm used to reduce the number of segments. Defaults to
             :obj:`Algorithm.GREEDY`.
         score: Placeholder for k scoring method (not implemented yet).
