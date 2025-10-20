@@ -54,10 +54,17 @@ class CustomBuildHook(BuildHookInterface[BuilderConfig]):
                 cwd=source_dir,
             )
 
-        for path in chain(*(out_dir.glob(f"*.{ext}") for ext in LIBRARY_EXTENSIONS)):
+        copied_library = False
+        for path in chain(*(out_dir.glob(f"**/*.{ext}") for ext in LIBRARY_EXTENSIONS)):
             if (target_path := TARGET_DIR / path.name).is_file():
                 target_path.unlink()
             shutil.copy(path, target_path)
+            copied_library = True
+
+        if not copied_library:
+            raise RuntimeError(
+                f"failed to find library file ({', '.join(LIBRARY_EXTENSIONS)}) in '{out_dir}'"
+            )
 
     def get_platform_tag(self):
         platform_tag = get_platform().replace("-", "_").replace(".", "_")
