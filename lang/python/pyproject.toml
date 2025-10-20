@@ -16,6 +16,9 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Information Analysis",
     "Typing :: Typed",
 ]
+[project.urls]
+Repository = "https://github.com/Loesgar/mvsr"
+DOCUMENTATION = "https://loesgar.github.io/mvsr/stable/lang/python/"
 
 [project.optional-dependencies]
 matplotlib = ["matplotlib>=3.5"]
