@@ -51,7 +51,7 @@ For data analysis we recommend a language with a convenient interface, for the e
 
 - [Python](lang/python/README.md)
 <!-- [Julia](lang/julia/README.md)-->
-<!-- [R/Rlang](lang/rlang/README.md)-->
+<!-- [R](lang/r/README.md)-->
 
 ### Low-Level
 
@@ -84,7 +84,6 @@ They describe the analysis algorithm in more detail and evaluate the resulting s
 }
 ```
 
-<!--end-docs-->
 ## Thanks
 
 Special thanks for supporting this work goes to:

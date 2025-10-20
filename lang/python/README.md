@@ -3,8 +3,10 @@
 <!--hide-in-docs-->
 This describes the Python API of the MVSR-project. Consider reading the [general documentation](../../README.md).
 
+<!--hide-in-docs-->
 If you use this project to analyze you data, consider [citing our paper](../../README.md#license-and-contribution).
 
+<!--hide-in-docs-->
 [![Example for a multi-variant with synthetic data and custom interpolation.](examples/example_plot.jpg) `examples/plot.py`](examples/plot.py)
 
 ## Installation
@@ -47,10 +49,10 @@ for segment in regression:              # iterate over segments
 
 ```
 
-The mvsr function computes the piecewise predictor function and returns a Regression object to access this information.
-It enables iterating over segments, iterating over variants, predicting values for other predictor values and also easy pretty plotting, using matplotlib.
-<!--replace-in-docs ### [API Reference](project:./api-reference.rst) -->
-The functions to handle the regression object are listed in the [API Reference](https://loesgar.github.io/msvr/python/api-reference), a practical use case is shown in the [plotting example](examples/plot.py).
+The `mvsr` function computes the piecewise predictor function and returns a `Regression` object, which allows iterating over segments and variants, as well as evaluating the predictor function.
+It can also optionally be used for easy, pretty plotting using matplotlib.
+<!--hide-in-docs-->
+The functions to handle the regression object are listed in the [API Reference](https://loesgar.github.io/mvsr/stable/lang/python/api-reference), a practical use case is shown in the [plotting example](examples/plot.py).
 
 ### Parameters
 
