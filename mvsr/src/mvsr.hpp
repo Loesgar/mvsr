@@ -177,18 +177,18 @@ public:
 
         curRow -= 1;
         auto mergeIt = List<Segment, Scalar>::Iterator::FromElement(pieces.back());
-        for (size_t i = 0; i < numSegments; i++)
+        for (size_t outSeg = 0; outSeg < numSegments; outSeg++)
         {
             auto nextRow = curRow - (curRow->size * numSegments + 1);
             if (curRow->size != 0)
             {
-                for (size_t i = 1; i < curRow->size; i++)
+                for (size_t mergeNum = 1; mergeNum < curRow->size; mergeNum++)
                 {
                     auto prev = mergeIt--;
                     auto to = segGetStartPtr(*mergeIt);
                     segAdd(to, to, segGetStartPtr(*prev));
-                    pieces.remove(prev);
                     mergeIt->sampleSize += prev->sampleSize;
+                    pieces.remove(prev);
                 }
                 segGetStartPtr(*mergeIt)[offErr] = curRow->err - nextRow->err;
                 --mergeIt;

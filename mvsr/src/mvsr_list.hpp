@@ -6,6 +6,7 @@
 #define MVSR_LIST_HPP
 
 #include <algorithm>
+#include <cstdint>
 #include <iterator>
 
 template <typename T, typename T2 = char>
@@ -23,6 +24,7 @@ private:
         T2 _alignment; // aligns the Element to alignment of T2
         size_t _empty; // needed for Element to be at least ptr size
     };
+    static constexpr size_t None = size_t(0) - 1;
 
 public:
     List(size_t space, size_t reserve = 0) : space(space)
@@ -31,10 +33,11 @@ public:
     }
     List(List &&move)
         : first(move.first), last(move.last), space(move.space), size(move.size),
-          allocated(move.allocated), freeptr(move.freeptr)
+          allocated(move.allocated), freeidx(move.freeidx)
     {
         move.first = move.last = nullptr;
-        move.allocated = move.freeptr = nullptr;
+        move.allocated = nullptr;
+        move.freeidx = None;
         move.size = 0;
     }
     List &operator=(List &&move) & = delete;
@@ -44,7 +47,7 @@ public:
     //         std::swap(space, move.space);
     //         std::swap(size, move.size);
     //         std::swap(allocated, move.allocated);
-    //         std::swap(freeptr, move.freeptr);
+    //         std::swap(freeidx, move.freeidx);
     //     }
     List(const List &copy) : space(copy.space)
     {
@@ -73,7 +76,8 @@ public:
             cur = next;
         }
         ::free(allocated);
-        freeptr = allocated = nullptr;
+        freeidx = None;
+        allocated = nullptr;
         first = last = nullptr;
         size = 0;
     }
@@ -245,9 +249,9 @@ public:
     {
         return size;
     }
-    void reserve(size_t size)
+    void reserve(size_t newSize)
     {
-        reserveElements(size);
+        reserveElements(newSize);
     }
 
 private:
@@ -261,21 +265,20 @@ private:
     {
         if (allocated == nullptr)
         {
-            allocated = (Bucket *)::calloc(reserve, getBucketSize());
-            freeptr = allocated;
-            auto *last = (Bucket *)&((char *)allocated)[(reserve - 1) * getBucketSize()];
-            last->_empty =
-                (char *)(nullptr) - (char *)(last) - (sizeof(Bucket) + sizeof(T2) * space);
+            allocated = (char *)::calloc(reserve, getBucketSize());
+            freeidx = 0;
+            auto *lastBucket = (Bucket *)&allocated[(reserve - 1) * getBucketSize()];
+            lastBucket->_empty = None - reserve * getBucketSize();
         }
     }
     Element *alloc()
     {
-        if (freeptr == nullptr) return nullptr;
+        if (freeidx == None) return nullptr;
 
-        auto next = (Bucket *)((char *)freeptr + freeptr->_empty + getBucketSize());
-        Element *res = new (freeptr) Element;
+        auto *bucket = (Bucket*)&allocated[freeidx];
+        freeidx += bucket->_empty + getBucketSize();
+        Element *res = new (bucket) Element;
         new (getExtraData(res->element)) T2[space];
-        freeptr = next;
 
         return res;
     }
@@ -287,13 +290,16 @@ private:
         }
         ptr->~Element();
 
-        ((Bucket *)ptr)->_empty = (char *)(freeptr) - (char *)(ptr)-getBucketSize();
-        freeptr = (Bucket *)ptr;
+        auto newfree = size_t(((char*)ptr) - allocated);
+        ((Bucket *)ptr)->_empty = freeidx - newfree - getBucketSize();
+        freeidx = newfree;
     }
 
     Element *first = nullptr, *last = nullptr;
-    Bucket *allocated = nullptr, *freeptr = nullptr;
     size_t size = 0;
+
+    size_t freeidx = None;
+    char *allocated = nullptr;
     const size_t space;
 };
 

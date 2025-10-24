@@ -19,11 +19,11 @@ set_property(TARGET mvsr PROPERTY PUBLIC_HEADER
 )
 
 if (MSVC)
-    target_compile_options(mvsr PRIVATE /W4)
+    target_compile_options(mvsr PRIVATE /W4 /WX)
     set_property(TARGET mvsr PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
     set_property(TARGET mvsr PROPERTY PREFIX "lib")
 else()
-    target_compile_options(mvsr PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(mvsr PRIVATE -Wall -Wextra -Wpedantic -Werror)
     target_compile_options(mvsr PRIVATE -Wno-missing-field-initializers)
     if (NOT APPLE)
         target_link_options(mvsr PRIVATE -static-libgcc -static-libstdc++)
