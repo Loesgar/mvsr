@@ -5,7 +5,7 @@ This describes the Python API of the MVSR-project. Consider reading the [general
 
 If you use this project to analyze you data, consider [citing our paper](../../README.md#license-and-contribution).
 
-[![Example for a multi-variant with synthetic data and custom interpolation.](examples/example_plot.jpg) `lang/python/examples/plot.py`](examples/plot.py)
+[![Example for a multi-variant with synthetic data and custom interpolation.](examples/example_plot.jpg) `examples/plot.py`](examples/plot.py)
 
 ## Installation
 
