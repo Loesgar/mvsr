@@ -5,6 +5,8 @@ This describes the Python API of the MVSR-project. Consider reading the [general
 
 If you use this project to analyze you data, consider [citing our paper](../../README.md#license-and-contribution).
 
+[![Example for a multi-variant with synthetic data and custom interpolation.](lang/python/examples/example_plot.jpg) `lang/python/examples/plot.py`](lang/python/examples/plot.py)
+
 ## Installation
 
 The easiest way is to use the provided, precompiled python packages from [PyPI](https://pypi.org/project/mvsr/) using pip or uv.
