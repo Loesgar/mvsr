@@ -3,6 +3,60 @@
 <!--hide-in-docs-->
 This describes the C API of the MVSR-project. Consider reading the [general documentation](../../README.md).
 
+If you use this project to analyze you data, consider [citing our paper](../../README.md#license-and-contribution).
+
+The C-API is the backbone for all supported programming languages.
+Using this API is low-level and requires manual data management, preprocessing, normalization, etc.
+If you want an easy-to-use interface to analyze your data, we recommend using a language with a high-level interface, like [Python](../python/README.md).
+
 ## Installation
 
+Prebuild binaries are available in the Release section of our Github repository for all supported platforms.
+They include a dynamic library and a single header file.
+
+Alternatively you can manually build and compile the library in the mvsr folder using [cmake](https://cmake.org/cmake/help/latest/).
+```bash
+mkdir build
+cd build
+cmake ..
+cmake --build .
+```
+
+If your system supports the [nix package manager](https://nixos.org/download/) you can also build the library using the flake in the root folder.
+
+```bash
+nix build .#mvsr
+```
+
 ## Usage
+
+We use an object oriented API design.
+You can use the helper functions from the [`mvsr.h`](../../mvsr/inc/mvsr.h).
+They are also a good inspiration to use the low-level interface.
+
+If you want to use the low-level interface yourself, you first have to decide wether you are using the `_f64` (double) or `_f32` (float) function family.
+These function families can **NOT** be used interchangly on the same regression object.
+For further documentation on the individual functions, see the [API reference](https://loesgar.github.io/mvsr/stable/lang/c/api-reference.html).
+
+The typical steps are:
+
+1. **Initialization**:
+   Creating a new regression object with a set amount of (input) dimensions and variants (i.e. output dimensions).
+   It also creates the initial segments based on a list of input samples and a defined placement strategy.
+   Normally many segments are placed, in case of DP every sample represents an individual segment.
+
+2. **Segment Reduction**:
+   Reducing the amount of segments using a certain strategy.
+   After this step there are only as many segments as desired.
+   For heuristics it might be useful to also execute the optimization function, which optimizes the computed breakpoint positions.
+
+3. **Gethering Results**:
+   The `get_data` functions enable to query the number of segments, as well as the breakpoint positions, regression models and errors for the result.
+
+4. **Deinitialization**:
+   This last step is important.
+   It frees all resources relative to the given regression object.
+
+   After this step any of the other functions **MUST NOT** be applied on this regression object.
+   Doing so is undefined behaviour.
+   In the best scenario it results in a program crash, but it can also result in corrupted variables in your program.

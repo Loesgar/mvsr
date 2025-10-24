@@ -181,19 +181,57 @@ extern "C"
     ------------------------------------------------------------------------------*/
 
     /**
-    inline size_t mvsr_f64(size_t samples, size_t dimensions, size_t variants, const double *data,
-                           size_t minsegs, size_t maxsegs, MvsrAlg alg, MvsrScore score,
-                           MvsrMetric metric, size_t *breakpoints, double *models, double *error)
+     * @brief Performs a fast segmented regression.
+     *
+     * @param      samples     The number of sampels.
+     * @param      dimensions  The number of dimensions.
+     * @param      variants    The number of variants.
+     * @param      data        The sample data (array of samples, with [dimensions+variants] values for each sample).
+     * @param      numsegs     The desired number of segments.
+     * @param[out] breakpoints Output array[numsegs] for the breakpoint positions.
+     * @param[out] models      Output array[numsegs x variants] for the models.
+     * @param[out] errors      Output array[numsegs] for the segment errors.
+     *
+     * @return 0 on success, -1 for an error in the placement step, -2 for an error in the reduction step and -3 for an error during optimization.
+     *
+     * Data must be prepared manually. For linear, single-variant regression, the input for each sample should be [1,x,y].
+     */
+    inline int mvsr_f64(size_t samples, size_t dimensions, size_t variants, const double *data,
+                        size_t numsegs, size_t *breakpoints, double *models, double *errors)
     {
-        size_t res = 0;
-        size_t mss = (alg == MvsrAlgDP) ? 1 : dimensions;
-        void *reg = mvsr_init_f64(samples, dimensions, variants, data, mss, MvsrPlaceAll);
-        if (reg == NULL) return 0;
-        // mvsr_optimize_f64(void *reg, const double *data, unsigned int range,
-        //                   MvsrMetric metric) return 0;
-        return 0;
+        void *reg = mvsr_init_f64(samples, dimensions, variants, data, dimensions, MvsrPlaceAll);
+        if (reg == NULL) return -1;
+
+        int res = 0;
+        if (mvsr_reduce_f64(reg, numsegs, numsegs, MvsrAlgGreedy, MvsrMetricMSE, MvsrScoreExact) == 0)
+            res = -2;
+        else if (mvsr_optimize_f64(reg, data, ((unsigned(0)-1)>>2)+1, MvsrMetricMSE) == 0)
+            res = -3;
+        else
+            mvsr_get_data_f64(reg, breakpoints, models, errors);
+
+        mvsr_release_f64(reg);
+        return res;
     }
-    **/
+
+    /**
+     * @brief Similar to mvsr_f64, but uses the dynamic program.
+     */
+    inline int mvsr_dp_f64(size_t samples, size_t dimensions, size_t variants, const double *data,
+                           size_t numsegs, size_t *breakpoints, double *models, double *errors)
+    {
+        void *reg = mvsr_init_f64(samples, dimensions, variants, data, 1, MvsrPlaceAll);
+        if (reg == NULL) return -1;
+
+        int res = 0;
+        if (mvsr_reduce_f64(reg, numsegs, numsegs, MvsrAlgDP, MvsrMetricMSE, MvsrScoreExact) == 0)
+            res = -2;
+        else
+            mvsr_get_data_f64(reg, breakpoints, models, errors);
+
+        mvsr_release_f64(reg);
+        return res;
+    }
 
 #ifdef __cplusplus
 }
