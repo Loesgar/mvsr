@@ -298,16 +298,27 @@ If the individual regression functions of the variants should not share the brea
 <h2>Installation and Usage<a class="headerlink" href="#installation-and-usage" title="Link to this heading">¶</a></h2>
 <p>While the algorithms are implemented in C++, the interface is exposed via a C-API and there are bindings for other languages.
 We aim to make these available as a package in the corresponding package managers.
-The exact usage differs between the languages.
-We currently support the following languages (see the individual documentation for usage instructions):</p>
+The exact usage differs between the languages.</p>
+<p>We currently support the following languages (see the individual documentation for usage instructions).
+Generally there is a distinction between a convenient (easy to use) interface and a technical (low-level) interface.
+The latter only exposes the raw bindings and should only be used to embed the algorithms in a bigger application.
+For data analysis we recommend a language with a conventient interface, for the easiest and most feature rich experience we recommend using <a class="reference internal" href="#lang/python/README.md"><span class="xref myst">Python</span></a>.</p>
+<section id="convenient">
+<h3>Convenient<a class="headerlink" href="#convenient" title="Link to this heading">¶</a></h3>
 <ul class="simple">
-<li><p><a class="reference internal" href="#lang/c/README.md"><span class="xref myst">C</span></a></p></li>
-<li><p><a class="reference internal" href="#lang/cpp/README.md"><span class="xref myst">C++</span></a></p></li>
 <li><p><a class="reference internal" href="#lang/python/README.md"><span class="xref myst">Python</span></a></p></li>
 </ul>
 <!-- [Julia](lang/julia/README.md)-->
 <!-- [R/Rlang](lang/rlang/README.md)-->
+</section>
+<section id="low-level">
+<h3>Low-Level<a class="headerlink" href="#low-level" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="#lang/c/README.md"><span class="xref myst">C</span></a></p></li>
+<li><p><a class="reference internal" href="#lang/cpp/README.md"><span class="xref myst">C++</span></a></p></li>
+</ul>
 <!-- [Rust](lang/rust/README.md)-->
+</section>
 </section>
 <section id="license-and-contribution">
 <h2>License and Contribution<a class="headerlink" href="#license-and-contribution" title="Link to this heading">¶</a></h2>
