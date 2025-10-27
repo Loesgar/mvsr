@@ -23,10 +23,8 @@ def generate_from_readmes():
     for source_file, target_file in doc_mapping.items():
         content = source_file.read_text()
 
-        content = START_DOCS_REGEX.sub("", content)
-        content = END_DOCS_REGEX.sub("", content)
         content = HIDE_IN_DOCS_REGEX.sub("", content)
-        content = REPLACE_IN_DOCS_REGEX.sub(r"\g<1>", content)
+        content = SHOW_IN_DOCS_REGEX.sub(r"\g<1>", content)
 
         target_file.parent.mkdir(parents=True, exist_ok=True)
         target_file.write_text(content)
@@ -68,7 +66,5 @@ def generate_from_readmes():
     INDEX_MD.write_text(dedent(toc) + INDEX_MD.read_text())
 
 
-START_DOCS_REGEX = re.compile(r"(?:.|\n)*<!--start-docs-->")
-END_DOCS_REGEX = re.compile(r"<!--end-docs-->(?:.|\n)*")
 HIDE_IN_DOCS_REGEX = re.compile(r"<!--hide-in-docs-->\n^.*$", flags=re.MULTILINE)
-REPLACE_IN_DOCS_REGEX = re.compile(r"<!--replace-in-docs (.*) -->\n^.*$", flags=re.MULTILINE)
+SHOW_IN_DOCS_REGEX = re.compile(r"<!--show-in-docs (.*) -->")
