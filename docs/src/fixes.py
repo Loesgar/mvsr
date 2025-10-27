@@ -20,7 +20,7 @@ def build_finished(app: App, exception: Exception | None):
         content = html_file.read_text()
         content = FIX_KERNEL_REFS_REGEX.sub(FIX_KERNEL_REFS_SUB, content)
         content = FIX_KERNEL_METHOD_REFS_REGEX.sub(FIX_KERNEL_METHOD_REFS_SUB, content)
-        content = FORCE_EXTREF_CODE_TAGS_REGEX.sub(FORCE_EXTREF_CODE_TAGS_SUB, content)
+        content = FORCE_NUMPY_REF_CODE_TAGS_REGEX.sub(FORCE_NUMPY_REF_CODE_TAGS_SUB, content)
         html_file.write_text(content)
 
 
@@ -34,10 +34,11 @@ FIX_KERNEL_METHOD_REFS_SUB = (
     r'<a class="reference internal" href="#mvsr.Kernel.Raw.\g<1>" title="Kernel.Raw">\g<0></a>'
 )
 
-FORCE_EXTREF_CODE_TAGS_REGEX = re.compile(
-    r'(<a class="reference external" [^>]*>)(?:<(?!code\b)[^/][^>]*>)*([^<>]+)(?:</[^>]+>)*(</a>)'
+FORCE_NUMPY_REF_CODE_TAGS_REGEX = re.compile(
+    r'(<a class="reference external" href="https://numpy.org[^>]*>)'
+    r"(?:<(?!code\b)[^/][^>]*>)*([^<>]+)(?:</[^>]+>)*(</a>)"
 )
-FORCE_EXTREF_CODE_TAGS_SUB = (
+FORCE_NUMPY_REF_CODE_TAGS_SUB = (
     r"\g<1>"
     r'<code class="xref py py-class docutils literal notranslate">'
     r'<span class="pre">\g<2></span>'

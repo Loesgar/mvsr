@@ -38,6 +38,4 @@ Enums
 
 .. autoclass:: mvsr.Interpolate
 
-.. autoclass:: mvsr.Metric
-
 .. autoclass:: mvsr.Score

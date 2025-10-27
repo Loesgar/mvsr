@@ -32,6 +32,7 @@ myst_heading_anchors = 6
 add_module_names = False
 autodoc_default_options = {"members": True}
 autodoc_member_order = "bysource"
+autodoc_mock_imports = ["_typeshed"]
 autodoc_preserve_defaults = True
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
