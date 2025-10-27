@@ -20,7 +20,7 @@ $ pip install mvsr  # mvsr[matplotlib] for plotting support
 The prebuilt wheels, as well as a source distribution are also available on the [release page](https://github.com/Loesgar/mvsr/releases).
 We provide these packages for all common systems, namely ARM (aarch64) and x86 (x86_64) for Linux, Windows and MacOS.
 
-If your system is not supported, you will have to [build the library yourself](#manual-builds).
+If your system is not supported, you will have to [build the library yourself](#manual-building).
 The only needed dependency is numpy (optionally matplotlib for convenient plotting).
 
 ## Usage
@@ -237,5 +237,15 @@ This enables reusing the existing features.
 The Raw kernel implements the model interpolation functionality (by passing through the `model_interpolation` parameter), min-max normalization and denormalization (by defining the x-dimension that is subject to translation, in addition to the scaling), and preprocessing of a Vandermonde matrix.
 The Poly kernel additionally implements data preprocessing for polynomial regression and a special interpolation between the samples.
 
-## Manual Builds
+## Manual Building
 
+### Build Requirements
+
+- [`uv`](https://docs.astral.sh/uv/getting-started/installation/)
+- the [`nix`](https://nixos.org/) package manager **OR** [`cmake`](https://cmake.org/) + a working C++ compiler ([`gcc`](https://gcc.gnu.org/) / [`clang`](https://clang.llvm.org/) / [`msvc`](https://visualstudio.microsoft.com/vs/features/cplusplus/))
+
+Clone the repository, navigate to `lang/python` and run:
+
+```shell
+$ uv build
+```
