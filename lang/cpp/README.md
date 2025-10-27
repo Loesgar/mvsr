@@ -22,7 +22,7 @@ The data type is used to represent a single scalar value, typically `float`, `do
 
 After instantiating an object, it is possible to use the member functions.
 They are described in the [C++ API reference](https://loesgar.github.io/mvsr/stable/lang/cpp/api-reference.html) and similar to the low-level C-API.
-The exact usage can be seen in the implementation of the C interface [here](../../mvsr/src/mvsr.cpp).
+The exact usage can be seen in the implementation of the [C interface](../../mvsr/src/mvsr.cpp).
 
 The typical steps are described in the [C-API documentation](../c/README.md#usage) and can be seen in the C helper functions in the `mvsr/inc/mvsr.h` file.
 

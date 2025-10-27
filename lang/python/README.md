@@ -11,8 +11,13 @@ If you use this project to analyze you data, consider [citing our paper](../../R
 
 ## Installation
 
-The easiest way is to use the provided, precompiled python packages from [PyPI](https://pypi.org/project/mvsr/) using pip or uv.
-Alternatively These packages are also available on the release page.
+The easiest way is to use the provided, precompiled python packages from [PyPI](https://pypi.org/project/mvsr/) using pip or uv:
+
+```shell
+$ pip install mvsr  # mvsr[matplotlib] for plotting support
+```
+
+The prebuilt wheels, as well as a source distribution are also available on the [release page](https://github.com/Loesgar/mvsr/releases).
 We provide these packages for all common systems, namely ARM (aarch64) and x86 (x86_64) for Linux, Windows and MacOS.
 
 If your system is not supported, you will have to [build the library yourself](#manual-builds).
@@ -56,7 +61,7 @@ The functions to handle the regression object are listed in the [API Reference](
 
 ### Parameters
 
-This is a short formal description of the interactions of all functions parameters to the main function.
+This is a short formal description of the interactions of all parameters of the `mvsr` function.
 The first three arguments were already used in the last snipped: the predictor values (x), the response values (y) and the desired amount of segments (k).
 
 #### Predictor Values `x`
@@ -90,7 +95,7 @@ Future versions will enable automatic deduction of this parameter.
 
 #### Named Parameters
 
-Named parameters must be provided by their names directly.
+Named parameters must always be provided as keyword arguments.
 
 **`kernel`**<br>
 This enables to use an own kernel object.
