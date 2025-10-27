@@ -14,7 +14,7 @@ If you use this project to analyze you data, consider [citing our paper](../../R
 The easiest way is to use the provided, precompiled python packages from [PyPI](https://pypi.org/project/mvsr/) using pip or uv:
 
 ```shell
-$ pip install mvsr  # mvsr[matplotlib] for plotting support
+pip install mvsr  # mvsr[matplotlib] for plotting support
 ```
 
 The prebuilt wheels, as well as a source distribution are also available on the [release page](https://github.com/Loesgar/mvsr/releases).
@@ -242,10 +242,10 @@ The Poly kernel additionally implements data preprocessing for polynomial regres
 ### Build Requirements
 
 - [`uv`](https://docs.astral.sh/uv/getting-started/installation/)
-- the [`nix`](https://nixos.org/) package manager **OR** [`cmake`](https://cmake.org/) + a working C++ compiler ([`gcc`](https://gcc.gnu.org/) / [`clang`](https://clang.llvm.org/) / [`msvc`](https://visualstudio.microsoft.com/vs/features/cplusplus/))
+- the [`nix package manager`](https://nixos.org/download) **OR** [`cmake`](https://cmake.org/) + a C++ compiler ([`gcc`](https://gcc.gnu.org/) / [`clang`](https://clang.llvm.org/) / [`msvc`](https://visualstudio.microsoft.com/vs/features/cplusplus/))
 
 Clone the repository, navigate to `lang/python` and run:
 
 ```shell
-$ uv build
+uv build
 ```

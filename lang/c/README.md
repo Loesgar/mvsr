@@ -15,7 +15,8 @@ Prebuild binaries are available in the Release section of our Github repository 
 They include a dynamic library and a single header file.
 
 Alternatively you can manually build and compile the library in the mvsr folder using [cmake](https://cmake.org/cmake/help/latest/).
-```bash
+
+```shell
 mkdir build
 cd build
 cmake ..
@@ -24,7 +25,7 @@ cmake --build .
 
 If your system supports the [nix package manager](https://nixos.org/download/) you can also build the library using the flake in the root folder.
 
-```bash
+```shell
 nix build .#mvsr
 ```
 

@@ -3,11 +3,11 @@
 ### Building the documentation
 
 ```shell
-$ sphinx-build src build
+sphinx-build src build
 ```
 
 ### Automatically rebuilding the documentation on changes
 
 ```shell
-$ sphinx-autobuild src build --ignore "**/index.md"
+sphinx-autobuild src build --ignore "**/index.md"
 ```
