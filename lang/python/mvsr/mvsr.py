@@ -416,7 +416,7 @@ class Regression:
         for ax, style, istyle in zip(axes, styles, istyles):
             snorm = normalize_kwargs(style, Line2D)
             inorm = normalize_kwargs(istyle, Line2D)
-            changing_props: dict[str, Any] = ax_get_defaults(
+            changing_props: dict[str, Any] = _ax_get_defaults(
                 ax, {k: v if v is not None else inorm[k] for k, v in snorm.items() if k in inorm}
             )
             style.clear()
@@ -487,7 +487,7 @@ class Regression:
         return (self[i] for i in range(len(self)))
 
 
-def ax_get_defaults(ax: "Axes", kw: dict[str, Any]):
+def _ax_get_defaults(ax: "Axes", kw: dict[str, Any]):
     return cast(dict[str, Any], ax._get_lines._getdefaults(kw=kw, ignore=frozenset()))  # pyright: ignore
 
 
