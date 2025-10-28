@@ -10,7 +10,7 @@
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
-    <link rel="stylesheet" type="text/css" href="_static/theme-overrides.css?v=b7ae5b88" />
+    <link rel="stylesheet" type="text/css" href="_static/theme-overrides.css?v=1e6f2b74" />
     
     
 
@@ -208,12 +208,12 @@
 <li class="toctree-l2"><a class="reference internal" href="lang/cpp/api-reference.html">C++ Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="lang/python/index.html">Python API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="lang/python/api-reference.html">Python API Reference</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="lang/c/index.html">C API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="lang/c/api-reference.html">C API Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="lang/c/index.html">C API</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of C API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="lang/c/api-reference.html">C API Reference</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="lang/python/index.html">Python API</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="lang/python/api-reference.html">Python API Reference</a></li>
 </ul>
 </li>
 </ul>
@@ -263,9 +263,9 @@
 <section id="multi-variant-segmented-regression">
 <h1>Multi-Variant Segmented Regression<a class="headerlink" href="#multi-variant-segmented-regression" title="Link to this heading">¶</a></h1>
 <p>This library enables segmented regression, calculating a suitable piecewise function which minimizes the MSE to the input samples.</p>
-<p>To use this library, refer to a <a class="reference internal" href="#installation-and-usage"><span class="xref myst">supported programming language</span></a> of your choice.</p>
-<p>If you use this library in an academic paper (e.g. to analyze your data), please consider <a class="reference internal" href="#license-and-contribution"><span class="xref myst">citing our work</span></a>.</p>
-<p><a class="reference internal" href="#lang/python/examples/plot.py"><span class="xref myst"><img alt="Example for a multi-variant with synthetic data and custom interpolation." src="lang/python/examples/example_plot.jpg" /> see code</span></a></p>
+<p>To use this library, refer to a <a class="reference internal" href="#installation-and-usage">supported programming language</a> of your choice.</p>
+<p>If you use this library in an academic paper (e.g. to analyze your data), please consider <a class="reference internal" href="#license-and-contribution">citing our work</a>.</p>
+<p><a class="reference external" href="https://github.com/Loesgar/mvsr/tree/main/lang/python/examples/plot.py"><img alt="Example for a multi-variant with synthetic data and custom interpolation." src="https://raw.githubusercontent.com/Loesgar/mvsr/main/lang/python/examples/example_plot.jpg" /> <code class="docutils literal notranslate"><span class="pre">lang/python/examples/plot.py</span></code></a></p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
 <p>This library enables segmented regression (also referred to as piecewise regression or min-ε regression).
@@ -298,17 +298,59 @@ If the individual regression functions of the variants should not share the brea
 <h2>Installation and Usage<a class="headerlink" href="#installation-and-usage" title="Link to this heading">¶</a></h2>
 <p>While the algorithms are implemented in C++, the interface is exposed via a C-API and there are bindings for other languages.
 We aim to make these available as a package in the corresponding package managers.
-The exact usage differs between the languages.
-We currently support the following languages (see the individual documentation for usage instructions):</p>
+The exact usage differs between the languages.</p>
+<p>We currently support the following languages (see the individual documentation for usage instructions).
+Generally there is a distinction between a easy to use (high-level) interface and a technical (low-level) interface.
+The latter only exposes the raw bindings and should only be used to embed the algorithms in a bigger application.</p>
+<p>For data analysis we recommend a language with a high-level interface, for the easiest and most feature rich experience we currently recommend using <a class="reference internal" href="lang/python/index.html"><span class="std std-doc">Python</span></a>.</p>
+<section id="high-level">
+<h3>High-Level<a class="headerlink" href="#high-level" title="Link to this heading">¶</a></h3>
 <ul class="simple">
-<li><p><a class="reference internal" href="#lang/c/README.md"><span class="xref myst">C</span></a></p></li>
-<li><p><a class="reference internal" href="#lang/cpp/README.md"><span class="xref myst">C++</span></a></p></li>
-<li><p><a class="reference internal" href="#lang/python/README.md"><span class="xref myst">Python</span></a></p></li>
+<li><p><a class="reference internal" href="lang/python/index.html"><span class="std std-doc">Python</span></a></p></li>
 </ul>
-<!-- [Julia](lang/julia/README.md)->
-<!-- [R/Rlang](lang/rlang/README.md)->
-<!-- [Rust](lang/rust/README.md)->
-
+<!-- [Julia](https://github.com/Loesgar/mvsr/tree/main/lang/julia/README.md)-->
+<!-- [R](https://github.com/Loesgar/mvsr/tree/main/lang/r/README.md)-->
+</section>
+<section id="low-level">
+<h3>Low-Level<a class="headerlink" href="#low-level" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="lang/c/index.html"><span class="std std-doc">C</span></a></p></li>
+<li><p><a class="reference internal" href="lang/cpp/index.html"><span class="std std-doc">C++</span></a></p></li>
+</ul>
+<!-- [Rust](https://github.com/Loesgar/mvsr/tree/main/lang/rust/README.md)-->
+</section>
+</section>
+<section id="license-and-contribution">
+<h2>License and Contribution<a class="headerlink" href="#license-and-contribution" title="Link to this heading">¶</a></h2>
+<p>The whole project is licensed under Mozilla Public License (MPL 2.0). This enables everyone to use, link and share this work (see <a class="reference external" href="https://github.com/Loesgar/mvsr/tree/main/LICENSE">LICENSE</a>).
+We strongly encourage you to share any changes and contribute to this project directly.</p>
+<p>If you are publishing a paper and use this library (e.g. to analyze your data), please consider to cite the following papers.
+They describe the analysis algorithm in more detail and evaluate the resulting speed and accuracy.</p>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@InProceedings</span><span class="p">{</span><span class="nl">pmlr-v267-losser25a</span><span class="p">,</span>
+<span class="w">  </span><span class="na">title</span><span class="w"> </span><span class="p">=</span><span class="w">     </span><span class="s">{Fast Min-$ε$ Segmented Regression using Constant-Time Segment Merging}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">author</span><span class="w"> </span><span class="p">=</span><span class="w">    </span><span class="s">{L\&quot;{o}{\ss}er, Ansgar and Schlecht, Max and Schintke, Florian and Witzke, Joel and Weidlich, Matthias and Scheuermann, Bj\&quot;{o}rn}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">booktitle</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Proceedings of the 42nd International Conference on Machine Learning}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">pages</span><span class="w"> </span><span class="p">=</span><span class="w">     </span><span class="s">{40312--40327}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">year</span><span class="w"> </span><span class="p">=</span><span class="w">      </span><span class="s">{2025}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">editor</span><span class="w"> </span><span class="p">=</span><span class="w">    </span><span class="s">{Singh, Aarti and Fazel, Maryam and Hsu, Daniel and Lacoste-Julien, Simon and Berkenkamp, Felix and Maharaj, Tegan and Wagstaff, Kiri and Zhu, Jerry}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">volume</span><span class="w"> </span><span class="p">=</span><span class="w">    </span><span class="s">{267}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">series</span><span class="w"> </span><span class="p">=</span><span class="w">    </span><span class="s">{Proceedings of Machine Learning Research}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">month</span><span class="w"> </span><span class="p">=</span><span class="w">     </span><span class="s">{13--19 Jul}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">publisher</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{PMLR}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">pdf</span><span class="w"> </span><span class="p">=</span><span class="w">       </span><span class="s">{https://raw.githubusercontent.com/mlresearch/v267/main/assets/losser25a/losser25a.pdf}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">url</span><span class="w"> </span><span class="p">=</span><span class="w">       </span><span class="s">{https://proceedings.mlr.press/v267/losser25a.html}</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="thanks">
+<h2>Thanks<a class="headerlink" href="#thanks" title="Link to this heading">¶</a></h2>
+<p>Special thanks for supporting this work goes to:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://fonda.hu-berlin.de/">SFB-FONDA</a> (Collaborative Research Center CRC-1404)</p></li>
+<li><p><a class="reference external" href="https://www.dfg.de/en">DFG</a> (German Research Foundation)</p></li>
+<li><p><a class="reference external" href="https://www.tu-darmstadt.de/index.en.jsp">Technical University of Darmstadt</a></p></li>
+</ul>
 </section>
 </section>
 

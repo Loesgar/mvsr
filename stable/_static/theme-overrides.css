@@ -7,7 +7,6 @@ body {
     --color-api-name: #e87d0d;
 }
 
-/* Fixes to field list, see #104636 */
 dl.field-list {
     display: grid;
     grid-template-columns: auto minmax(80%, 95%);

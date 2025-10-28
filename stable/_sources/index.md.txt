@@ -9,8 +9,8 @@ Overview <self>
 :hidden:
 
 lang/cpp/index
-lang/python/index
 lang/c/index
+lang/python/index
 ```
 
 # Multi-Variant Segmented Regression
@@ -21,7 +21,7 @@ To use this library, refer to a [supported programming language](#installation-a
 
 If you use this library in an academic paper (e.g. to analyze your data), please consider [citing our work](#license-and-contribution).
 
-[![Example for a multi-variant with synthetic data and custom interpolation.](lang/python/examples/example_plot.jpg) see code](lang/python/examples/plot.py)
+[![Example for a multi-variant with synthetic data and custom interpolation.](https://raw.githubusercontent.com/Loesgar/mvsr/main/lang/python/examples/example_plot.jpg) `lang/python/examples/plot.py`](https://github.com/Loesgar/mvsr/tree/main/lang/python/examples/plot.py)
 
 ## Overview
 
@@ -55,12 +55,54 @@ If the individual regression functions of the variants should not share the brea
 While the algorithms are implemented in C++, the interface is exposed via a C-API and there are bindings for other languages.
 We aim to make these available as a package in the corresponding package managers.
 The exact usage differs between the languages.
-We currently support the following languages (see the individual documentation for usage instructions):
 
-- [C](lang/c/README.md)
-- [C++](lang/cpp/README.md)
-- [Python](lang/python/README.md)
-<!-- [Julia](lang/julia/README.md)->
-<!-- [R/Rlang](lang/rlang/README.md)->
-<!-- [Rust](lang/rust/README.md)->
+We currently support the following languages (see the individual documentation for usage instructions).
+Generally there is a distinction between a easy to use (high-level) interface and a technical (low-level) interface.
+The latter only exposes the raw bindings and should only be used to embed the algorithms in a bigger application.
 
+For data analysis we recommend a language with a high-level interface, for the easiest and most feature rich experience we currently recommend using [Python](lang/python/index.md).
+
+### High-Level
+
+- [Python](lang/python/index.md)
+<!-- [Julia](https://github.com/Loesgar/mvsr/tree/main/lang/julia/README.md)-->
+<!-- [R](https://github.com/Loesgar/mvsr/tree/main/lang/r/README.md)-->
+
+### Low-Level
+
+- [C](lang/c/index.md)
+- [C++](lang/cpp/index.md)
+<!-- [Rust](https://github.com/Loesgar/mvsr/tree/main/lang/rust/README.md)-->
+
+## License and Contribution
+
+The whole project is licensed under Mozilla Public License (MPL 2.0). This enables everyone to use, link and share this work (see [LICENSE](https://github.com/Loesgar/mvsr/tree/main/LICENSE)).
+We strongly encourage you to share any changes and contribute to this project directly.
+
+If you are publishing a paper and use this library (e.g. to analyze your data), please consider to cite the following papers.
+They describe the analysis algorithm in more detail and evaluate the resulting speed and accuracy.
+
+```bibtex
+@InProceedings{pmlr-v267-losser25a,
+  title =     {Fast Min-$ε$ Segmented Regression using Constant-Time Segment Merging},
+  author =    {L\"{o}{\ss}er, Ansgar and Schlecht, Max and Schintke, Florian and Witzke, Joel and Weidlich, Matthias and Scheuermann, Bj\"{o}rn},
+  booktitle = {Proceedings of the 42nd International Conference on Machine Learning},
+  pages =     {40312--40327},
+  year =      {2025},
+  editor =    {Singh, Aarti and Fazel, Maryam and Hsu, Daniel and Lacoste-Julien, Simon and Berkenkamp, Felix and Maharaj, Tegan and Wagstaff, Kiri and Zhu, Jerry},
+  volume =    {267},
+  series =    {Proceedings of Machine Learning Research},
+  month =     {13--19 Jul},
+  publisher = {PMLR},
+  pdf =       {https://raw.githubusercontent.com/mlresearch/v267/main/assets/losser25a/losser25a.pdf},
+  url =       {https://proceedings.mlr.press/v267/losser25a.html},
+}
+```
+
+## Thanks
+
+Special thanks for supporting this work goes to:
+
+- [SFB-FONDA](https://fonda.hu-berlin.de/) (Collaborative Research Center CRC-1404)
+- [DFG](https://www.dfg.de/en) (German Research Foundation)
+- [Technical University of Darmstadt](https://www.tu-darmstadt.de/index.en.jsp)
