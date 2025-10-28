@@ -238,7 +238,7 @@ class Kernel:
             model[:, 1] = slopes
 
             return Segment(
-                np.empty(0), np.empty(0), model, np.empty(0), self, segments[0]._keepdims
+                np.empty(0), np.empty(0), self, model, np.empty(0), segments[0]._keepdims
             )
 
     class ModelInterpolator:
@@ -269,9 +269,9 @@ class Kernel:
             return Segment(
                 np.empty(0),
                 np.empty(0),
+                Kernel.ModelInterpolator(self._kernel, self._model_interpolation, segments),
                 np.concatenate([segment.get_model(True) for segment in segments], axis=1),
                 np.empty(0),
-                Kernel.ModelInterpolator(self._kernel, self._model_interpolation, segments),
                 segments[0]._keepdims,
             )
 
@@ -281,9 +281,9 @@ class Segment:
         self,
         xs: MvsrArray,
         ys: MvsrArray,
+        kernel: Kernel.Raw | Kernel.ModelInterpolator,
         model: MvsrArray,
         errors: MvsrArray,
-        kernel: Kernel.Raw | Kernel.ModelInterpolator,
         keepdims: bool,
     ):
         self._xs = xs
@@ -586,9 +586,9 @@ class Regression:
         return Segment(
             self._xs[self._starts[index] : int(self._ends[index]) + 1],
             self._ys[:, self._starts[index] : int(self._ends[index]) + 1],
+            self._kernel,
             self._models[index],
             self._errors[index],
-            self._kernel,
             self._keepdims,
         )
 
