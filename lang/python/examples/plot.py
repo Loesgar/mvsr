@@ -44,11 +44,11 @@ y = [[r.gauss(y,sigma) for y in yv] for yv in y_true]
 # It looks similar to using Interpolate.Smooth as input to 'model_interpolation'.
 def interpolate_smooth(x, segs):
     import math
-    cur = x - segs[0].x[-1]             # distance between x and left segment
-    dist = segs[1].x[0] - segs[0].x[-1] # distance between segments
-    t = cur/dist                        # progress (0.0 <= t <= 1.0)
-    res = (math.erf((t-.5)*4.0)+1.0)/2  # smoothed value
-    return [1-res,res]                  # weighting of the two models
+    cur = x - segs[0].xs[-1]              # distance between x and left segment
+    dist = segs[1].xs[0] - segs[0].xs[-1] # distance between segments
+    t = cur/dist                          # progress (0.0 <= t <= 1.0)
+    res = (math.erf((t-.5)*4.0)+1.0)/2    # smoothed value
+    return [1-res,res]                    # weighting of the two models
 
 # Calculate segmented regression
 regression = mvsr(x,y,3, kernel=Kernel.Poly(1, model_interpolation=interpolate_smooth))
@@ -130,9 +130,9 @@ for vi,(ax,v,l) in enumerate(zip(axs, regression.variants, [line_v1, line_v2])):
         )
 
     # Overall MSE
-    ax.set_ylabel(f'Variant {vi} — ($\\mathit{{MSE}}={sum([s.rss for s in v])/sum([len(s.x) for s in v]):.2f}$)')
+    ax.set_ylabel(f'Variant {vi} — ($\\mathit{{MSE}}={sum([s.rss for s in v])/sum([len(s.xs) for s in v]):.2f}$)')
     #ax.text((v[0].range[0]+v[-1].range[-1])/2, 12,
-    #    f'$\\mathit{{MSE}}={sum([s.rss for s in v])/sum([len(s.x) for s in v]):.2f}$',
+    #    f'$\\mathit{{MSE}}={sum([s.rss for s in v])/sum([len(s.xs) for s in v]):.2f}$',
     #    ha='center'
     #)
 
