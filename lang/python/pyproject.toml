@@ -45,7 +45,7 @@ line-length = 100
 
 [tool.pyright]
 typeCheckingMode = "strict"
-exclude = ["examples"]
+exclude = ["**/.*", "**/__pycache__", "examples"]
 reportMissingParameterType = "warning"
 reportUnnecessaryTypeIgnoreComment = "warning"
 reportPrivateUsage = false
