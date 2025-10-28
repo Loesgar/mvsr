@@ -3,14 +3,14 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="MVSR Python API Reference" href="api-reference.html" /><link rel="prev" title="MVSR C++ Reference" href="../cpp/api-reference.html" />
+<link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="MVSR Python API Reference" href="api-reference.html" /><link rel="prev" title="MVSR C API Reference" href="../c/api-reference.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
         <title>Python API - mvsr documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=302659d7" />
-    <link rel="stylesheet" type="text/css" href="../../_static/theme-overrides.css?v=b7ae5b88" />
+    <link rel="stylesheet" type="text/css" href="../../_static/theme-overrides.css?v=1e6f2b74" />
     
     
 
@@ -208,12 +208,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../cpp/api-reference.html">C++ Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Python API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="api-reference.html">Python API Reference</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../c/index.html">C API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../c/api-reference.html">C API Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../c/index.html">C API</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of C API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../c/api-reference.html">C API Reference</a></li>
+<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Python API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="api-reference.html">Python API Reference</a></li>
 </ul>
 </li>
 </ul>
@@ -258,14 +258,15 @@
         <article role="main" id="furo-main-content">
           <section id="python-api">
 <h1>Python API<a class="headerlink" href="#python-api" title="Link to this heading">¶</a></h1>
-<p>If you use this project to analyze you data, consider <a class="reference internal" href="#../../README.md#license-and-contribution"><span class="xref myst">citing our paper</span></a>.</p>
-<p><a class="reference internal" href="#examples/plot.py"><span class="xref myst"><img alt="Example for a multi-variant with synthetic data and custom interpolation." src="lang/python/examples/example_plot.jpg" /> <code class="docutils literal notranslate"><span class="pre">examples/plot.py</span></code></span></a></p>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
-<p>The easiest way is to use the provided, precompiled python packages from <a class="reference external" href="https://pypi.org/project/mvsr/"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyPI</span></code></a> using pip or uv.
-Alternatively These packages are also available on the release page.
+<p>The easiest way is to use the provided, precompiled python packages from <a class="reference external" href="https://pypi.org/project/mvsr/">PyPI</a> using pip or uv:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>mvsr<span class="w">  </span><span class="c1"># mvsr[matplotlib] for plotting support</span>
+</pre></div>
+</div>
+<p>The prebuilt wheels, as well as a source distribution are also available on the <a class="reference external" href="https://github.com/Loesgar/mvsr/releases">release page</a>.
 We provide these packages for all common systems, namely ARM (aarch64) and x86 (x86_64) for Linux, Windows and MacOS.</p>
-<p>If your system is not supported, you will have to <a class="reference internal" href="#manual-builds"><span class="xref myst">build the library yourself</span></a>.
+<p>If your system is not supported, you will have to <a class="reference internal" href="#manual-building">build the library yourself</a>.
 The only needed dependency is numpy (optionally matplotlib for convenient plotting).</p>
 </section>
 <section id="usage">
@@ -296,14 +297,11 @@ The following snippet shows a minimal working example.</p>
 
 </pre></div>
 </div>
-<p>The mvsr function computes the piecewise predictor function and returns a Regression object to access this information.
-It enables iterating over segments, iterating over variants, predicting values for other predictor values and also easy pretty plotting, using matplotlib.</p>
-<section id="api-reference">
-<h3><a class="reference internal" href="api-reference.html"><span class="std std-doc">API Reference</span></a><a class="headerlink" href="#api-reference" title="Link to this heading">¶</a></h3>
-</section>
+<p>The <code class="docutils literal notranslate"><span class="pre">mvsr</span></code> function computes the piecewise predictor function and returns a <code class="docutils literal notranslate"><span class="pre">Regression</span></code> object, which allows iterating over segments and variants, as well as evaluating the predictor function.
+It can also optionally be used for easy, pretty plotting using matplotlib.</p>
 <section id="parameters">
 <h3>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h3>
-<p>This is a short formal description of the interactions of all functions parameters to the main function.
+<p>This is a short formal description of the interactions of all parameters of the <code class="docutils literal notranslate"><span class="pre">mvsr</span></code> function.
 The first three arguments were already used in the last snipped: the predictor values (x), the response values (y) and the desired amount of segments (k).</p>
 <section id="predictor-values-x">
 <h4>Predictor Values <code class="docutils literal notranslate"><span class="pre">x</span></code><a class="headerlink" href="#predictor-values-x" title="Link to this heading">¶</a></h4>
@@ -311,7 +309,7 @@ The first three arguments were already used in the last snipped: the predictor v
 These values are preprocessed by a kernel object.
 By default the <code class="docutils literal notranslate"><span class="pre">Poly</span></code> kernel is used to enable piecewise linear regression.
 This behavior can be changed by changing the kernel to <code class="docutils literal notranslate"><span class="pre">Poly(0)</span></code> (piecewise constant), <code class="docutils literal notranslate"><span class="pre">Poly(d)</span></code> (piecewise polynomial of degree <code class="docutils literal notranslate"><span class="pre">d</span></code>) or <code class="docutils literal notranslate"><span class="pre">Raw</span></code> (provide your own Vandermonde-Matrix).
-You can even provide a <a class="reference internal" href="#custom-kernel"><span class="xref myst">custom kernel</span></a> by yourself.</p>
+You can even provide a <a class="reference internal" href="#custom-kernel">custom kernel</a> by yourself.</p>
 <p>The Poly Kernel also supports multiple input dimensions.
 This is achieved by supplying an iterable type (e.g. a list) for each input sample.
 Notice that some functionality (e.g. calculating a response value) relies on being able to compare the predictor values.
@@ -323,7 +321,7 @@ If you do not want to implement a comparison function for you type, consider usi
 There must be exactly one response value for each predictor value.</p>
 <p>It is also possible to provide a list of response value lists.
 All these response value lists must contain the same amount of values.
-This results in a mulit-variant segmented regression (in simple terms, there are multiple response values for every single predictor value, see the <a class="reference internal" href="#examples/plot.py"><span class="xref myst">plotting example</span></a>).
+This results in a mulit-variant segmented regression (in simple terms, there are multiple response values for every single predictor value, see the <a class="reference external" href="https://github.com/Loesgar/mvsr/tree/main/lang/python/examples/plot.py">plotting example</a>).
 All variants share the same breakpoints, i.e. their segments start and end at the same positions.
 If the variants should not share the breakpoint positions, it is recommended to conduct a dedicated segmented regression for each variant.</p>
 </section>
@@ -334,10 +332,10 @@ Future versions will enable automatic deduction of this parameter.</p>
 </section>
 <section id="named-parameters">
 <h4>Named Parameters<a class="headerlink" href="#named-parameters" title="Link to this heading">¶</a></h4>
-<p>Named parameters must be provided by their names directly.</p>
+<p>Named parameters must always be provided as keyword arguments.</p>
 <p><strong><code class="docutils literal notranslate"><span class="pre">kernel</span></code></strong><br>
 This enables to use an own kernel object.
-Its <code class="docutils literal notranslate"><span class="pre">model_interpolation</span></code> parameter also enables tweaking the behavior in between the segments (see <a class="reference internal" href="#interpolation"><span class="xref myst">Interpolation</span></a>).</p>
+Its <code class="docutils literal notranslate"><span class="pre">model_interpolation</span></code> parameter also enables tweaking the behavior in between the segments (see <a class="reference internal" href="#interpolation">Interpolation</a>).</p>
 <p><strong><code class="docutils literal notranslate"><span class="pre">algorithm</span></code></strong><br>
 This defines how the regression algorithm works.
 There are two options, a very fast and accurate heuristic (<code class="docutils literal notranslate"><span class="pre">Algorithm.GREEDY</span></code>) and a dynamic program (<code class="docutils literal notranslate"><span class="pre">Algorithm.DP</span></code>).
@@ -346,7 +344,7 @@ However, the dynamic program guarantees to find the solution with the smallest e
 In some use cases with few samples this can be worth the high resource consumption.
 Notice that compute time and amount of memory needed for DP scale much worse with a growing number of samples.
 If not amount of samples, but the compute time is the limiting factor, we <em>always</em> recommend using more samples with the greedy approach instead of less samples with the dynamic program.
-For an in-depth analysis and an explanation of the algorithms see <a class="reference internal" href="#../../README.md#license-and-contribution"><span class="xref myst">our research paper</span></a>.
+For an in-depth analysis and an explanation of the algorithms see <a class="reference internal" href="../../index.html#license-and-contribution"><span class="std std-ref">our research paper</span></a>.
 Per default the algorithm is chosen based on the number of input samples, effective input dimensions, and the desired amount segments.</p>
 <p><strong><code class="docutils literal notranslate"><span class="pre">score</span></code></strong><br>
 This parameter defines how the amount of segments is determined, if [parameter k](#Segment Count) is not uniquely defined.
@@ -380,7 +378,7 @@ A callable (e.g. a function) taking one predictor value as an input.
 It is used to be able to handle complex, non-comparable types as predictor values.
 The function must return a value that can be compared.
 This is necessary in order to determine which segment a predictor value belongs to.
-The <a class="reference internal" href="#predictor-values-x"><span class="xref myst">predictor value list</span></a> must also be in sorted order relative to the resulting key, otherwise the behavior is undefined.
+The <a class="reference internal" href="#predictor-values-x">predictor value list</a> must also be in sorted order relative to the resulting key, otherwise the behavior is undefined.
 By default this value is <code class="docutils literal notranslate"><span class="pre">None</span></code> and behaves as if the input value is returned.</p>
 </section>
 </section>
@@ -436,7 +434,7 @@ This is a typical function for continuous transition between two segments.
 It is based on a cubic function ($3x^2-2x^3$) and is comparable to known ease-in, ease-out smoothing functions.
 It is similar to linear interpolation (lerp), but less harsh at the edges of the segments.</p>
 <p>You can also provide an own function.
-This is demonstrated in the <a class="reference internal" href="#examples/plot.py"><span class="xref myst">plotting example</span></a>.</p>
+This is demonstrated in the <a class="reference external" href="https://github.com/Loesgar/mvsr/tree/main/lang/python/examples/plot.py">plotting example</a>.</p>
 <p>Notice, that the Poly kernel is also able to use a <code class="docutils literal notranslate"><span class="pre">model_interpolation</span></code> function, but by default will instead linearly interpolate between the last sample of the previous segment and the first sample of the next one.
 Such functionality can be implemented with a custom kernel.</p>
 </section>
@@ -460,10 +458,21 @@ This enables reusing the existing features.</p>
 The Poly kernel additionally implements data preprocessing for polynomial regression and a special interpolation between the samples.</p>
 </section>
 </section>
-<section id="manual-builds">
-<h2>Manual Builds<a class="headerlink" href="#manual-builds" title="Link to this heading">¶</a></h2>
+<section id="manual-building">
+<h2>Manual Building<a class="headerlink" href="#manual-building" title="Link to this heading">¶</a></h2>
+<section id="build-requirements">
+<h3>Build Requirements<a class="headerlink" href="#build-requirements" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.astral.sh/uv/getting-started/installation/"><code class="docutils literal notranslate"><span class="pre">uv</span></code></a></p></li>
+<li><p>the <a class="reference external" href="https://nixos.org/download"><code class="docutils literal notranslate"><span class="pre">nix</span> <span class="pre">package</span> <span class="pre">manager</span></code></a> <strong>OR</strong> <a class="reference external" href="https://cmake.org/"><code class="docutils literal notranslate"><span class="pre">cmake</span></code></a> + a C++ compiler (<a class="reference external" href="https://gcc.gnu.org/"><code class="docutils literal notranslate"><span class="pre">gcc</span></code></a> / <a class="reference external" href="https://clang.llvm.org/"><code class="docutils literal notranslate"><span class="pre">clang</span></code></a> / <a class="reference external" href="https://visualstudio.microsoft.com/vs/features/cplusplus/"><code class="docutils literal notranslate"><span class="pre">msvc</span></code></a>)</p></li>
+</ul>
+<p>Clone the repository, navigate to <code class="docutils literal notranslate"><span class="pre">lang/python</span></code> and run:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>build
+</pre></div>
+</div>
 <div class="toctree-wrapper compound">
 </div>
+</section>
 </section>
 </section>
 
@@ -481,14 +490,14 @@ The Poly kernel additionally implements data preprocessing for polynomial regres
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="../cpp/api-reference.html">
+          <a class="prev-page" href="../c/api-reference.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">MVSR C++ Reference</div>
+                <div class="title">MVSR C API Reference</div>
                 
               </div>
             </a>
@@ -525,7 +534,6 @@ The Poly kernel additionally implements data preprocessing for polynomial regres
 <li><a class="reference internal" href="#">Python API</a><ul>
 <li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#usage">Usage</a><ul>
-<li><a class="reference internal" href="#api-reference"><span class="xref myst">API Reference</span></a></li>
 <li><a class="reference internal" href="#parameters">Parameters</a><ul>
 <li><a class="reference internal" href="#predictor-values-x">Predictor Values <code class="docutils literal notranslate"><span class="pre">x</span></code></a></li>
 <li><a class="reference internal" href="#response-values-y">Response Values <code class="docutils literal notranslate"><span class="pre">y</span></code></a></li>
@@ -540,7 +548,10 @@ The Poly kernel additionally implements data preprocessing for polynomial regres
 <li><a class="reference internal" href="#custom-kernel">Custom Kernel</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#manual-builds">Manual Builds</a></li>
+<li><a class="reference internal" href="#manual-building">Manual Building</a><ul>
+<li><a class="reference internal" href="#build-requirements">Build Requirements</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

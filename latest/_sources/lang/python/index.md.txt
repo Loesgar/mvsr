@@ -2,17 +2,22 @@
 
 
 
-If you use this project to analyze you data, consider [citing our paper](../../README.md#license-and-contribution).
 
-[![Example for a multi-variant with synthetic data and custom interpolation.](examples/example_plot.jpg) `examples/plot.py`](examples/plot.py)
+
+
 
 ## Installation
 
-The easiest way is to use the provided, precompiled python packages from [PyPI](https://pypi.org/project/mvsr/) using pip or uv.
-Alternatively These packages are also available on the release page.
+The easiest way is to use the provided, precompiled python packages from [PyPI](https://pypi.org/project/mvsr/) using pip or uv:
+
+```shell
+pip install mvsr  # mvsr[matplotlib] for plotting support
+```
+
+The prebuilt wheels, as well as a source distribution are also available on the [release page](https://github.com/Loesgar/mvsr/releases).
 We provide these packages for all common systems, namely ARM (aarch64) and x86 (x86_64) for Linux, Windows and MacOS.
 
-If your system is not supported, you will have to [build the library yourself](#manual-builds).
+If your system is not supported, you will have to [build the library yourself](#manual-building).
 The only needed dependency is numpy (optionally matplotlib for convenient plotting).
 
 ## Usage
@@ -46,13 +51,13 @@ for segment in regression:              # iterate over segments
 
 ```
 
-The mvsr function computes the piecewise predictor function and returns a Regression object to access this information.
-It enables iterating over segments, iterating over variants, predicting values for other predictor values and also easy pretty plotting, using matplotlib.
-### [API Reference](project:./api-reference.rst)
+The `mvsr` function computes the piecewise predictor function and returns a `Regression` object, which allows iterating over segments and variants, as well as evaluating the predictor function.
+It can also optionally be used for easy, pretty plotting using matplotlib.
+
 
 ### Parameters
 
-This is a short formal description of the interactions of all functions parameters to the main function.
+This is a short formal description of the interactions of all parameters of the `mvsr` function.
 The first three arguments were already used in the last snipped: the predictor values (x), the response values (y) and the desired amount of segments (k).
 
 #### Predictor Values `x`
@@ -75,7 +80,7 @@ There must be exactly one response value for each predictor value.
 
 It is also possible to provide a list of response value lists.
 All these response value lists must contain the same amount of values.
-This results in a mulit-variant segmented regression (in simple terms, there are multiple response values for every single predictor value, see the [plotting example](examples/plot.py)).
+This results in a mulit-variant segmented regression (in simple terms, there are multiple response values for every single predictor value, see the [plotting example](https://github.com/Loesgar/mvsr/tree/main/lang/python/examples/plot.py)).
 All variants share the same breakpoints, i.e. their segments start and end at the same positions.
 If the variants should not share the breakpoint positions, it is recommended to conduct a dedicated segmented regression for each variant.
 
@@ -86,7 +91,7 @@ Future versions will enable automatic deduction of this parameter.
 
 #### Named Parameters
 
-Named parameters must be provided by their names directly.
+Named parameters must always be provided as keyword arguments.
 
 **`kernel`**<br>
 This enables to use an own kernel object.
@@ -100,7 +105,7 @@ However, the dynamic program guarantees to find the solution with the smallest e
 In some use cases with few samples this can be worth the high resource consumption.
 Notice that compute time and amount of memory needed for DP scale much worse with a growing number of samples.
 If not amount of samples, but the compute time is the limiting factor, we *always* recommend using more samples with the greedy approach instead of less samples with the dynamic program.
-For an in-depth analysis and an explanation of the algorithms see [our research paper](../../README.md#license-and-contribution).
+For an in-depth analysis and an explanation of the algorithms see [our research paper](../../index.md#license-and-contribution).
 Per default the algorithm is chosen based on the number of input samples, effective input dimensions, and the desired amount segments.
 
 **`score`**<br>
@@ -203,7 +208,7 @@ It is based on a cubic function ($3x^2-2x^3$) and is comparable to known ease-in
 It is similar to linear interpolation (lerp), but less harsh at the edges of the segments.
 
 You can also provide an own function.
-This is demonstrated in the [plotting example](examples/plot.py).
+This is demonstrated in the [plotting example](https://github.com/Loesgar/mvsr/tree/main/lang/python/examples/plot.py).
 
 Notice, that the Poly kernel is also able to use a `model_interpolation` function, but by default will instead linearly interpolate between the last sample of the previous segment and the first sample of the next one.
 Such functionality can be implemented with a custom kernel.
@@ -228,8 +233,18 @@ This enables reusing the existing features.
 The Raw kernel implements the model interpolation functionality (by passing through the `model_interpolation` parameter), min-max normalization and denormalization (by defining the x-dimension that is subject to translation, in addition to the scaling), and preprocessing of a Vandermonde matrix.
 The Poly kernel additionally implements data preprocessing for polynomial regression and a special interpolation between the samples.
 
-## Manual Builds
+## Manual Building
 
+### Build Requirements
+
+- [`uv`](https://docs.astral.sh/uv/getting-started/installation/)
+- the [`nix package manager`](https://nixos.org/download) **OR** [`cmake`](https://cmake.org/) + a C++ compiler ([`gcc`](https://gcc.gnu.org/) / [`clang`](https://clang.llvm.org/) / [`msvc`](https://visualstudio.microsoft.com/vs/features/cplusplus/))
+
+Clone the repository, navigate to `lang/python` and run:
+
+```shell
+uv build
+```
 
 ```{toctree}
 :hidden:

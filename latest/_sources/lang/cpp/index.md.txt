@@ -2,12 +2,12 @@
 
 
 
-If you use this project to analyze you data, consider [citing our paper](../../README.md#license-and-contribution).
+If you use this project to analyze you data, consider [citing our paper](../../index.md#license-and-contribution).
 
 The C++ part is the native programming language for the mvsr library.
 It is the most flexible, but also the most low-level API.
 It allows you to use your own data-type and change the matrix functions, which can speedup the calculation for exeedingly large number of dimensions or variants.
-If this is not needed, it is probably easier to use the [C-API](../c/README.md) from C++.
+If this is not needed, it is probably easier to use the [C-API](../c/index.md) from C++.
 
 ## Installation
 
@@ -21,9 +21,9 @@ The data type is used to represent a single scalar value, typically `float`, `do
 
 After instantiating an object, it is possible to use the member functions.
 They are described in the [C++ API reference](https://loesgar.github.io/mvsr/stable/lang/cpp/api-reference.html) and similar to the low-level C-API.
-The exact usage can be seen in the implementation of the C interface [here](../../mvsr/src/mvsr.cpp).
+The exact usage can be seen in the implementation of the [C interface](https://github.com/Loesgar/mvsr/tree/main/mvsr/src/mvsr.cpp).
 
-The typical steps are described in the [C-API documentation](../c/README.md#usage) and can be seen in the C helper functions in the `mvsr/inc/mvsr.h` file.
+The typical steps are described in the [C-API documentation](../c/index.md#usage) and can be seen in the C helper functions in the `mvsr/inc/mvsr.h` file.
 
 ## Advanced Usage
 

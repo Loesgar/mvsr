@@ -2,11 +2,11 @@
 
 
 
-If you use this project to analyze you data, consider [citing our paper](../../README.md#license-and-contribution).
+If you use this project to analyze you data, consider [citing our paper](../../index.md#license-and-contribution).
 
 The C-API is the backbone for all supported programming languages.
 Using this API is low-level and requires manual data management, preprocessing, normalization, etc.
-If you want an easy-to-use interface to analyze your data, we recommend using a language with a high-level interface, like [Python](../python/README.md).
+If you want an easy-to-use interface to analyze your data, we recommend using a language with a high-level interface, like [Python](../python/index.md).
 
 ## Installation
 
@@ -14,7 +14,8 @@ Prebuild binaries are available in the Release section of our Github repository 
 They include a dynamic library and a single header file.
 
 Alternatively you can manually build and compile the library in the mvsr folder using [cmake](https://cmake.org/cmake/help/latest/).
-```bash
+
+```shell
 mkdir build
 cd build
 cmake ..
@@ -23,14 +24,14 @@ cmake --build .
 
 If your system supports the [nix package manager](https://nixos.org/download/) you can also build the library using the flake in the root folder.
 
-```bash
+```shell
 nix build .#mvsr
 ```
 
 ## Usage
 
 We use an object oriented API design.
-You can use the helper functions from the [`mvsr.h`](../../mvsr/inc/mvsr.h).
+You can use the helper functions from the [`mvsr.h`](https://github.com/Loesgar/mvsr/tree/main/mvsr/inc/mvsr.h).
 They are also a good inspiration to use the low-level interface.
 
 If you want to use the low-level interface yourself, you first have to decide wether you are using the `_f64` (double) or `_f32` (float) function family.
