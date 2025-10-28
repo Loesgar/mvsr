@@ -174,7 +174,7 @@ class Kernel:
 
         Args:
             degree: Polynomial degree.
-            model_interpolation: (typing.Callable[[numpy.typing.ArrayLike, list[Segment]], list[float]] | None):
+            model_interpolation (typing.Callable[[numpy.typing.ArrayLike, list[Segment]], list[float]] | None):
                 Function to interpolate between neighbouring segments. If :obj:`None` interpolate
                 linearly between segment endpoints. Defaults to :obj:`None`.
         """
@@ -203,7 +203,8 @@ class Kernel:
 
             Raises:
                 RuntimeError: If :obj:`model_interpolation` is set to :obj:`None` and more than 2
-                segments were provided or segments were constructed from multidimensional x values.
+                    segments were provided or segments were constructed from multidimensional x
+                    values.
 
             Returns:
                 Segment: Interpolated segment.
