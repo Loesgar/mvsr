@@ -3,7 +3,7 @@ name = "mvsr-docs"
 version = "0"
 requires-python = ">=3.12"
 dependencies = [
-    "mvsr",
+    "mvsr[matplotlib]",
     "sphinx",
     "furo",
     "myst-parser",

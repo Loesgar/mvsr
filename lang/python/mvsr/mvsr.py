@@ -390,6 +390,18 @@ class Segment:
         xs: int | npt.ArrayLike = 1000,
         style: dict[str, Any] | Iterable[dict[str, Any] | None] = {},
     ):
+        """Plot segment using matplotlib.
+
+        Args:
+            ax: Single matplotlib :class:`Axes` or iterable of :class:`Axes` for each variant.
+            xs (int | numpy.typing.ArrayLike | typing.Iterable[typing.Any]): Number of points to
+                sample or array-like of explicit x values. Defaults to 1000.
+            style: Matplotlib styling applied to segments. Can be provided as iterable for each
+                variant. Defaults to {}.
+
+        Returns:
+            list[list[matplotlib.lines.Line2D]]: List of handles for plotted lines, per variant.
+        """
         if not _is_iter(ax):
             ax = [ax] * self._ys.shape[0]
         axes = cast(Iterable["Axes"], ax)
@@ -530,6 +542,22 @@ class Regression:
         style: dict[str, Any] | Iterable[dict[str, Any] | None] = {},
         istyle: dict[str, Any] | Iterable[dict[str, Any] | None] | None = None,
     ):
+        """Plot regression segments using matplotlib.
+
+        Args:
+            ax: Single matplotlib :class:`Axes` or iterable of :class:`Axes` for each variant.
+            xs (int | numpy.typing.ArrayLike | typing.Iterable[typing.Any]): Number of points to
+                sample or array-like of explicit x values. Defaults to 1000.
+            style: Matplotlib styling applied to segments. Can be provided as iterable for each
+                variant. Defaults to {}.
+            istyle: Matplotlib styling used for interpolated regions between segments.
+                If :obj:`None`, uses default styling. Defaults to :obj:`None`.
+
+        Returns:
+            list[list[list[matplotlib.lines.Line2D]]]: List of handles for plotted lines, per
+            variant, per segment.
+        """
+
         from matplotlib.cbook import normalize_kwargs
         from matplotlib.lines import Line2D
 

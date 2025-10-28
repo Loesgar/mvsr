@@ -38,5 +38,6 @@ autodoc_preserve_defaults = True
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "numpy": ("https://numpy.org/doc/stable", None),
+    "matplotlib": ("https://matplotlib.org/stable/", None),
 }
 typehints_document_rtype = False
