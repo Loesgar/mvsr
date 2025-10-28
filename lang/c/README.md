@@ -35,7 +35,7 @@ We use an object oriented API design.
 You can use the helper functions from the [`mvsr.h`](../../mvsr/inc/mvsr.h).
 They are also a good inspiration to use the low-level interface.
 
-If you want to use the low-level interface yourself, you first have to decide wether you are using the `_f64` (double) or `_f32` (float) function family.
+If you want to use the low-level interface yourself, you first have to decide whether you are using the `_f64` (double) or `_f32` (float) function family.
 These function families can **NOT** be used interchangly on the same regression object.
 For further documentation on the individual functions, see the [API reference](https://loesgar.github.io/mvsr/stable/lang/c/api-reference.html).
 

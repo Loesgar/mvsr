@@ -492,7 +492,7 @@ class Regression:
     def get_segment(self, x: Any):
         """Get :class:`Segment` object for a given x value.
 
-        Returns an interpolated :class:`Segment` if x is inbetween segments.
+        Returns an interpolated :class:`Segment` if x is in between segments.
 
         Args:
             x: Input x value.
@@ -505,7 +505,7 @@ class Regression:
     def get_segment_index(self, x: Any) -> tuple[int, ...]:
         """Get segment indices for a given x value.
 
-        Returns multiple indices if x is inbetween segments.
+        Returns multiple indices if x is in between segments.
 
         Args:
             x: Input x value.

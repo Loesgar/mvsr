@@ -183,7 +183,7 @@ extern "C"
     /**
      * @brief Performs a fast segmented regression.
      *
-     * @param      samples     The number of sampels.
+     * @param      samples     The number of samples.
      * @param      dimensions  The number of dimensions.
      * @param      variants    The number of variants.
      * @param      data        The sample data (array of samples, with [dimensions+variants] values for each sample).
