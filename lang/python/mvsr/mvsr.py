@@ -398,6 +398,46 @@ class Regression:
         self._start_values = x[self._starts]
         self._end_values = x[self._ends]
 
+    @property
+    def segments(self):
+        """list[Segment]: List of :class:`Segment` objects."""
+        return [segment for segment in self]
+
+    @property
+    def starts(self):
+        """numpy.ndarray: Input sample indices of segment starts."""
+        return self._starts.copy()
+
+    @property
+    def variants(self):
+        """list[Regression]: List of :class:`Regression` objects for each variant."""
+        return [
+            Regression(
+                self._x,
+                self._y[variant : variant + 1],
+                self._kernel,
+                self._starts,
+                self._models[:, variant : variant + 1, :],
+                self._errors[:, variant : variant + 1],
+                False,
+                self._sortkey,
+            )
+            for variant in range(self._y.shape[0])
+        ]
+
+    def get_segment(self, x: Any):
+        """Get :class:`Segment` object for a given x value.
+
+        Returns an interpolated :class:`Segment` if x is inbetween segments.
+
+        Args:
+            x: Input x value.
+
+        Returns:
+            Segment: Segment corresponding to x.
+        """
+        return self.get_segment_by_index(self.get_segment_index(x))
+
     def get_segment_index(self, x: Any) -> tuple[int, ...]:
         """Get segment indices for a given x value.
 
@@ -430,46 +470,6 @@ class Regression:
             if len(index) == 1
             else self._kernel.interpolate([self[i] for i in index])
         )
-
-    def get_segment(self, x: Any):
-        """Get :class:`Segment` object for a given x value.
-
-        Returns an interpolated :class:`Segment` if x is inbetween segments.
-
-        Args:
-            x: Input x value.
-
-        Returns:
-            Segment: Segment corresponding to x.
-        """
-        return self.get_segment_by_index(self.get_segment_index(x))
-
-    @property
-    def starts(self):
-        """numpy.ndarray: Input sample indices of segment starts."""
-        return self._starts.copy()
-
-    @property
-    def segments(self):
-        """list[Segment]: List of :class:`Segment` objects."""
-        return [segment for segment in self]
-
-    @property
-    def variants(self):
-        """list[Regression]: List of :class:`Regression` objects for each variant."""
-        return [
-            Regression(
-                self._x,
-                self._y[variant : variant + 1],
-                self._kernel,
-                self._starts,
-                self._models[:, variant : variant + 1, :],
-                self._errors[:, variant : variant + 1],
-                False,
-                self._sortkey,
-            )
-            for variant in range(self._y.shape[0])
-        ]
 
     def plot(
         self,
