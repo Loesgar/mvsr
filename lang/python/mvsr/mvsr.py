@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from _typeshed import SupportsRichComparison
     from matplotlib.axes import Axes
 else:
-    SupportsRichComparison = object
+    SupportsRichComparison = Any
 
 _ModelInterpolation = Callable[[npt.ArrayLike, list["Segment"]], list[float]]
 
@@ -360,6 +360,19 @@ class Segment:
 
 
 class Regression:
+    """Regression consisting of multiple segments.
+
+    Args:
+        x (numpy.typing.ArrayLike_): X input values.
+        y (numpy.ndarray): Y input values.
+        kernel (:class:`Kernel.Raw`): Kernel used to transform x values.
+        starts (numpy.ndarray): Segment start indices.
+        models (numpy.ndarray): Segment models.
+        errors (numpy.ndarray): Residual sum of squares for each sample.
+        keepdims: If set to False, return scalar values when evaluating single-variant segments.
+        sortkey: Function to extract a comparison key from x values. Defaults to :obj:`None`.
+    """
+
     def __init__(
         self,
         x: npt.ArrayLike,
@@ -386,12 +399,32 @@ class Regression:
         self._end_values = x[self._ends]
 
     def get_segment_index(self, x: Any) -> tuple[int, ...]:
+        """Get segment indices for a given x value.
+
+        Returns multiple indices if x is inbetween segments.
+
+        Args:
+            x: Input x value.
+
+        Returns:
+            tuple[int, ...]: Tuple of segment indices.
+        """
         index = bisect(self._start_values[1:], self._sortkey(x), key=self._sortkey)
         if self._sortkey(self._end_values[index]) < self._sortkey(x):
             return (index, index + 1)
         return (index,)
 
     def get_segment_by_index(self, index: tuple[int, ...]):
+        """Get :class:`Segment` object for the given indices.
+
+        Returns an interpolated :class:`Segment` if multiple indices are provided.
+
+        Args:
+            index: Tuple of segment indices.
+
+        Returns:
+            Segment: Segment at the given index or interpolated segment.
+        """
         return (
             self[index[0]]
             if len(index) == 1
@@ -399,18 +432,31 @@ class Regression:
         )
 
     def get_segment(self, x: Any):
+        """Get :class:`Segment` object for a given x value.
+
+        Returns an interpolated :class:`Segment` if x is inbetween segments.
+
+        Args:
+            x: Input x value.
+
+        Returns:
+            Segment: Segment corresponding to x.
+        """
         return self.get_segment_by_index(self.get_segment_index(x))
 
     @property
     def starts(self):
+        """numpy.ndarray: Input sample indices of segment starts."""
         return self._starts.copy()
 
     @property
     def segments(self):
+        """list[Segment]: List of :class:`Segment` objects."""
         return [segment for segment in self]
 
     @property
     def variants(self):
+        """list[Regression]: List of :class:`Regression` objects for each variant."""
         return [
             Regression(
                 self._x,
@@ -505,9 +551,22 @@ class Regression:
         return results
 
     def __call__(self, x: Any):
+        """Evaluate the regression for a given x value.
+
+        Args:
+            x: Input x value.
+
+        Returns:
+            numpy.ndarray: Predicted y value.
+        """
         return self.get_segment(x)(x)
 
     def __len__(self):
+        """Get the number of segments.
+
+        Returns:
+            int: Number of segments.
+        """
         return len(self._end_values)
 
     @overload

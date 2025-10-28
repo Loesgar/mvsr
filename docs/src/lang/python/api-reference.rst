@@ -18,6 +18,9 @@ Classes
 
 .. autoclass:: mvsr.Regression
 
+    .. automethod:: mvsr.Regression.__call__
+    .. automethod:: mvsr.Regression.__len__
+
 .. autoclass:: mvsr.Interpolate
 
 ^^^^^^^
