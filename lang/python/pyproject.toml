@@ -1,7 +1,7 @@
 [project]
 name = "mvsr"
 description = "Library for Fast Segmented Regression"
-version = "0.1.2"
+version = "0.2.0"
 requires-python = ">=3.10"
 readme = "README.md"
 dependencies = ["numpy>=1.21"]
