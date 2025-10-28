@@ -35,7 +35,7 @@ class Interpolate:
         """Use the Segment that is closest to :obj:`x` for interpolating."""
         index = np.argmin(
             [
-                min([sum((np.array(x, ndmin=1) - np.array(sx, ndmin=1)) ** 2) for sx in segment.x])
+                min([sum((np.array(x, ndmin=1) - np.array(sx, ndmin=1)) ** 2) for sx in segment.xs])
                 for segment in segments
             ]
         )
@@ -46,15 +46,15 @@ class Interpolate:
     @staticmethod
     def linear(x: npt.ArrayLike, segments: list["Segment"]):
         """Interpolate linearly between Segments based on :obj:`x`."""
-        distance = segments[1].x[0] - segments[0].x[-1]
-        x_normalized: float = (x - segments[0].x[-1]) / distance
+        distance = segments[1].xs[0] - segments[0].xs[-1]
+        x_normalized: float = (x - segments[0].xs[-1]) / distance
         return [1 - x_normalized] + [0.0] * (len(segments) - 2) + [x_normalized]
 
     @staticmethod
     def smooth(x: npt.ArrayLike, segments: list["Segment"]):
         """Interpolate smoothly (using a cubic function) between Segments based on :obj:`x`."""
-        distance = segments[1].x[0] - segments[0].x[-1]
-        x_normalized = (x - segments[0].x[-1]) / distance
+        distance = segments[1].xs[0] - segments[0].xs[-1]
+        x_normalized = (x - segments[0].xs[-1]) / distance
         result: float = 3 * x_normalized**2 - 2 * x_normalized**3
         return [1 - result] + [0.0] * (len(segments) - 2) + [result]
 
@@ -279,15 +279,15 @@ class Kernel:
 class Segment:
     def __init__(
         self,
-        x: MvsrArray,
-        y: MvsrArray,
+        xs: MvsrArray,
+        ys: MvsrArray,
         model: MvsrArray,
         errors: MvsrArray,
         kernel: Kernel.Raw | Kernel.ModelInterpolator,
         keepdims: bool,
     ):
-        self._x = x
-        self._y = y
+        self._xs = xs
+        self._ys = ys
         self._model = model
         self._errors = errors
         self._kernel = kernel
@@ -313,7 +313,7 @@ class Segment:
 
     @property
     def samplecount(self):
-        return len(self._x)
+        return len(self._xs)
 
     def get_model(self, keepdims: bool | None = None):
         keepdims = self._keepdims if keepdims is None else keepdims
@@ -324,15 +324,15 @@ class Segment:
 
     @property
     def range(self):
-        return (self._x[0], self._x[-1])
+        return (self._xs[0], self._xs[-1])
 
     @property
-    def x(self):
-        return self._x.copy()
+    def xs(self):
+        return self._xs.copy()
 
     @property
-    def y(self):
-        return self._y.copy()
+    def ys(self):
+        return self._ys.copy()
 
     def plot(
         self,
@@ -341,18 +341,20 @@ class Segment:
         style: dict[str, Any] | Iterable[dict[str, Any] | None] = {},
     ):
         if not _is_iter(ax):
-            ax = [ax] * self._y.shape[0]
+            ax = [ax] * self._ys.shape[0]
         axes = cast(Iterable["Axes"], ax)
 
         if _is_mapping(style):
-            styles = [style] * self._y.shape[0]
+            styles = [style] * self._ys.shape[0]
         else:
             style = cast(list[dict[str, Any] | None], style)
             styles = [{} if s is None else s for s in style]
 
         if not _is_iter(xs):
             xs = cast(int, xs)
-            xs = [(self._x[0] + (self._x[-1] * i - self._x[0] * i) / (xs - 1)) for i in range(xs)]
+            xs = [
+                (self._xs[0] + (self._xs[-1] * i - self._xs[0] * i) / (xs - 1)) for i in range(xs)
+            ]
         xs = cast(npt.ArrayLike, xs)
 
         ys = np.matmul(self._model, self._kernel(xs))
@@ -363,8 +365,8 @@ class Regression:
     """Regression consisting of multiple segments.
 
     Args:
-        x (numpy.typing.ArrayLike_): X input values.
-        y (numpy.ndarray): Y input values.
+        xs (numpy.typing.ArrayLike_): X input values.
+        ys (numpy.ndarray): Y input values.
         kernel (:class:`Kernel.Raw`): Kernel used to transform x values.
         starts (numpy.ndarray): Segment start indices.
         models (numpy.ndarray): Segment models.
@@ -375,8 +377,8 @@ class Regression:
 
     def __init__(
         self,
-        x: npt.ArrayLike,
-        y: MvsrArray,
+        xs: npt.ArrayLike,
+        ys: MvsrArray,
         kernel: Kernel.Raw,
         starts: npt.NDArray[np.uintp],
         models: MvsrArray,
@@ -384,8 +386,8 @@ class Regression:
         keepdims: bool,
         sortkey: Callable[[Any], SupportsRichComparison] | None = None,
     ):
-        self._x = x = np.array(x, dtype=object)
-        self._y = y
+        self._xs = xs = np.array(xs, dtype=object)
+        self._ys = ys
         self._kernel = kernel
         self._starts = starts
         self._models = models
@@ -393,10 +395,10 @@ class Regression:
         self._keepdims = keepdims
         self._sortkey: Callable[[Any], Any] = (lambda x: x) if sortkey is None else sortkey
 
-        self._ends = np.concatenate((starts[1:], np.array([x.shape[0]], dtype=np.uintp))) - 1
+        self._ends = np.concatenate((starts[1:], np.array([xs.shape[0]], dtype=np.uintp))) - 1
         self._samplecounts = self._ends - self._starts
-        self._start_values = x[self._starts]
-        self._end_values = x[self._ends]
+        self._start_values = xs[self._starts]
+        self._end_values = xs[self._ends]
 
     @property
     def segments(self):
@@ -413,8 +415,8 @@ class Regression:
         """list[Regression]: List of :class:`Regression` objects for each variant."""
         return [
             Regression(
-                self._x,
-                self._y[variant : variant + 1],
+                self._xs,
+                self._ys[variant : variant + 1],
                 self._kernel,
                 self._starts,
                 self._models[:, variant : variant + 1, :],
@@ -422,7 +424,7 @@ class Regression:
                 False,
                 self._sortkey,
             )
-            for variant in range(self._y.shape[0])
+            for variant in range(self._ys.shape[0])
         ]
 
     def get_segment(self, x: Any):
@@ -482,11 +484,11 @@ class Regression:
         from matplotlib.lines import Line2D
 
         if not _is_iter(ax):
-            ax = [ax] * self._y.shape[0]
+            ax = [ax] * self._ys.shape[0]
         axes = cast(Iterable["Axes"], ax)
 
         if _is_mapping(style):
-            styles = [style] * self._y.shape[0]
+            styles = [style] * self._ys.shape[0]
         else:
             style = cast(list[dict[str, Any] | None], style)
             styles = [{} if s is None else s for s in style]
@@ -496,7 +498,7 @@ class Regression:
             istyles = [{**style, **default_istyle} for style in styles]
         else:
             if _is_mapping(istyle):
-                istyles = [istyle] * self._y.shape[0]
+                istyles = [istyle] * self._ys.shape[0]
             else:
                 istyle = cast(list[dict[str, Any] | None], style)
                 istyles = [
@@ -519,7 +521,9 @@ class Regression:
         # find desired xvals
         if not _is_iter(xs):
             xs = cast(int, xs)
-            xs = [(self._x[0] + (self._x[-1] * i - self._x[0] * i) / (xs - 1)) for i in range(xs)]
+            xs = [
+                (self._xs[0] + (self._xs[-1] * i - self._xs[0] * i) / (xs - 1)) for i in range(xs)
+            ]
         xs = cast(Iterable[Any], xs)
 
         # plot segments
@@ -535,7 +539,7 @@ class Regression:
             if is_interpolated := len(segment_index) != 1:
                 prev_segment = self[segment_index[0]]
                 next_segment = self[segment_index[-1]]
-                segment_xs = [prev_segment.x[-1], *segment_xs, next_segment.x[0]]
+                segment_xs = [prev_segment.xs[-1], *segment_xs, next_segment.xs[0]]
                 ys = np.array(
                     [
                         prev_segment(segment_xs[0], keepdims=True),
@@ -580,8 +584,8 @@ class Regression:
         if index < -len(self) or index >= len(self):
             raise IndexError(f"segment index '{index}' is out of range [{-len(self)}, {len(self)})")
         return Segment(
-            self._x[self._starts[index] : int(self._ends[index]) + 1],
-            self._y[:, self._starts[index] : int(self._ends[index]) + 1],
+            self._xs[self._starts[index] : int(self._ends[index]) + 1],
+            self._ys[:, self._starts[index] : int(self._ends[index]) + 1],
             self._models[index],
             self._errors[index],
             self._kernel,

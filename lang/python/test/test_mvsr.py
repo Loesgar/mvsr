@@ -81,8 +81,8 @@ def test_simple_regression_and_segment():
         assert segment1.range == segment2.range
         assert segment1.rss == segment2.rss
         assert segment1.samplecount == segment2.samplecount
-        assert (segment1.x == segment2.x).all()
-        assert (segment1.y == segment2.y).all()
+        assert (segment1.xs == segment2.xs).all()
+        assert (segment1.ys == segment2.ys).all()
 
     assert regression.starts.tolist() in STARTS
     assert len(regression.variants) == 1
