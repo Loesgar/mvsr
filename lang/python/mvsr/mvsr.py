@@ -1,5 +1,5 @@
 from bisect import bisect
-from typing import TYPE_CHECKING, Any, Callable, Iterable, Iterator, Sequence, cast, overload
+from typing import TYPE_CHECKING, Any, Callable, Iterable, Iterator, cast, overload
 
 import numpy as np
 import numpy.typing as npt
@@ -360,7 +360,7 @@ class Regression:
         return self._starts.copy()
 
     @property
-    def segments(self) -> Sequence[Segment]:
+    def segments(self):
         return [segment for segment in self]
 
     @property
@@ -530,10 +530,10 @@ def mvsr(
             :code:`(n_samples,)` or :code:`(n_variants, n_samples)`.
         k: Target number of segments for the Regression.
         kernel (:class:`Kernel.Raw`): Kernel used to transform x values into the internal X matrix,
-            as well as normalize and interpolate y values. Defaults to :obj:`Kernel.Poly()` with
-            :obj:`degree=1` and :obj:`model_interpolation=None`.
-        algorithm: Algorithm used to reduce the number of segments. Defaults to
-            :obj:`Algorithm.GREEDY`.
+            as well as normalize and interpolate y values. Defaults to :obj:`Kernel.Poly()`.
+        algorithm: Algorithm used to reduce the number of segments. If :obj:`None`, the algorithm
+            will be selected automatically based on the number of samples, number of x dimensions
+            and set :obj:`k`. Defaults to :obj:`None`.
         score: Placeholder for k scoring method (not implemented yet).
         normalize: Normalize y input values. If :obj:`None`, auto-enabled for multi-variant input
             data. Defaults to :obj:`None`.
