@@ -277,6 +277,17 @@ class Kernel:
 
 
 class Segment:
+    """Regression segment.
+
+    Args:
+        xs (numpy.ndarray): X input values.
+        ys (numpy.ndarray): Y input values.
+        kernel (:class:`Kernel.Raw`): Kernel used to transform x values.
+        model (numpy.ndarray): Model matrix describing the segment.
+        errors (numpy.ndarray):  Residual sum of squares for each segment sample.
+        keepdims: If set to False, return scalar values when evaluating single-variant segments.
+    """
+
     def __init__(
         self,
         xs: MvsrArray,
@@ -293,45 +304,80 @@ class Segment:
         self._kernel = kernel
         self._keepdims = keepdims
 
-    def __call__(self, x: Any, keepdims: bool | None = None):
+    def __call__(self, x: Any, keepdims: bool | None = None) -> MvsrArray:
+        """Evaluate the segment for a given x value.
+
+        Args:
+            x: Input x value.
+            keepdims: If set to False, return scalar values when the segment only has one variant.
+                If None, use value provided from segment initialization. Defaults to None.
+
+        Returns:
+            numpy.ndarray: Predicted y value.
+        """
         return self.predict([x], keepdims=keepdims)[0]
 
     def predict(self, xs: npt.ArrayLike, keepdims: bool | None = None):
+        """Evaluate the regression for the given x values.
+
+        Args:
+            xs (numpy.typing.ArrayLike_): Input x values.
+            keepdims: If set to False, return scalar values when the segment only has one variant.
+                If None, use value provided from segment initialization. Defaults to None.
+
+        Returns:
+            numpy.ndarray: Predicted y values.
+        """
         result = (self._model @ self._kernel(xs)).T
         keepdims = self._keepdims if keepdims is None else keepdims
         return result if keepdims else result[:, 0]
 
     @property
     def rss(self):
+        """numpy.ndarray: Residual sum of squares, per sample."""
         result = self._errors.copy()
         return result if self._keepdims else result[0]
 
     @property
     def mse(self):
+        """numpy.ndarray: Mean squared error, per sample."""
         result = self._errors * 0 if self.samplecount == 0 else self._errors / self.samplecount
         return result if self._keepdims else result[0]
 
     @property
     def samplecount(self):
+        """int: Number of samples."""
         return len(self._xs)
 
     def get_model(self, keepdims: bool | None = None):
+        """Get the model matrix describing the segment.
+
+        Args:
+            keepdims: If set to False, return scalar values when the segment only has one variant.
+                If None, use value provided from segment initialization. Defaults to None.
+
+        Returns:
+            numpy.ndarray: Model matrix.
+        """
         keepdims = self._keepdims if keepdims is None else keepdims
         result = self._model.copy()
         return result if len(result) > 1 or keepdims else result[0]
 
-    model = property(get_model)
+    model = property(get_model, doc="numpy.ndarray: Model matrix describing the segment.")
 
     @property
     def range(self):
+        """tuple[typing.Any, typing.Any]: Input x value range."""
         return (self._xs[0], self._xs[-1])
 
     @property
     def xs(self):
+        """numpy.ndarray: Input x values."""
         return self._xs.copy()
 
     @property
     def ys(self):
+        """numpy.ndarray: Input y values."""
         return self._ys.copy()
 
     def plot(

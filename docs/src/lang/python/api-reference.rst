@@ -21,7 +21,9 @@ Classes
     .. automethod:: mvsr.Regression.__call__
     .. automethod:: mvsr.Regression.__len__
 
-.. autoclass:: mvsr.Interpolate
+.. autoclass:: mvsr.Segment
+
+    .. automethod:: mvsr.Segment.__call__
 
 ^^^^^^^
 Kernels
