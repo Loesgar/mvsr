@@ -333,21 +333,9 @@ class Segment:
         return result if keepdims else result[:, 0]
 
     @property
-    def rss(self):
-        """numpy.ndarray: Residual sum of squares, per sample."""
-        result = self._errors.copy()
-        return result if self._keepdims else result[0]
-
-    @property
-    def mse(self):
-        """numpy.ndarray: Mean squared error, per sample."""
-        result = self._errors * 0 if self.samplecount == 0 else self._errors / self.samplecount
-        return result if self._keepdims else result[0]
-
-    @property
-    def samplecount(self):
-        """int: Number of samples."""
-        return len(self._xs)
+    def model(self):
+        """numpy.ndarray: Model matrix describing the segment."""
+        return self.get_model()
 
     def get_model(self, keepdims: bool | None = None):
         """Get the model matrix describing the segment.
@@ -363,12 +351,15 @@ class Segment:
         result = self._model.copy()
         return result if len(result) > 1 or keepdims else result[0]
 
-    model = property(get_model, doc="numpy.ndarray: Model matrix describing the segment.")
-
     @property
     def range(self):
         """tuple[typing.Any, typing.Any]: Input x value range."""
         return (self._xs[0], self._xs[-1])
+
+    @property
+    def samplecount(self):
+        """int: Number of samples."""
+        return len(self._xs)
 
     @property
     def xs(self):
@@ -379,6 +370,18 @@ class Segment:
     def ys(self):
         """numpy.ndarray: Input y values."""
         return self._ys.copy()
+
+    @property
+    def rss(self):
+        """numpy.ndarray: Residual sum of squares, per sample."""
+        result = self._errors.copy()
+        return result if self._keepdims else result[0]
+
+    @property
+    def mse(self):
+        """numpy.ndarray: Mean squared error, per sample."""
+        result = self._errors * 0 if self.samplecount == 0 else self._errors / self.samplecount
+        return result if self._keepdims else result[0]
 
     def plot(
         self,
