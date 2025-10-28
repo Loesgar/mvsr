@@ -84,6 +84,17 @@ jobs:
       matrix:
         os: [ubuntu-latest, ubuntu-24.04-arm, macos-15-intel, macos-latest, windows-latest, windows-11-arm]
     steps:
+      - name: Set PLATFORM_TAG
+        run: |
+          declare -A platform_map=(
+            [ubuntu-latest]=linux_x86_64
+            [ubuntu-24.04-arm]=linux_arm64
+            [macos-15-intel]=macos_x86_64
+            [macos-latest]=macos_arm64
+            [windows-latest]=win_x86_64
+            [windows-11-arm]=win_arm64
+          )
+          echo "PLATFORM_TAG=${platform_map[${{ matrix.os }}]}" >> $GITHUB_ENV
       - uses: actions/download-artifact@v4
         with:
           name: lib-${{ matrix.os }}
@@ -96,7 +107,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          LIB_NAME="libmvsr-${GITHUB_REF_NAME:1}-${{ matrix.os }}.zip"
+          LIB_NAME="libmvsr-${GITHUB_REF_NAME:1}-$PLATFORM_TAG.zip"
           zip -r $LIB_NAME lib-${{ matrix.os }}
           gh release upload $GITHUB_REF_NAME $LIB_NAME --repo $GITHUB_REPOSITORY
           WHEEL_NAME="python-${{ matrix.os }}/$(ls python-${{ matrix.os }})"
