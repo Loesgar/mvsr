@@ -48,7 +48,7 @@ def generate_from_readmes():
         target_file.parent.mkdir(parents=True, exist_ok=True)
         target_file.write_text(content)
 
-    lang_toc_paths = []
+    lang_toc_paths: list[str] = []
     for lang in list(doc_mapping.values())[1:]:
         api_reference = publish_doctree(
             lang.with_name("api-reference.rst").read_text(),
@@ -65,7 +65,7 @@ def generate_from_readmes():
         lang.write_text(lang.read_text() + dedent(lang_toc))
         lang_toc_paths.append(str(lang.relative_to(LANG_DIR.parent).with_suffix("").as_posix()))
 
-    lang_toc_paths.sort(key=lambda path: path != "lang/cpp/index")
+    lang_toc_paths.sort(key=lambda path: (path != "lang/cpp/index", path))
 
     toc = f"""\
         ```{{toctree}}
