@@ -42,12 +42,12 @@ We aim to make these available as a package in the corresponding package manager
 The exact usage differs between the languages.
 
 We currently support the following languages (see the individual documentation for usage instructions).
-Generally there is a distinction between a convenient (easy to use) interface and a technical (low-level) interface.
+Generally there is a distinction between a easy to use (high-level) interface and a technical (low-level) interface.
 The latter only exposes the raw bindings and should only be used to embed the algorithms in a bigger application.
 
-For data analysis we recommend a language with a convenient interface, for the easiest and most feature rich experience we currently recommend using [Python](lang/python/README.md).
+For data analysis we recommend a language with a high-level interface, for the easiest and most feature rich experience we currently recommend using [Python](lang/python/README.md).
 
-### Convenient
+### High-Level
 
 - [Python](lang/python/README.md)
 <!-- [Julia](lang/julia/README.md)-->
