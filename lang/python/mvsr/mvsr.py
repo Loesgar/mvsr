@@ -22,14 +22,17 @@ _ModelInterpolation = Callable[[npt.ArrayLike, list["Segment"]], list[float]]
 class Interpolate:
     @staticmethod
     def left(_x: npt.ArrayLike, segments: list["Segment"]):
+        """Always use the leftmost (first) Segment for interpolating."""
         return [1.0] + [0.0] * (len(segments) - 1)
 
     @staticmethod
     def right(_x: npt.ArrayLike, segments: list["Segment"]):
+        """Always use the rightmost (last) Segment for interpolating."""
         return [0.0] * (len(segments) - 1) + [1.0]
 
     @staticmethod
     def closest(x: npt.ArrayLike, segments: list["Segment"]):
+        """Use the Segment that is closest to :obj:`x` for interpolating."""
         index = np.argmin(
             [
                 min([sum((np.array(x, ndmin=1) - np.array(sx, ndmin=1)) ** 2) for sx in segment.x])
@@ -42,12 +45,14 @@ class Interpolate:
 
     @staticmethod
     def linear(x: npt.ArrayLike, segments: list["Segment"]):
+        """Interpolate linearly between Segments based on :obj:`x`."""
         distance = segments[1].x[0] - segments[0].x[-1]
         x_normalized: float = (x - segments[0].x[-1]) / distance
         return [1 - x_normalized] + [0.0] * (len(segments) - 2) + [x_normalized]
 
     @staticmethod
     def smooth(x: npt.ArrayLike, segments: list["Segment"]):
+        """Interpolate smoothly (using a cubic function) between Segments based on :obj:`x`."""
         distance = segments[1].x[0] - segments[0].x[-1]
         x_normalized = (x - segments[0].x[-1]) / distance
         result: float = 3 * x_normalized**2 - 2 * x_normalized**3
@@ -58,13 +63,15 @@ class Kernel:
     class Raw:
         """Raw Kernel to be used as a base class for other Kernel types.
 
-        Implements pass-through transformation of x values and normalization of y values.
-        Does not implement interpolation.
+        Implements pass-through transformation of x values, normalization of y values and
+        interpolation between segments.
 
         Args:
             translation_dimension: Index of the model dimension that translates the regression along
                 the y axis (required for normalization). Defaults to :obj:`None`.
-            model_interpolation: Function to interpolate between neighbouring segments.
+            model_interpolation (typing.Callable[[numpy.typing.ArrayLike, list[Segment]], list[float]] | None):
+                Function to interpolate between neighbouring segments. Defaults to
+                :func:`Interpolate.closest`.
         """
 
         _translation_dimension: int | None = None
@@ -99,6 +106,17 @@ class Kernel:
             return y / self._factors[:, np.newaxis]
 
         def denormalize(self, models: MvsrArray):
+            """Denormalize models derived from values previously normalized with :meth:`normalize`.
+
+            Args:
+                models (numpy.ndarray): Models for regression segments.
+
+            Raises:
+                RuntimeError: If :meth:`normalize` has not been called on this kernel before.
+
+            Returns:
+                numpy.ndarray: Denormalized segment models.
+            """
             self._ensure_translation_dimension()
 
             if self._offsets is None or self._factors is None:
@@ -121,12 +139,23 @@ class Kernel:
             return x.T if len(x.shape) > 1 else np.array(x, ndmin=2)
 
         def interpolate(self, segments: list["Segment"]) -> "Segment":
+            """Create interpolated :class:`Segment` using the provided :obj:`model_interpolation`.
+
+            Args:
+                segments: List of segments to be interpolated between.
+
+            Raises:
+                RuntimeError: If :obj:`model_interpolation` has not been specified.
+
+            Returns:
+                Segment: Interpolated segment.
+            """
             if self._model_interpolation:
                 interpolator = Kernel.ModelInterpolator(self, self._model_interpolation, segments)
                 return interpolator.interpolate(segments)
 
             raise RuntimeError(
-                f"interpolation is not possible with '{self.__class__.__name__}' kernel"
+                f"native interpolation is not possible with '{self.__class__.__name__}' kernel"
             )
 
         def _ensure_translation_dimension(self):
@@ -144,15 +173,17 @@ class Kernel:
         Inherited Methods: :meth:`normalize`, :meth:`denormalize`
 
         Args:
-            degree: Degree.
-            model_interpolation: Function to interpolate between neighbouring segments.
+            degree: Polynomial degree.
+            model_interpolation: (typing.Callable[[numpy.typing.ArrayLike, list[Segment]], list[float]] | None):
+                Function to interpolate between neighbouring segments. If :obj:`None` interpolate
+                linearly between segment endpoints. Defaults to :obj:`None`.
         """
 
         def __init__(self, degree: int = 1, model_interpolation: _ModelInterpolation | None = None):
             super().__init__(translation_dimension=0, model_interpolation=model_interpolation)
             self._degree = degree
 
-        def __call__(self, x: npt.ArrayLike):  # [1,2,3] or [[1,1],[2,2],[3,3]]
+        def __call__(self, x: npt.ArrayLike):
             x = super().__call__(x)
             return np.concatenate(
                 (
@@ -162,6 +193,21 @@ class Kernel:
             )
 
         def interpolate(self, segments: list["Segment"]):
+            """Create interpolated :class:`Segment`.
+
+            Uses :obj:`model_interpolation` if provided else linearly interpolates between segment
+            endpoints.
+
+            Args:
+                segments: List of segments to be interpolated between.
+
+            Raises:
+                RuntimeError: If :obj:`model_interpolation` is set to :obj:`None` and more than 2
+                segments were provided or segments were constructed from multidimensional x values.
+
+            Returns:
+                Segment: Interpolated segment.
+            """
             try:
                 return super().interpolate(segments)
             except RuntimeError:
@@ -198,7 +244,7 @@ class Kernel:
     class ModelInterpolator:
         """Helper to support interpolating between multiple models.
 
-        Should not be used as input kernel.
+        Only for internal use, should not be used as input kernel.
         """
 
         def __init__(

@@ -17,25 +17,39 @@ Classes
 -------
 
 .. autoclass:: mvsr.Regression
+
+.. autoclass:: mvsr.Interpolate
+
+^^^^^^^
+Kernels
+^^^^^^^
+
 .. autoclass-qualname:: mvsr.Kernel.Raw
     :no-members:
 
     .. automethod:: mvsr.Kernel.Raw.__call__
     .. automethod:: mvsr.Kernel.Raw.normalize
     .. automethod:: mvsr.Kernel.Raw.denormalize
+    .. automethod:: mvsr.Kernel.Raw.interpolate
 
 .. autoclass-qualname:: mvsr.Kernel.Poly
     :show-inheritance:
 
     .. automethod:: mvsr.Kernel.Poly.__call__
-    .. automethod:: mvsr.Kernel.Poly.interpolate
 
------
+^^^^^
 Enums
------
+^^^^^
 
 .. autoclass:: mvsr.Algorithm
-
-.. autoclass:: mvsr.Interpolate
-
 .. autoclass:: mvsr.Score
+
+-------------
+Interpolation
+-------------
+
+.. autofunction-qualname:: mvsr.Interpolate.left
+.. autofunction-qualname:: mvsr.Interpolate.right
+.. autofunction-qualname:: mvsr.Interpolate.closest
+.. autofunction-qualname:: mvsr.Interpolate.linear
+.. autofunction-qualname:: mvsr.Interpolate.smooth

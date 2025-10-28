@@ -1,7 +1,7 @@
 import re
 
 from sphinx.application import Sphinx as App
-from sphinx.ext.autodoc import ClassDocumenter
+from sphinx.ext.autodoc import ClassDocumenter, FunctionDocumenter
 
 
 class QualNameClassDocumenter(ClassDocumenter):
@@ -10,6 +10,14 @@ class QualNameClassDocumenter(ClassDocumenter):
     def add_directive_header(self, sig: str):
         name = getattr(self.object, "__qualname__", self.objpath[-1])
         self.add_line(f".. py:class:: {name}{sig}", "", 0)
+
+
+class QualNameFunctionDocumenter(FunctionDocumenter):
+    objtype = "function-qualname"
+
+    def add_directive_header(self, sig: str):
+        name = getattr(self.object, "__qualname__", self.objpath[-1])
+        self.add_line(f".. py:function:: {name}{sig}", "", 0)
 
 
 def build_finished(app: App, exception: Exception | None):
@@ -49,4 +57,5 @@ FORCE_NUMPY_REF_CODE_TAGS_SUB = (
 
 def setup(app: App):
     app.add_autodocumenter(QualNameClassDocumenter)
+    app.add_autodocumenter(QualNameFunctionDocumenter)
     app.connect("build-finished", build_finished)
