@@ -139,5 +139,6 @@ for vi,(ax,v,l) in enumerate(zip(axs, regression.variants, [line_v1, line_v2])):
 # export figure
 fig.set_size_inches((7,4.5))
 fig.tight_layout()
-fig.savefig("example_plot.jpg", dpi=300)
+fig.savefig("example_plot.webp", transparent=True, dpi=300)
+#fig.show()
 
