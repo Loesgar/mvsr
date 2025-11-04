@@ -18,7 +18,7 @@ classifiers = [
 ]
 [project.urls]
 Repository = "https://github.com/Loesgar/mvsr"
-DOCUMENTATION = "https://loesgar.github.io/mvsr/stable/lang/python/"
+Documentation = "https://loesgar.github.io/mvsr/stable/lang/python/"
 
 [project.optional-dependencies]
 matplotlib = ["matplotlib>=3.5"]
