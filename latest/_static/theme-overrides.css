@@ -53,10 +53,38 @@ h6 {
     font-size: 1.125em;
 }
 
+img {
+    width: 100%;
+}
+
 .sidebar-brand-text {
     font-size: 1.4rem;
 }
 
 dl dt {
-    font-weight: bold !important
+    font-weight: bold !important;
+}
+
+.cluster rect {
+    fill: var(--color-background-secondary) !important;
+    stroke: var(--color-background-border) !important;
+}
+
+rect.label-container {
+    fill: var(--color-background-item) !important;
+    stroke: var(--color-background-border) !important;
+}
+
+.flowchart-link,
+.marker {
+    stroke: var(--color-foreground-muted) !important;
+}
+
+.nodeLabel {
+    color: var(--color-foreground-primary) !important;
+}
+
+.edgeLabel * {
+    background-color: unset !important;
+    color: var(--color-foreground-primary) !important;
 }
