@@ -1,4 +1,7 @@
 import random
+import re
+from io import StringIO
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -136,9 +139,16 @@ for vi,(ax,v,l) in enumerate(zip(axs, regression.variants, [line_v1, line_v2])):
     #    ha='center'
     #)
 
-# export figure
+# export color scheme aware svg
 fig.set_size_inches((7,4.5))
 fig.tight_layout()
-fig.savefig("example_plot.webp", transparent=True, dpi=300)
 #fig.show()
 
+file = StringIO()
+fig.savefig(file, format="svg", transparent=True)
+svg_content = re.sub(
+    r"(<style+[^>]*>[^<]*)(</style>)",
+    r"\g<1> @media(prefers-color-scheme: dark){path{filter: invert(1)}}\g<2>",
+    file.getvalue()
+)
+Path("example_plot.svg").write_text(svg_content)
