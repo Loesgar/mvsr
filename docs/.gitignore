@@ -1,4 +1,5 @@
 .venv/
 build/
 
+src/images
 src/**/*index.md

@@ -53,10 +53,14 @@ h6 {
     font-size: 1.125em;
 }
 
+img {
+    width: 100%;
+}
+
 .sidebar-brand-text {
     font-size: 1.4rem;
 }
 
 dl dt {
-    font-weight: bold !important
+    font-weight: bold !important;
 }

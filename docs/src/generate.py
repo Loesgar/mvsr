@@ -1,4 +1,5 @@
 import re
+import shutil
 import tomllib
 from pathlib import Path
 from textwrap import dedent
@@ -9,6 +10,7 @@ from docutils.core import publish_doctree
 PARENT_DIR = Path(__file__).parent
 REPO_ROOT = PARENT_DIR.parents[1]
 LANG_DIR = PARENT_DIR / "lang"
+IMAGES_DIR = PARENT_DIR / "images"
 INDEX_MD = PARENT_DIR / "index.md"
 
 PYPROJECT_TOML = REPO_ROOT / "lang" / "python" / "pyproject.toml"
@@ -18,6 +20,8 @@ BASE_URL = urljoin(
 
 
 def generate_from_readmes():
+    shutil.rmtree(IMAGES_DIR, ignore_errors=True)
+    IMAGES_DIR.mkdir()
     INDEX_MD.unlink(missing_ok=True)
 
     doc_mapping = {
@@ -40,8 +44,9 @@ def generate_from_readmes():
             else:
                 fixed = urljoin(BASE_URL, str(reference.relative_to(REPO_ROOT)))
                 if fixed.split(".")[-1].lower() in {"jpg", "png", "svg", "webp"}:
-                    fixed = fixed.replace("github.com/", "raw.githubusercontent.com/")
-                    fixed = fixed.replace("/tree/", "/")
+                    image_path = IMAGES_DIR / reference.name
+                    shutil.copy(reference, image_path)
+                    fixed = str(image_path.relative_to(PARENT_DIR))
             content = content[: match.start(1)] + fixed + content[match.end(1) :]
 
         target_file.parent.mkdir(parents=True, exist_ok=True)
