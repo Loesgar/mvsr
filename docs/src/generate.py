@@ -91,4 +91,4 @@ def generate_from_readmes():
 
 HIDE_IN_DOCS_REGEX = re.compile(r"<!--hide-in-docs-->\n^.*$", flags=re.MULTILINE)
 SHOW_IN_DOCS_REGEX = re.compile(r"<!--show-in-docs (.*) -->")
-FIND_CROSS_REFERENCES_REGEX = re.compile(r"\]\(([^):#][^):#]*)(?:#[^)]+)?\)")
+FIND_CROSS_REFERENCES_REGEX = re.compile(r"(?:\]\(|<img\s+src=\")([^)\":#]+)(?:#[^)\"]+)?(?:\)|\")")

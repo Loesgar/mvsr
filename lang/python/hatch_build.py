@@ -52,7 +52,6 @@ class CustomBuildHook(BuildHookInterface[BuilderConfig]):
                         if fixed.rsplit(".", 1)[-1].lower() in {"jpg", "png", "svg", "webp"}:
                             fixed = fixed.replace("github.com/", "raw.githubusercontent.com/")
                             fixed = fixed.replace("/tree/", "/")
-                        print(fixed)
                         content = content[: match.start(1)] + fixed + content[match.end(1) :]
 
                 zip_file.writestr(info, content)
@@ -118,4 +117,4 @@ class CustomBuildHook(BuildHookInterface[BuilderConfig]):
         return platform_tag
 
 
-FIND_CROSS_REFERENCES_REGEX = re.compile(r"\]\(([^):#][^):#]*)(?:#[^)]+)?\)")
+FIND_CROSS_REFERENCES_REGEX = re.compile(r"(?:\]\(|<img\s+src=\")([^)\":#]+)(?:#[^)\"]+)?(?:\)|\")")

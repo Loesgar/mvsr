@@ -27,6 +27,7 @@ source_suffix = {
 html_theme = "furo"
 html_static_path = ["static"]
 html_css_files = ["theme-overrides.css"]
+myst_enable_extensions = ["html_image"]
 myst_fence_as_directive = ["automodule", "mermaid"]
 myst_heading_anchors = 6
 add_module_names = False
