@@ -52,7 +52,7 @@ _f32ptr3d = ndarray_or_null(dtype=np.float32, ndim=3, flags="C")
 
 LIBRARY_EXTENSION = {"Windows": "dll", "Darwin": "dylib"}.get(platform.system(), "so")
 LIBRARY_PATH = Path(__file__).parent / "lib" / f"libmvsr.{LIBRARY_EXTENSION}"
-_libmvsr = ctypes.CDLL(str(LIBRARY_PATH))
+_libmvsr = ctypes.CDLL(str(LIBRARY_PATH.resolve()))
 
 ########################
 # Function definitions #
