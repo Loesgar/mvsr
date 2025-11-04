@@ -1,5 +1,6 @@
 import os
 import platform
+import re
 import shutil
 import subprocess
 from itertools import chain
@@ -7,18 +8,26 @@ from pathlib import Path
 from sysconfig import get_platform
 from tempfile import gettempdir
 from typing import Any
+from urllib.parse import urljoin
 from zipfile import ZipFile
 
+import tomllib
 from auditwheel.wheel_abi import analyze_wheel_abi
 from hatchling.builders.config import BuilderConfig
 from hatchling.builders.hooks.plugin.interface import BuildHookInterface
 
 PARENT_DIR = Path(__file__).parent
-LIBMVSR_SOURCE_DIR = PARENT_DIR.parents[1] / "mvsr"
+REPO_ROOT = PARENT_DIR.parents[1]
+LIBMVSR_SOURCE_DIR = REPO_ROOT / "mvsr"
 SDIST_SOURCE_DIR = PARENT_DIR / "libmvsr"
 TARGET_DIR = PARENT_DIR / "mvsr" / "lib"
 
+PYPROJECT_TOML = PARENT_DIR / "pyproject.toml"
+
 LIBRARY_EXTENSIONS = ["so", "dylib", "dll"]
+BASE_URL = urljoin(
+    tomllib.loads(PYPROJECT_TOML.read_text())["project"]["urls"]["Repository"] + "/", "tree/main/"
+)
 
 
 class CustomBuildHook(BuildHookInterface[BuilderConfig]):
@@ -28,6 +37,25 @@ class CustomBuildHook(BuildHookInterface[BuilderConfig]):
             self.build_library()
 
         build_data["tag"] = f"py3-none-{self.get_platform_tag()}"
+
+    def finalize(self, version: str, build_data: dict[str, Any], artifact_path: str):
+        with ZipFile(artifact_path) as zip_file:
+            zip_data = {info: zip_file.read(info) for info in zip_file.infolist()}
+
+        with ZipFile(artifact_path, "w") as zip_file:
+            for info, content in zip_data.items():
+                if info.filename.endswith(".dist-info/METADATA"):
+                    content = content.decode()
+                    for match in reversed(list(FIND_CROSS_REFERENCES_REGEX.finditer(content))):
+                        reference = (PARENT_DIR / match.group(1)).resolve()
+                        fixed = urljoin(BASE_URL, str(reference.relative_to(REPO_ROOT)))
+                        if fixed.rsplit(".", 1)[-1].lower() in {"jpg", "png", "svg", "webp"}:
+                            fixed = fixed.replace("github.com/", "raw.githubusercontent.com/")
+                            fixed = fixed.replace("/tree/", "/")
+                        print(fixed)
+                        content = content[: match.start(1)] + fixed + content[match.end(1) :]
+
+                zip_file.writestr(info, content)
 
     def build_library(self):
         is_sdist_build = SDIST_SOURCE_DIR.is_dir()
@@ -88,3 +116,6 @@ class CustomBuildHook(BuildHookInterface[BuilderConfig]):
             platform_tag = f"macosx_{version.split('.')[0]}_0_{architecture}"
 
         return platform_tag
+
+
+FIND_CROSS_REFERENCES_REGEX = re.compile(r"\]\(([^):#][^):#]*)(?:#[^)]+)?\)")
