@@ -24,10 +24,10 @@ Documentation = "https://loesgar.github.io/mvsr/stable/lang/python/"
 matplotlib = ["matplotlib>=3.5"]
 
 [dependency-groups]
-dev = ["hatchling", "auditwheel", "ruff", "pytest", "pytest-cov", "nox", "matplotlib"]
+dev = ["hatchling", "auditwheel", "toml", "ruff", "pytest", "pytest-cov", "nox", "matplotlib"]
 
 [build-system]
-requires = ["hatchling", "auditwheel"]
+requires = ["hatchling", "auditwheel", "toml"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build]

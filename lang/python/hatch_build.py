@@ -11,7 +11,7 @@ from typing import Any
 from urllib.parse import urljoin
 from zipfile import ZipFile
 
-import tomllib
+import toml  # use tomllib once 3.10 reaches EOL
 from auditwheel.wheel_abi import analyze_wheel_abi
 from hatchling.builders.config import BuilderConfig
 from hatchling.builders.hooks.plugin.interface import BuildHookInterface
@@ -26,7 +26,7 @@ PYPROJECT_TOML = PARENT_DIR / "pyproject.toml"
 
 LIBRARY_EXTENSIONS = ["so", "dylib", "dll"]
 BASE_URL = urljoin(
-    tomllib.loads(PYPROJECT_TOML.read_text())["project"]["urls"]["Repository"] + "/", "tree/main/"
+    toml.loads(PYPROJECT_TOML.read_text())["project"]["urls"]["Repository"] + "/", "tree/main/"
 )
 
 
