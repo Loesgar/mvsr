@@ -494,7 +494,7 @@ wheels = [
 
 [[package]]
 name = "mvsr"
-version = "0.2.0"
+version = "0.2.1"
 source = { editable = "../lang/python" }
 dependencies = [
     { name = "numpy" },
@@ -521,6 +521,7 @@ dev = [
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "ruff" },
+    { name = "toml" },
 ]
 
 [[package]]

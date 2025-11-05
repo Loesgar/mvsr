@@ -142,7 +142,7 @@ for vi,(ax,v,l) in enumerate(zip(axs, regression.variants, [line_v1, line_v2])):
 # export color scheme aware svg
 fig.set_size_inches((7,4.5))
 fig.tight_layout()
-#fig.show()
+#plt.show()
 
 file = StringIO()
 fig.savefig(file, format="svg", transparent=True)
