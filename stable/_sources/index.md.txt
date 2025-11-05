@@ -21,7 +21,7 @@ To use this library, refer to a [supported programming language](#installation-a
 
 If you use this library in an academic paper (e.g. to analyze your data), please consider [citing our work](#license-and-contribution).
 
-[![Example for a multi-variant with synthetic data and custom interpolation.](https://raw.githubusercontent.com/Loesgar/mvsr/main/lang/python/examples/example_plot.jpg) `lang/python/examples/plot.py`](https://github.com/Loesgar/mvsr/tree/main/lang/python/examples/plot.py)
+[<img src="images/example_plot.svg" width=100% alt="Example for a multi-variant with synthetic data and custom interpolation."> `lang/python/examples/plot.py`](https://github.com/Loesgar/mvsr/tree/main/lang/python/examples/plot.py)
 
 ## Overview
 
