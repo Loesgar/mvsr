@@ -136,8 +136,9 @@ public:
             Scalar err = INFINITY;
             size_t size = 0;
         };
-        std::unique_ptr<Entry[]> tvec(new Entry[pieces.getSize() * numSegments]);
-        Entry *curRow = &tvec[0];
+        std::unique_ptr<Entry[]> tvec(new Entry[pieces.getSize() * (numSegments + 1) + 1]);
+        tvec[0].err = 0;
+        Entry *curRow = &tvec[numSegments + 1];
 
         // setup global regression (for col 1)
         Scalar *uniseg = &tempMemory[segSize];
@@ -156,7 +157,7 @@ public:
             // fill other columns
             std::copy(uniseg, uniseg + segSize, curSegDiff);
             size_t diff = segidx;
-            Entry *cmpRow = &tvec[0];
+            Entry *cmpRow = &tvec[numSegments + 1];
             for (auto cmpIt = pieces.begin(); --diff != 0; ++cmpIt, cmpRow += numSegments)
             {
                 // compute additional error compared to row "cmp"
