@@ -743,7 +743,7 @@ def mvsr(
     x_data = kernel(x)
     y = np.array(y, ndmin=2, dtype=dtype)
 
-    normalize = normalize or y.shape[0] != 1 or weighting is not None
+    normalize = normalize if normalize is not None else y.shape[0] != 1 or weighting is not None
     y_data = np.array(kernel.normalize(y), dtype=dtype) if normalize else y.copy()
 
     if weighting is not None:

@@ -144,7 +144,7 @@ TESTDATA_MVSR = chain(
 )
 def test_mvsr(y, kernel, algorithm, score, normalize, weighting, dtype, keepdims):
     match (len(y), kernel, normalize, bool(weighting)):
-        case (_, _, True, *_) | (2, _, _, *_) | (_, _, _, True, _) if (
+        case (_, _, True, *_) | (2, _, None, *_) | (_, _, None, True, _) if (
             type(kernel) is Kernel.Raw and kernel._translation_dimension is None
         ):
             expectation = raises(RuntimeError, match="normalization .* is not possible")
