@@ -11,8 +11,10 @@ MIN_NUMPY_VERSION = {
     "3.11": "1.23.*",
     "3.12": "1.26.*",
     "3.13": "2.1.*",
+    "3.14": "2.3.*",
 }
 PINNED_NUMPY_VERSION = "2.2.*"
+SKIP_PINNED_VERSION = {"3.14"}
 
 COVERAGE_CONFIG = Path(__file__).parents[1] / "pyproject.toml"
 
@@ -24,7 +26,7 @@ def test_simple(session: nox.Session):
     session.run("pytest", "-v", "--no-cov", "-k", "simple")
 
 
-@nox.session(python=["3.10", "3.11", "3.12", "3.13"])
+@nox.session(python=["3.10", "3.11", "3.12", "3.13", "3.14"])
 @nox.parametrize("numpy", ["min", "pinned", "latest"])
 def test_versions(session: nox.Session, numpy: str):
     match numpy:
@@ -32,6 +34,8 @@ def test_versions(session: nox.Session, numpy: str):
             assert isinstance(session.python, str)
             numpy_version = f"numpy=={MIN_NUMPY_VERSION[session.python]}"
         case "pinned":
+            if session.python in SKIP_PINNED_VERSION:
+                session.skip()
             numpy_version = f"numpy=={PINNED_NUMPY_VERSION}"
         case "latest":
             numpy_version = "numpy"
