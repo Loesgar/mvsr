@@ -456,7 +456,7 @@ class Regression:
         self._models = models
         self._errors = errors
         self._keepdims = keepdims
-        self._sortkey: Callable[[Any], Any] = (lambda x: x) if sortkey is None else sortkey
+        self._sortkey = sortkey
 
         self._ends = np.concatenate((starts[1:], np.array([xs.shape[0]], dtype=np.uintp))) - 1
         self._samplecounts = self._ends - self._starts
@@ -514,8 +514,10 @@ class Regression:
         Returns:
             tuple[int, ...]: Tuple of segment indices.
         """
-        index = bisect(self._start_values[1:], self._sortkey(x), key=self._sortkey)
-        if self._sortkey(self._end_values[index]) < self._sortkey(x):
+        x = self._sortkey(x) if self._sortkey else x
+        index = bisect(self._start_values[1:], x, key=self._sortkey)
+        end_x = self._sortkey(self._end_values[index]) if self._sortkey else self._end_values[index]
+        if end_x < x:
             return (index, index + 1)
         return (index,)
 
