@@ -407,6 +407,7 @@ class Segment:
         axes = cast(Iterable["Axes"], ax)
 
         if _is_mapping(style):
+            style = cast(dict[str, Any], style)
             styles = [style.copy() for _ in range(self._ys.shape[0])]
         else:
             style = cast(list[dict[str, Any] | None], style)
@@ -566,6 +567,7 @@ class Regression:
         axes = cast(Iterable["Axes"], ax)
 
         if _is_mapping(style):
+            style = cast(dict[str, Any], style)
             styles = [style.copy() for _ in range(self._ys.shape[0])]
         else:
             style = cast(list[dict[str, Any] | None], style)
@@ -576,6 +578,7 @@ class Regression:
             istyles = [{**style, **default_istyle} for style in styles]
         else:
             if _is_mapping(istyle):
+                istyle = cast(dict[str, Any], istyle)
                 istyles = [istyle.copy() for _ in range(self._ys.shape[0])]
             else:
                 istyle = cast(list[dict[str, Any] | None], style)
