@@ -1,6 +1,7 @@
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    flake-parts.url = "github:hercules-ci/flake-parts";
   };
 
   outputs =
@@ -23,7 +24,7 @@
 
           devShells = {
             default = pkgs.mkShell {
-              packages = with pkgs; [ nixfmt-rfc-style ];
+              packages = with pkgs; [ nixfmt ];
             };
             mvsr = import ./mvsr/shell.nix { inherit pkgs; };
             docs = import ./docs/shell.nix { inherit pkgs; };
