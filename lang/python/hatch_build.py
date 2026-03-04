@@ -105,7 +105,14 @@ class CustomBuildHook(BuildHookInterface[BuilderConfig]):
                     zip_file.write(lib_path, lib_path.name)
                     records_str += f"{lib_path.name},,\n"
                 zip_file.writestr("dummy.dist-info/RECORD", records_str)
-            wheel_info = analyze_wheel_abi(None, None, dummy_wheel_path, frozenset(), False, False)
+            wheel_info = analyze_wheel_abi(
+                None,
+                None,
+                dummy_wheel_path,
+                frozenset(),
+                disable_isa_ext_check=False,
+                allow_graft=False,
+            )
 
             if wheel_info.external_refs[wheel_info.policies.lowest.name].libs:
                 platform_tag = f"{wheel_info.overall_policy.name}_{platform_tag}"
