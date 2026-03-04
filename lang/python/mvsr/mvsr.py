@@ -185,12 +185,8 @@ class Kernel:
 
         def __call__(self, x: npt.ArrayLike):
             x = super().__call__(x)
-            return np.concatenate(
-                (
-                    np.ones((1, x.shape[1])),
-                    *([np.power(val, i)] for val in x for i in range(1, self._degree + 1)),
-                )
-            )
+            d_plus_one = self._degree + 1
+            return np.repeat(x, d_plus_one, axis=0) ** np.arange(d_plus_one).reshape(-1, 1)
 
         def interpolate(self, segments: list["Segment"]):
             """Create interpolated :class:`Segment`.
