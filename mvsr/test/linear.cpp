@@ -32,7 +32,7 @@ int test_greedy()
         mvsr_release_f64(reg);
         return 1;
     }
-    if (mvsr_optimize_f64(reg, Data, -1, MvsrMetricMSE) != 3)
+    if (mvsr_optimize_f64(reg, -1, MvsrMetricMSE) != 3)
     {
         mvsr_release_f64(reg);
         return 2;

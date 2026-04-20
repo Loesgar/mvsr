@@ -3,8 +3,7 @@
 
 #include <algorithm>
 #include <cmath>
-#include <cstdlib>
-#include <iterator>
+
 #include <memory>
 
 #include "mvsr_heap.hpp"
@@ -36,8 +35,9 @@ public:
      * @param dimensions Number of input dimensions.
      * @param variants Number of variants (output functions with shared breakpoints).
      */
-    Mvsr(size_t dimensions, size_t variants)
-        : dimensions(dimensions), variants(variants), offY(dimensions * dimensions + offX),
+    Mvsr(size_t dimensions, size_t variants, const Scalar *data)
+        : dimensions(dimensions), variants(variants), inputData(data),
+          offY(dimensions * dimensions + offX),
           segSize(dimensions * (dimensions + variants) + offX),
           pieces(dimensions * (dimensions + variants) + offX),
           tempMemory(new Scalar[3 * segSize])
@@ -49,11 +49,11 @@ public:
      * @param other Other segmented regression object.
      */
     Mvsr(const Mvsr<Scalar> &other)
-        : dimensions(other.dimensions), variants(other.variants),
+        : dimensions(other.dimensions), variants(other.variants), inputData(other.inputData),
           offY(other.offY), segSize(other.segSize), pieces(other.pieces),
-          tempMemory(new Scalar[3 * dimensions*variants])
+          tempMemory(new Scalar[3 * segSize]), dpTable(other.dpTable)
     {
-        queue = other.queue.copyByOrder(other.pieces, pieces);
+        greedyQueue = other.greedyQueue.copyByOrder(other.pieces, pieces);
     }
 
     Mvsr(Mvsr &&) = default;
@@ -68,10 +68,10 @@ public:
      * @param sampleCount Number of Samples.
      * @param minPerSeg   Minimum number of samples per segment.
      */
-    void placeSegments(const Scalar *data, size_t sampleCount, size_t minPerSeg)
+    void placeSegments(size_t sampleCount, size_t minPerSeg)
     {
+        const Scalar *data = inputData;
         pieces.clear();
-        queue.reserve(sampleCount / minPerSeg);
         pieces.reserve(sampleCount / minPerSeg);
 
         const auto rowSize = dimensions + variants;
@@ -98,24 +98,26 @@ public:
     void reduceGreedy(size_t numSegments)
     {
         if (numSegments == 0 || pieces.getSize() <= numSegments) return;
-        if (queue.getSize() != pieces.getSize() - 1)
+
+        dpTable.clear();
+        if (greedyQueue.getSize() != pieces.getSize() - 1)
         {
-            queue.clear();
-            queue.reserve(pieces.getSize() - 1);
+            greedyQueue.clear();
+            greedyQueue.reserve(pieces.getSize() - 1);
             auto it = pieces.begin();
             auto next = std::next(it);
             while (next != pieces.end())
             {
-                queue.pushProvisionally(getMergeCost(*it, *next), *it);
+                greedyQueue.pushProvisionally(getMergeCost(*it, *next), *it);
                 it = next;
                 ++next;
             }
-            queue.heapify();
+            greedyQueue.heapify();
         }
 
         while (pieces.getSize() != numSegments)
         {
-            auto &&[cost, segment] = queue.pop();
+            auto &&[cost, segment] = greedyQueue.pop();
             merge(segment, cost);
         }
     }
@@ -127,78 +129,86 @@ public:
      */
     void reduceDP(size_t numSegments)
     {
-        queue.clear();
-        if (numSegments == 0 || pieces.getSize() <= numSegments) return;
+        if (numSegments < 2 || pieces.getSize() <= numSegments) return;
+        greedyQueue.clear();
+        size_t dpRowSize = dpTable.empty() ? 0 : dpTable[1].size;
 
-        // setup result table
-        struct Entry
+        // check if table is too small
+        if (dpRowSize < numSegments)
         {
-            Scalar err = INFINITY;
-            size_t size = 0;
-        };
-        std::unique_ptr<Entry[]> tvec(new Entry[pieces.getSize() * (numSegments + 1) + 1]);
-        tvec[0].err = 0;
-        Entry *curRow = &tvec[numSegments + 1];
+            // recreate table
+            dpRowSize = numSegments;
+            dpTable.resize(pieces.getSize() * dpRowSize);
+            dpTable[0] = DpTableEntry{ .err = segGetStartPtr(pieces.front())[offErr], .size = pieces.front().sampleSize };
+            dpTable[1].size = dpRowSize;
 
-        // setup global regression (for col 1)
-        Scalar *uniseg = &tempMemory[segSize];
-        segInit(uniseg, 0, nullptr);
+            // setup global regression (for col 1)
+            auto *curRow = &dpTable[dpRowSize];
+            Scalar *uniseg = &tempMemory[segSize];
+            std::copy_n(segGetStartPtr(pieces.front()), segSize, uniseg);
 
-        // iterate over every row
-        Scalar *curSegDiff = &tempMemory[2 * segSize];
-        auto segit = pieces.begin();
-        for (size_t segidx = 1; segit != pieces.end(); ++segidx, ++segit, curRow += numSegments)
-        {
-            // fill col 0
-            segAdd(uniseg, uniseg, segGetStartPtr(*segit));
-            segUpdateError(uniseg);
-            curRow[0] = {uniseg[offErr], segidx};
-
-            // fill other columns
-            std::copy(uniseg, uniseg + segSize, curSegDiff);
-            size_t diff = segidx;
-            Entry *cmpRow = &tvec[numSegments + 1];
-            for (auto cmpIt = pieces.begin(); --diff != 0; ++cmpIt, cmpRow += numSegments)
+            // iterate over every row
+            Scalar *curSegDiff = &tempMemory[2 * segSize];
+            auto segit = pieces.begin();
+            auto startIdx = segit->sampleSize;
+            for (size_t segmentCount = 1; ++segit != pieces.end(); curRow += dpRowSize)
             {
-                // compute additional error compared to row "cmp"
-                segSub(curSegDiff, curSegDiff, segGetStartPtr(*cmpIt));
-                segUpdateError(curSegDiff);
-                auto err = curSegDiff[offErr];
+                // fill col 0
+                segAdd(uniseg, uniseg, segGetStartPtr(*segit));
+                segUpdateError(uniseg);
+                ++segmentCount;
+                startIdx += segit->sampleSize;
+                curRow[0] = {uniseg[offErr], startIdx};
 
-                // check whether the error is smaller than currently used one
-                for (size_t idx = 1; idx < numSegments; idx++)
+                // fill other columns
+                std::copy(uniseg, uniseg + segSize, curSegDiff);
+                size_t diff = segmentCount;
+                auto *cmpRow = &dpTable[0];
+                for (auto cmpIt = pieces.begin(); --diff != 0; ++cmpIt, cmpRow += dpRowSize)
                 {
-                    if (cmpRow[idx - 1].err + err < curRow[idx].err)
+                    // compute additional error compared to row "cmp"
+                    segSub(curSegDiff, curSegDiff, segGetStartPtr(*cmpIt));
+                    segUpdateError(curSegDiff);
+                    auto err = curSegDiff[offErr];
+    
+                    // check whether the error is smaller than currently used one
+                    for (size_t idx = 1; idx < dpRowSize; idx++)
                     {
-                        curRow[idx] = { cmpRow[idx - 1].err + err, diff };
+                        if (cmpRow[idx - 1].err + err < curRow[idx].err)
+                        {
+                            curRow[idx] = { cmpRow[idx - 1].err + err, diff };
+                        }
                     }
                 }
             }
         }
 
-        curRow -= 1;
-        auto mergeIt = List<Segment, Scalar>::Iterator::FromElement(pieces.back());
-        for (size_t outSeg = 0; outSeg < numSegments; outSeg++)
+        // adjust segments to solution in table
+        // TODO: Optimize recreation of target segmentation from current state
+        pieces.clear();
+        pieces.reserve(numSegments);
+        auto curRow = dpTable.data() + dpTable.size() - dpRowSize;
+        auto sampleEndIdx = curRow->size;    // REDO START HERE
+        for (auto curCol = numSegments; --curCol != 0;)
         {
-            auto nextRow = curRow - (curRow->size * numSegments + 1);
-            if (curRow->size != 0)
-            {
-                for (size_t mergeNum = 1; mergeNum < curRow->size; mergeNum++)
-                {
-                    auto prev = mergeIt--;
-                    auto to = segGetStartPtr(*mergeIt);
-                    segAdd(to, to, segGetStartPtr(*prev));
-                    mergeIt->sampleSize += prev->sampleSize;
-                    pieces.remove(prev);
-                }
-                segGetStartPtr(*mergeIt)[offErr] = curRow->err - nextRow->err;
-                --mergeIt;
-            }
-            curRow = nextRow;
-        }
+            auto newRow = curRow - curRow[curCol].size * dpRowSize;
+            auto sampleStartIdx = newRow->size;
+            auto segmentSize = sampleEndIdx - sampleStartIdx;
 
-        // delete queue so it gets rebuild in case od using greedy
-        queue.clear();
+            segInit(
+                segGetStartPtr(*pieces.prepend(Segment{.sampleSize = segmentSize})),
+                segmentSize,
+                inputData + (dimensions + variants) * sampleStartIdx
+            );
+
+            sampleEndIdx = sampleStartIdx;
+            curRow = newRow;
+        }
+        segInit(
+            segGetStartPtr(*pieces.prepend(Segment{.sampleSize = sampleEndIdx})),
+            sampleEndIdx,
+            inputData
+        );
     }
 
     /**
@@ -206,8 +216,12 @@ public:
      *
      * @param data The same data that was placed to the placeSegements call.
      */
-    void optimize(const Scalar *data) /// @TODO: Add parameter to determine opt-range
+    void optimize() /// @TODO: Add parameter to determine opt-range
     {
+        greedyQueue.clear();    /// @TODO: update queue instead of deleting it
+        dpTable.clear();
+
+        const Scalar *data = inputData;
         const auto optimizeBp = [=, this](Segment &s1, Segment &s2, size_t bpIdx)
         {
             const size_t start = bpIdx - s1.sampleSize / 4;
@@ -257,7 +271,7 @@ public:
                 return size > other.size;
             }
         };
-        Heap<OptEntry, Segment> elements(queue.getSize() + 1);
+        Heap<OptEntry, Segment> elements(greedyQueue.getSize() + 1);
         {
             auto start = pieces.begin();
             auto end = pieces.end();
@@ -278,9 +292,6 @@ public:
             auto p = std::prev(piece);
             optimizeBp(*p, *piece, startPos);
         }
-
-        // delete queue so it gets rebuild in case od using greedy
-        queue.clear();
     }
 
     /**
@@ -375,11 +386,11 @@ private:
         if (nit != pieces.begin())
         {
             updateHeap(*std::prev(nit), *nit);
-        }
+        } 
     }
     void updateHeap(Segment &seg, Segment &succ)
     {
-        queue.update(seg, getMergeCost(seg, succ));
+        greedyQueue.update(seg, getMergeCost(seg, succ));
     }
     Scalar getMergeCost(const Segment &s1, const Segment &s2) const
     {
@@ -407,7 +418,7 @@ private:
 
     void segInit(Scalar *start, size_t samples, const Scalar *data) const
     {
-        for (size_t i = 0; i < dimensions * (dimensions + variants) + 2; i++)
+        for (size_t i = 0; i < segSize; i++)
         {
             start[i] = 0;
         }
@@ -419,14 +430,14 @@ private:
     }
     void segAdd(Scalar *res, const Scalar *s1, const Scalar *s2) const
     {
-        for (size_t i = 0; i < dimensions * (dimensions + variants) + 2; i++)
+        for (size_t i = 0; i < segSize; i++)
         {
             res[i] = s1[i] + s2[i];
         }
     }
     void segSub(Scalar *res, const Scalar *s1, const Scalar *s2) const
     {
-        for (size_t i = 0; i < dimensions * (dimensions + variants) + 2; i++)
+        for (size_t i = 0; i < segSize; i++)
         {
             res[i] = s1[i] - s2[i];
         }
@@ -522,18 +533,27 @@ private:
 
     const size_t dimensions;
     const size_t variants;
+    const Scalar * const inputData;
 
     constexpr static size_t offErr = 0;
     constexpr static size_t offY2 = 1;
     constexpr static size_t offX = 2;
     const size_t offY;
     const size_t segSize;
-    
-    Heap<Scalar, Segment> queue;                // Priority queue with the merge costs
+
     List<Segment, Scalar> pieces;               // Double linked list, containing the segments
     // Scalar rss = Scalar(0);                    // Current summed squared error
+    // Scalar wgss = Scalar(0);                   // Current wihtin-group sum of squares
     // std::shared_ptr<Scalar[]> basemodel;       // Parameter matrix for regression with k=1
     const std::unique_ptr<Scalar[]> tempMemory; // needed to store some matrices for calculations
+
+    struct DpTableEntry
+    {
+        Scalar err = INFINITY;
+        size_t size = 0;
+    };
+    Heap<Scalar, Segment>       greedyQueue;    // Priority queue with the merge costs for greedy
+    std::vector<DpTableEntry>   dpTable;        // Table for DP
 };
 
 #endif // guard

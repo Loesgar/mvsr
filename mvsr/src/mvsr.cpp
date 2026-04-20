@@ -7,8 +7,8 @@ inline void *mvsr_init(size_t samples, size_t dimensions, size_t variants, const
 {
     if (placement != MvsrPlaceAll) return nullptr;
 
-    auto *reg = new Mvsr<Scalar>(dimensions, variants);
-    reg->placeSegments(data, samples, minsegsize);
+    auto *reg = new Mvsr<Scalar>(dimensions, variants, data);
+    reg->placeSegments(samples, minsegsize);
     return reg;
 }
 template <typename Scalar>
@@ -33,13 +33,12 @@ inline size_t mvsr_reduce(void *reg, size_t minsegs, size_t maxsegs [[maybe_unus
     return regression->getSegCount();
 }
 template <typename Scalar>
-inline size_t mvsr_optimize(void *reg, const Scalar *data, unsigned int range [[maybe_unused]],
-                            MvsrMetric metric)
+inline size_t mvsr_optimize(void *reg, unsigned int range [[maybe_unused]], MvsrMetric metric)
 {
     if (metric != MvsrMetricMSE) return 0;
 
     auto *regression = reinterpret_cast<Mvsr<Scalar> *>(reg);
-    regression->optimize(data);
+    regression->optimize();
     return regression->getSegCount();
 }
 template <typename Scalar>
@@ -89,9 +88,9 @@ size_t mvsr_reduce_f64(void *reg, size_t minsegs, size_t maxsegs, MvsrAlg alg, M
     return mvsr_reduce<double>(reg, minsegs, maxsegs, alg, metric, score);
 }
 
-size_t mvsr_optimize_f64(void *reg, const double *data, unsigned int range, MvsrMetric metric)
+size_t mvsr_optimize_f64(void *reg, unsigned int range, MvsrMetric metric)
 {
-    return mvsr_optimize<double>(reg, data, range, metric);
+    return mvsr_optimize<double>(reg, range, metric);
 }
 size_t mvsr_get_data_f64(void *reg, size_t *breakpoints, double *models, double *errors)
 {
@@ -115,9 +114,9 @@ size_t mvsr_reduce_f32(void *reg, size_t minsegs, size_t maxsegs, MvsrAlg alg, M
 {
     return mvsr_reduce<float>(reg, minsegs, maxsegs, alg, metric, score);
 }
-size_t mvsr_optimize_f32(void *reg, const float *data, unsigned int range, MvsrMetric metric)
+size_t mvsr_optimize_f32(void *reg, unsigned int range, MvsrMetric metric)
 {
-    return mvsr_optimize<float>(reg, data, range, metric);
+    return mvsr_optimize<float>(reg, range, metric);
 }
 size_t mvsr_get_data_f32(void *reg, size_t *breakpoints, float *models, float *errors)
 {

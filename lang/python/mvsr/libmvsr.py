@@ -64,7 +64,7 @@ _libmvsr.mvsr_init_f64.argtypes = [_size_t, _size_t, _size_t, _f64ptr2d, _size_t
 _libmvsr.mvsr_reduce_f64.restype = _size_t
 _libmvsr.mvsr_reduce_f64.argtypes = [_voidp, _size_t, _size_t, _int, _int, _int]
 _libmvsr.mvsr_optimize_f64.restype = _size_t
-_libmvsr.mvsr_optimize_f64.argtypes = [_voidp, _f64ptr2d, _uint, _int]
+_libmvsr.mvsr_optimize_f64.argtypes = [_voidp, _uint, _int]
 _libmvsr.mvsr_get_data_f64.restype = _size_t
 _libmvsr.mvsr_get_data_f64.argtypes = [_voidp, _sizeptr, _f64ptr3d, _f64ptr]
 _libmvsr.mvsr_copy_f64.restype = _voidp
@@ -78,7 +78,7 @@ _libmvsr.mvsr_init_f32.argtypes = [_size_t, _size_t, _size_t, _f32ptr2d, _size_t
 _libmvsr.mvsr_reduce_f32.restype = _size_t
 _libmvsr.mvsr_reduce_f32.argtypes = [_voidp, _size_t, _size_t, _int, _int, _int]
 _libmvsr.mvsr_optimize_f32.restype = _size_t
-_libmvsr.mvsr_optimize_f32.argtypes = [_voidp, _f32ptr2d, _uint, _int]
+_libmvsr.mvsr_optimize_f32.argtypes = [_voidp, _uint, _int]
 _libmvsr.mvsr_get_data_f32.restype = _size_t
 _libmvsr.mvsr_get_data_f32.argtypes = [_voidp, _sizeptr, _f32ptr3d, _f32ptr]
 _libmvsr.mvsr_copy_f32.restype = _voidp
@@ -216,7 +216,7 @@ class Mvsr:
         self._num_pieces = res
 
     def optimize(self, range: int = ctypes.c_uint(-1).value + 1 // 4, metric: Metric = Metric.MSE):
-        res = self._funcs["optimize"](self._reg, self._data, range, metric)
+        res = self._funcs["optimize"](self._reg, range, metric)
         if res == 0:
             raise InternalError(self._funcs["optimize"], res)
         self._num_pieces = res

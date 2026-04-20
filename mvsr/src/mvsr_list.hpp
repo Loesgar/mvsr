@@ -6,7 +6,6 @@
 #define MVSR_LIST_HPP
 
 #include <algorithm>
-#include <cstdint>
 #include <iterator>
 
 template <typename T, typename T2 = char>

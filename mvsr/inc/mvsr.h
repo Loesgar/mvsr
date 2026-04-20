@@ -52,7 +52,7 @@ extern "C"
      * @param samples    Number of samples
      * @param dimensions Number of input dimensions
      * @param variants   Number of output variants
-     * @param data       Data matrix of all samples
+     * @param data       Data matrix of all samples (must be valid until release)
      * @param minsegsize Minimum number of samples in any segment
      * @param placement  Placement strategy for initial segment placement
      *
@@ -64,8 +64,9 @@ extern "C"
      * $\lfloor\frac{samples}{minsegsize}\rfloor$ segments. The only segments that
      * may be larger than minsegsize is the last one. Parameter minsegsize should be
      * 'dimensions' if the greedy approach will be used and '1' if the dynamic
-     * program will be used. The data contains all samples. Each sample is defined
-     * by an array of $dimensions + variants$ values.
+     * program will be used. The data contains all samples, where each sample is
+     * defined by an array of $dimensions + variants$ values. The data matrix *must*
+     * be valid until the regression object and all of its copies are released.
      */
     void *mvsr_init_f64(size_t samples, size_t dimensions, size_t variants, const double *data,
                         size_t minsegsize, MvsrPlacement placement);
@@ -92,7 +93,6 @@ extern "C"
      * @brief Optimize the breakpoints.
      *
      * @param reg   The regression object.
-     * @param data  The same data array used in the initialization.
      * @param range The size of the range in which the breakpoints are optimized.
      *
      * @return The number of segments or '0' on error.
@@ -100,7 +100,7 @@ extern "C"
      * This should be executed after reducing with the greedy regression algorithm.
      * The range parameter is a number relative to the neighbouring segment size.
      */
-    size_t mvsr_optimize_f64(void *reg, const double *data, unsigned int range, MvsrMetric metric);
+    size_t mvsr_optimize_f64(void *reg, unsigned int range, MvsrMetric metric);
 
     /**
      * @brief Get the regression results.
@@ -159,7 +159,7 @@ extern "C"
     /**
      * @copydoc mvsr_optimize_f64
      */
-    size_t mvsr_optimize_f32(void *reg, const float *data, unsigned int range, MvsrMetric metric);
+    size_t mvsr_optimize_f32(void *reg, unsigned int range, MvsrMetric metric);
 
     /**
      * @copydoc mvsr_get_data_f64
@@ -205,7 +205,7 @@ extern "C"
         int res = 0;
         if (mvsr_reduce_f64(reg, numsegs, numsegs, MvsrAlgGreedy, MvsrMetricMSE, MvsrScoreExact) == 0)
             res = -2;
-        else if (mvsr_optimize_f64(reg, data, ((unsigned(0)-1)>>2)+1, MvsrMetricMSE) == 0)
+        else if (mvsr_optimize_f64(reg, ((unsigned(0)-1)>>2)+1, MvsrMetricMSE) == 0)
             res = -3;
         else
             mvsr_get_data_f64(reg, breakpoints, models, errors);
