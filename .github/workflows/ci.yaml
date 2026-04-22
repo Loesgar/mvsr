@@ -14,10 +14,10 @@ jobs:
       python: ${{ steps.paths-filter.outputs.python }}
       docs: ${{ steps.paths-filter.outputs.docs }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: true
-      - uses: dorny/paths-filter@v3
+      - uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
         id: paths-filter
         with:
           filters: |
@@ -64,10 +64,10 @@ jobs:
     outputs:
       sessions: ${{ steps.get-sessions.outputs.sessions }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - uses: wntrblm/nox@main
+      - uses: wntrblm/nox@97e345e6a26bb2c5aacff9cc4327bd4ac1b00ce6 # 2026.04.10
       - id: get-sessions
         working-directory: lang/python/test
         run: |
