@@ -211,6 +211,26 @@ def test_libmvsr():
         assert starts.tolist() in STARTS
 
 
+# this is failing prior to 7e874d447f00398e3e175b1bbe3f94e8d48bbce9 (0.3.0)
+def test_libmvsr_copy_reduce():
+    dtype = np.float64
+
+    n = 1000
+    y = np.random.uniform(size=n)
+    x = np.arange(len(y), dtype=dtype)
+
+    kernel = Kernel.Poly()
+    x_data = kernel(x)
+    y_data = np.array(y, ndmin=2, dtype=dtype)
+
+    dimensions, _n_samples_x = x_data.shape
+
+    with Mvsr(x_data, y_data, dimensions) as regression:
+        for k in range(n // 12, 1, -1):
+            copied = regression.copy()
+            copied.reduce(k, alg=Algorithm.DP)
+
+
 def test_plot():
     regression = mvsr(range(10), [1, 2, 3, 4, 5, 5, 4, 3, 2, 1], 2)
     assert regression.plot(plt.gca())
