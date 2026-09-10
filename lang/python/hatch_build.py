@@ -71,9 +71,8 @@ class CustomBuildHook(BuildHookInterface[BuilderConfig]):
                 shutil.rmtree(out_dir)
             out_dir.mkdir()
 
-            generator = ["-G", "Visual Studio 17 2022"] if platform.system() == "Windows" else []
             subprocess.check_call(
-                ["cmake", "-B", out_dir.name, "-DTESTING=off", *generator],
+                ["cmake", "-B", out_dir.name, "-DTESTING=off"],
                 cwd=source_dir,
             )
             subprocess.check_call(

@@ -43,15 +43,8 @@ jobs:
             nix build -L ..#${{ inputs.run-tests && 'mvsr' || 'mvsr-no-tests' }}
             mkdir -p build
             cp -r result/ $ARTIFACT
-            if [ "$RUNNER_OS" == "macOS" ]; then
-              chmod -R +w $ARTIFACT/lib
-              install_name_tool -change \
-                $(otool -L $ARTIFACT/lib/libmvsr.dylib | grep libc++.1.0 | awk '{print $1}') \
-                /usr/lib/libc++.1.dylib \
-                $ARTIFACT/lib/libmvsr.dylib
-            fi
           else
-            cmake -B build -G "Visual Studio 17 2022"
+            cmake -B build
             cmake --build build --config Release
             ${{ inputs.run-tests && 'cmake --build build --config Release -t RUN_TESTS' || ''}}
             cmake --install build --config Release --prefix $ARTIFACT
