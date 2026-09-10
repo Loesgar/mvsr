@@ -147,11 +147,21 @@ public:
             Scalar *uniseg = &tempMemory[segSize];
             std::copy_n(segGetStartPtr(pieces.front()), segSize, uniseg);
 
-            // iterate over every row
-            Scalar *curSegDiff = &tempMemory[2 * segSize];
+            // combine segments until number of segments is atleast as big as dimensions
+            size_t segmentCount = 1;
             auto segit = pieces.begin();
             auto startIdx = segit->sampleSize;
-            for (size_t segmentCount = 1; ++segit != pieces.end(); curRow += dpRowSize)
+            while (startIdx < dimensions && ++segit != pieces.end())
+            {
+                segAdd(uniseg, uniseg, segGetStartPtr(*segit));
+                ++segmentCount;
+                startIdx += segit->sampleSize;
+                curRow->size = startIdx;
+                curRow += dpRowSize;
+            }
+
+            // iterate over every row
+            for (Scalar *curSegDiff = &tempMemory[2 * segSize]; ++segit != pieces.end(); curRow += dpRowSize)
             {
                 // fill col 0
                 segAdd(uniseg, uniseg, segGetStartPtr(*segit));
@@ -162,15 +172,15 @@ public:
 
                 // fill other columns
                 std::copy(uniseg, uniseg + segSize, curSegDiff);
-                size_t diff = segmentCount;
+                size_t diff = segmentCount - 1;
                 auto *cmpRow = &dpTable[0];
-                for (auto cmpIt = pieces.begin(); --diff != 0; ++cmpIt, cmpRow += dpRowSize)
+                for (auto cmpIt = pieces.begin(); curRow->size - cmpRow->size >= dimensions; --diff, ++cmpIt, cmpRow += dpRowSize)
                 {
                     // compute additional error compared to row "cmp"
                     segSub(curSegDiff, curSegDiff, segGetStartPtr(*cmpIt));
                     segUpdateError(curSegDiff);
                     auto err = curSegDiff[offErr];
-    
+
                     // check whether the error is smaller than currently used one
                     for (size_t idx = 1; idx < dpRowSize; idx++)
                     {
@@ -517,7 +527,7 @@ private:
         res += MatGsAAtPmulB(variants, dimensions, params, xm);
         res += seg[offY2];
 
-        return res;
+        return (res >= 0) ? res : Scalar(0);
     }
     void segUpdateError(Scalar *seg) const
     {
