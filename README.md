@@ -4,7 +4,7 @@ This library enables segmented regression, calculating a suitable piecewise func
 
 To use this library, refer to a [supported programming language](#installation-and-usage) of your choice.
 
-If you use this library in an academic paper (e.g. to analyze your data), please consider [citing our work](#license-and-contribution).
+If you use this library in an academic paper (e.g. to analyze your data), please [cite our work](#license-and-contribution)  (get the [.pdf](https://raw.githubusercontent.com/mlresearch/v267/main/assets/losser25a/losser25a.pdf)).
 
 [<img src="lang/python/examples/example_plot.svg" width=100% alt="Example for a multi-variant with synthetic data and custom interpolation."> `lang/python/examples/plot.py`](lang/python/examples/plot.py)
 
