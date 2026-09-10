@@ -123,7 +123,7 @@ def test_simple_kernels():
         regression(regression.starts[1] - 0.5)
 
 
-TESTDATA_MVSR = chain(
+TESTDATA_MVSR = list(chain(
     product(
         [Y],
         [Kernel.Raw(), Kernel.Raw(0), *(Kernel.Poly(d) for d in range(1, 3))],
@@ -144,7 +144,7 @@ TESTDATA_MVSR = chain(
         [np.float32, np.float64],
         [False, True],
     ),
-)
+))
 
 
 @pytest.mark.parametrize(
