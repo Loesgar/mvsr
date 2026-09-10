@@ -14,7 +14,7 @@ rand_uniform = random.Random()
 rand_uniform.seed(1)
 
 # pyright: basic
-Y = [1, 2, 3, 4, 5, 6, 7, 8, 2, 2, 2, 2, 2, 2, 1, 0, -1, -2, -3, -4]
+Y = [1, 2, 3, 4, 5, 6, 7, 8, 2, 2, 2, 2, 2, 4, 3, 2, 1, 0, -1, -2]
 X = np.arange(len(Y), dtype=np.float64)
 Y2 = [4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 X2 = [rand_uniform.uniform(0, 20) for _ in range(len(Y))]
