@@ -592,13 +592,13 @@ class Regression:
                     for i, style in zip(istyle, styles)
                 ]
 
+        ax_idxs = { ax: _mpl_style_get_cycle_idx(ax) for ax in axes }
+
         # instantiate styles
         for ax, style, istyle in zip(axes, styles, istyles):
             snorm = normalize_kwargs(style, Line2D)
             inorm = normalize_kwargs(istyle, Line2D)
-            changing_props: dict[str, Any] = _ax_get_defaults(
-                ax, {k: v if v is not None else inorm[k] for k, v in snorm.items() if k in inorm}
-            )
+            changing_props: dict[str, Any] = {k: v if v is not None else inorm[k] for k, v in snorm.items() if k in inorm}
             style.clear()
             istyle.clear()
             style.update(changing_props | snorm)
@@ -636,6 +636,7 @@ class Regression:
 
             plot_styles = istyles if is_interpolated else styles
             for result, ax, variant_ys, style in zip(results, axes, ys.T, plot_styles):
+                _mpl_style_set_cycle_idx(ax, ax_idxs[ax])
                 result.append(ax.plot(segment_xs, variant_ys, **style))  # pyright: ignore
 
         return results
@@ -682,8 +683,25 @@ class Regression:
         return (self[i] for i in range(len(self)))
 
 
-def _ax_get_defaults(ax: "Axes", kw: dict[str, Any]):
-    return cast(dict[str, Any], ax._get_lines._getdefaults(kw=kw, ignore=frozenset()))  # pyright: ignore
+
+def _mpl_style_set_cycle_idx(ax: "Axes", idx: int):   # pragma: no cover
+    if hasattr(ax._get_lines, '_idx'):
+        ax._get_lines._idx = idx
+    elif hasattr(ax._get_lines, '_prop_cycle') and hasattr(ax._get_lines._prop_cycle, '_idx'):
+        ax._get_lines._prop_cycle._idx = idx
+    else:
+        raise RuntimeError("Plotstyle recognition not supported in this version of Matplotlib. Consider explicitly defining the style.")
+
+
+def _mpl_style_get_cycle_idx(ax: "Axes") -> int:   # pragma: no cover
+    res: int = 0
+    if hasattr(ax._get_lines, '_idx'):
+        res = int(ax._get_lines._idx)
+    elif hasattr(ax._get_lines, '_prop_cycle') and hasattr(ax._get_lines._prop_cycle, '_idx'):
+        res = int(ax._get_lines._prop_cycle._idx)
+    else:
+        raise RuntimeError("Plotstyle recognition not supported in this version of Matplotlib. Consider explicitly defining the style.")
+    return res
 
 
 def _is_iter(value: Any):
