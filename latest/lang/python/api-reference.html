@@ -1,15 +1,15 @@
 <!doctype html>
 <html class="no-js" lang="en" data-content_root="../../">
-  <head><meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="prev" title="Python API" href="index.html" />
+<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="prev" title="Python API" href="index.html">
 
-    <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>MVSR Python API Reference - mvsr documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=302659d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
     <link rel="stylesheet" type="text/css" href="../../_static/theme-overrides.css?v=a4c8b449" />
     
     
@@ -17,8 +17,8 @@
 
 <style>
   body {
-    --color-code-background: #f8f8f8;
-  --color-code-foreground: black;
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
   
   }
   @media not print {
@@ -145,14 +145,10 @@
   </symbol>
 </svg>
 
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
-<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
-<label class="overlay sidebar-overlay" for="__navigation">
-  <div class="visually-hidden">Hide navigation sidebar</div>
-</label>
-<label class="overlay toc-overlay" for="__toc">
-  <div class="visually-hidden">Hide table of contents sidebar</div>
-</label>
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
 
 <a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
 
@@ -162,8 +158,7 @@
   <header class="mobile-header">
     <div class="header-left">
       <label class="nav-overlay-icon" for="__navigation">
-        <div class="visually-hidden">Toggle site navigation sidebar</div>
-        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
       </label>
     </div>
     <div class="header-center">
@@ -171,8 +166,7 @@
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
-        <button class="theme-toggle">
-          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
           <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
           <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
           <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
@@ -180,8 +174,7 @@
         </button>
       </div>
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
-        <div class="visually-hidden">Toggle table of contents sidebar</div>
-        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
       </label>
     </div>
   </header>
@@ -189,7 +182,6 @@
     <div class="sidebar-container">
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
-  
   
   <span class="sidebar-brand-text">mvsr  documentation</span>
   
@@ -204,15 +196,15 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Supported Languages</span></p>
 <ul class="current">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../cpp/index.html">C++ (Native)</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of C++ (Native)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../cpp/index.html">C++ (Native)</a><input aria-label="Toggle navigation of C++ (Native)" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../cpp/api-reference.html">C++ Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../c/index.html">C API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../c/index.html">C API</a><input aria-label="Toggle navigation of C API" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../c/api-reference.html">C API Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Python API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Python API</a><input aria-label="Toggle navigation of Python API" checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Python API Reference</a></li>
 </ul>
 </li>
@@ -242,8 +234,7 @@
   </a>
 </div>
 <div class="theme-toggle-container theme-toggle-content">
-            <button class="theme-toggle">
-              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
               <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
               <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
               <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
@@ -251,8 +242,7 @@
             </button>
           </div>
           <label class="toc-overlay-icon toc-content-icon" for="__toc">
-            <div class="visually-hidden">Toggle table of contents sidebar</div>
-            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
           </label>
         </div>
         <article role="main" id="furo-main-content">
@@ -267,12 +257,12 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.typing.ArrayLike</span></code></a>) – Array-like containing the x input values. This gets transformed
+<li><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArrayLike</span></code></a></span>) – Array-like containing the x input values. This gets transformed
 into the internal X matrix by the selected kernel. Values may be of any type.</p></li>
-<li><p><strong>y</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.typing.ArrayLike</span></code></a>) – Array-like containing the y input values. Shape
+<li><p><strong>y</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArrayLike</span></code></a></span>) – Array-like containing the y input values. Shape
 <code class="code docutils literal notranslate"><span class="pre">(n_samples,)</span></code> or <code class="code docutils literal notranslate"><span class="pre">(n_variants,</span> <span class="pre">n_samples)</span></code>.</p></li>
 <li><p><strong>k</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Target number of segments for the Regression.</p></li>
-<li><p><strong>kernel</strong> (<a class="reference internal" href="#Kernel.Raw" title="Kernel.Raw"><code class="xref py py-class docutils literal notranslate"><span class="pre">Kernel.Raw</span></code></a>) – Kernel used to transform x values into the internal X matrix,
+<li><p><strong>kernel</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Raw</span></code></span>) – Kernel used to transform x values into the internal X matrix,
 as well as normalize and interpolate y values. Defaults to <a class="reference internal" href="#Kernel.Poly" title="Kernel.Poly"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Kernel.Poly()</span></code></a>.</p></li>
 <li><p><strong>algorithm</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#mvsr.Algorithm" title="mvsr.libmvsr.Algorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">Algorithm</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – Algorithm used to reduce the number of segments. If <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>, the algorithm
 will be selected automatically based on the number of samples, number of x dimensions
@@ -280,8 +270,8 @@ and set <code class="xref py py-obj docutils literal notranslate"><span class="p
 <li><p><strong>score</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#mvsr.Score" title="mvsr.libmvsr.Score"><code class="xref py py-class docutils literal notranslate"><span class="pre">Score</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – Placeholder for k scoring method (not implemented yet).</p></li>
 <li><p><strong>normalize</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – Normalize y input values. If <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>, auto-enabled for multi-variant input
 data. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
-<li><p><strong>weighting</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.typing.ArrayLike</span></code></a>) – Optional per-variant weights. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float32"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.float32</span></code></a> | <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.float64</span></code></a>) – Internally used <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy</span></code></a> data type.
+<li><p><strong>weighting</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArrayLike</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – Optional per-variant weights. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
+<li><p><strong>dtype</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.single" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">single</span></code></a>] | <a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.double" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">double</span></code></a>]</span>) – Internally used <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy</span></code></a> data type.
 Defaults to <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.float64</span></code></a>.</p></li>
 <li><p><strong>keepdims</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – If set to False, return scalar values when evaluating single-variant segments.
 Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a>.</p></li>
@@ -306,17 +296,17 @@ key for each of them. Defaults to <a class="reference external" href="https://do
 <h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="mvsr.Regression">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Regression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">models</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sortkey</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mvsr.Regression" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Regression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">models</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sortkey</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mvsr.Regression" title="Link to this definition">¶</a></dt>
 <dd><p>Regression consisting of multiple segments.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>xs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.typing.ArrayLike</span></code></a>) – X input values.</p></li>
-<li><p><strong>ys</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – Y input values.</p></li>
-<li><p><strong>kernel</strong> (<a class="reference internal" href="#Kernel.Raw" title="Kernel.Raw"><code class="xref py py-class docutils literal notranslate"><span class="pre">Kernel.Raw</span></code></a>) – Kernel used to transform x values.</p></li>
-<li><p><strong>starts</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – Segment start indices.</p></li>
-<li><p><strong>models</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – Segment models.</p></li>
-<li><p><strong>errors</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – Residual sum of squares for each sample.</p></li>
+<li><p><strong>xs</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArrayLike</span></code></a></span>) – X input values.</p></li>
+<li><p><strong>ys</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.NDArray" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NDArray</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.single" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">single</span></code></a> | <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.double" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">double</span></code></a>]</span>) – Y input values.</p></li>
+<li><p><strong>kernel</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Raw</span></code></span>) – Kernel used to transform x values.</p></li>
+<li><p><strong>starts</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.NDArray" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NDArray</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.uint" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">uint</span></code></a>]</span>) – Segment start indices.</p></li>
+<li><p><strong>models</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.NDArray" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NDArray</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.single" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">single</span></code></a> | <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.double" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">double</span></code></a>]</span>) – Segment models.</p></li>
+<li><p><strong>errors</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.NDArray" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NDArray</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.single" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">single</span></code></a> | <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.double" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">double</span></code></a>]</span>) – Residual sum of squares for each sample.</p></li>
 <li><p><strong>keepdims</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – If set to False, return scalar values when evaluating single-variant segments.</p></li>
 <li><p><strong>sortkey</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>] | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – Function to extract a comparison key from x values. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
 </ul>
@@ -355,7 +345,7 @@ key for each of them. Defaults to <a class="reference external" href="https://do
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mvsr.Regression.segments">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">segments</span></span><a class="headerlink" href="#mvsr.Regression.segments" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">segments</span></span><a class="headerlink" href="#mvsr.Regression.segments" title="Link to this definition">¶</a></dt>
 <dd><p>List of <a class="reference internal" href="#mvsr.Segment" title="mvsr.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -366,7 +356,7 @@ key for each of them. Defaults to <a class="reference external" href="https://do
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mvsr.Regression.starts">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">starts</span></span><a class="headerlink" href="#mvsr.Regression.starts" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">starts</span></span><a class="headerlink" href="#mvsr.Regression.starts" title="Link to this definition">¶</a></dt>
 <dd><p>Input sample indices of segment starts.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -377,7 +367,7 @@ key for each of them. Defaults to <a class="reference external" href="https://do
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mvsr.Regression.variants">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">variants</span></span><a class="headerlink" href="#mvsr.Regression.variants" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">variants</span></span><a class="headerlink" href="#mvsr.Regression.variants" title="Link to this definition">¶</a></dt>
 <dd><p>List of <a class="reference internal" href="#mvsr.Regression" title="mvsr.Regression"><code class="xref py py-class docutils literal notranslate"><span class="pre">Regression</span></code></a> objects for each variant.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -448,7 +438,7 @@ key for each of them. Defaults to <a class="reference external" href="https://do
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ax</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.11.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.11.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>]</span>) – Single matplotlib <code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code> or iterable of <code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code> for each variant.</p></li>
-<li><p><strong>xs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> | </em><em>numpy.typing.ArrayLike</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><em>Any</em></a><em>]</em>) – Number of points to
+<li><p><strong>xs</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> | <a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArrayLike</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</span>) – Number of points to
 sample or array-like of explicit x values. Defaults to 1000.</p></li>
 <li><p><strong>style</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>] | <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>] | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]</span>) – Matplotlib styling applied to segments. Can be provided as iterable for each
 variant. Defaults to {}.</p></li>
@@ -470,16 +460,16 @@ variant, per segment.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="mvsr.Segment">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Segment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mvsr.Segment" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Segment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mvsr.Segment" title="Link to this definition">¶</a></dt>
 <dd><p>Regression segment.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>xs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – X input values.</p></li>
-<li><p><strong>ys</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – Y input values.</p></li>
-<li><p><strong>kernel</strong> (<a class="reference internal" href="#Kernel.Raw" title="Kernel.Raw"><code class="xref py py-class docutils literal notranslate"><span class="pre">Kernel.Raw</span></code></a>) – Kernel used to transform x values.</p></li>
-<li><p><strong>model</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – Model matrix describing the segment.</p></li>
-<li><p><strong>errors</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – Residual sum of squares for each segment sample.</p></li>
+<li><p><strong>xs</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.NDArray" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NDArray</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.single" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">single</span></code></a> | <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.double" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">double</span></code></a>]</span>) – X input values.</p></li>
+<li><p><strong>ys</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.NDArray" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NDArray</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.single" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">single</span></code></a> | <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.double" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">double</span></code></a>]</span>) – Y input values.</p></li>
+<li><p><strong>kernel</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Raw</span></code> | <code class="xref py py-class docutils literal notranslate"><span class="pre">ModelInterpolator</span></code></span>) – Kernel used to transform x values.</p></li>
+<li><p><strong>model</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.NDArray" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NDArray</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.single" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">single</span></code></a> | <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.double" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">double</span></code></a>]</span>) – Model matrix describing the segment.</p></li>
+<li><p><strong>errors</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.NDArray" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NDArray</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.single" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">single</span></code></a> | <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.double" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">double</span></code></a>]</span>) – Residual sum of squares for each segment sample.</p></li>
 <li><p><strong>keepdims</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – If set to False, return scalar values when evaluating single-variant segments.</p></li>
 </ul>
 </dd>
@@ -512,7 +502,7 @@ If None, use value provided from segment initialization. Defaults to None.</p></
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>xs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.typing.ArrayLike</span></code></a>) – Input x values.</p></li>
+<li><p><strong>xs</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArrayLike</span></code></a></span>) – Input x values.</p></li>
 <li><p><strong>keepdims</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – If set to False, return scalar values when the segment only has one variant.
 If None, use value provided from segment initialization. Defaults to None.</p></li>
 </ul>
@@ -528,7 +518,7 @@ If None, use value provided from segment initialization. Defaults to None.</p></
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mvsr.Segment.model">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#mvsr.Segment.model" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#mvsr.Segment.model" title="Link to this definition">¶</a></dt>
 <dd><p>Model matrix describing the segment.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -557,7 +547,7 @@ If None, use value provided from segment initialization. Defaults to None.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mvsr.Segment.range">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">range</span></span><a class="headerlink" href="#mvsr.Segment.range" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">range</span></span><a class="headerlink" href="#mvsr.Segment.range" title="Link to this definition">¶</a></dt>
 <dd><p>Input x value range.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -568,7 +558,7 @@ If None, use value provided from segment initialization. Defaults to None.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mvsr.Segment.samplecount">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">samplecount</span></span><a class="headerlink" href="#mvsr.Segment.samplecount" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">samplecount</span></span><a class="headerlink" href="#mvsr.Segment.samplecount" title="Link to this definition">¶</a></dt>
 <dd><p>Number of samples.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -579,7 +569,7 @@ If None, use value provided from segment initialization. Defaults to None.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mvsr.Segment.xs">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">xs</span></span><a class="headerlink" href="#mvsr.Segment.xs" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">xs</span></span><a class="headerlink" href="#mvsr.Segment.xs" title="Link to this definition">¶</a></dt>
 <dd><p>Input x values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -590,7 +580,7 @@ If None, use value provided from segment initialization. Defaults to None.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mvsr.Segment.ys">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ys</span></span><a class="headerlink" href="#mvsr.Segment.ys" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ys</span></span><a class="headerlink" href="#mvsr.Segment.ys" title="Link to this definition">¶</a></dt>
 <dd><p>Input y values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -601,7 +591,7 @@ If None, use value provided from segment initialization. Defaults to None.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mvsr.Segment.rss">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rss</span></span><a class="headerlink" href="#mvsr.Segment.rss" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">rss</span></span><a class="headerlink" href="#mvsr.Segment.rss" title="Link to this definition">¶</a></dt>
 <dd><p>Residual sum of squares, per sample.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -612,7 +602,7 @@ If None, use value provided from segment initialization. Defaults to None.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mvsr.Segment.mse">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mse</span></span><a class="headerlink" href="#mvsr.Segment.mse" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">mse</span></span><a class="headerlink" href="#mvsr.Segment.mse" title="Link to this definition">¶</a></dt>
 <dd><p>Mean squared error, per sample.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -629,7 +619,7 @@ If None, use value provided from segment initialization. Defaults to None.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ax</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.11.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.11.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>]</span>) – Single matplotlib <code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code> or iterable of <code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code> for each variant.</p></li>
-<li><p><strong>xs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> | </em><em>numpy.typing.ArrayLike</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><em>Any</em></a><em>]</em>) – Number of points to
+<li><p><strong>xs</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> | <a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArrayLike</span></code></a></span>) – Number of points to
 sample or array-like of explicit x values. Defaults to 1000.</p></li>
 <li><p><strong>style</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>] | <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>] | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]</span>) – Matplotlib styling applied to segments. Can be provided as iterable for each
 variant. Defaults to {}.</p></li>
@@ -650,7 +640,7 @@ variant. Defaults to {}.</p></li>
 <h3>Kernels<a class="headerlink" href="#kernels" title="Link to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="Kernel.Raw">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Kernel.</span></span><span class="sig-name descname"><span class="pre">Raw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">translation_dimension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_interpolation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Interpolate.closest</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Kernel.Raw" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">Kernel.</span></span><span class="sig-name descname"><span class="pre">Raw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">translation_dimension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_interpolation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">Interpolate.closest&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Kernel.Raw" title="Link to this definition">¶</a></dt>
 <dd><p>Raw Kernel to be used as a base class for other Kernel types.</p>
 <p>Implements pass-through transformation of x values, normalization of y values and
 interpolation between segments.</p>
@@ -659,7 +649,7 @@ interpolation between segments.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>translation_dimension</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – Index of the model dimension that translates the regression along
 the y axis (required for normalization). Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
-<li><p><strong>model_interpolation</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><em>Callable</em></a><em>[</em><em>[</em><em>numpy.typing.ArrayLike</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><a class="reference internal" href="#mvsr.Segment" title="mvsr.Segment"><em>Segment</em></a><em>]</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em><em>] </em><em>| </em><em>None</em>) – Function to interpolate between neighbouring segments. Defaults to
+<li><p><strong>model_interpolation</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArrayLike</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="#mvsr.Segment" title="mvsr.mvsr.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>]], <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]] | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – Function to interpolate between neighbouring segments. Defaults to
 <a class="reference internal" href="#Interpolate.closest" title="Interpolate.closest"><code class="xref py py-func docutils literal notranslate"><span class="pre">Interpolate.closest()</span></code></a>.</p></li>
 </ul>
 </dd>
@@ -670,7 +660,7 @@ the y axis (required for normalization). Defaults to <a class="reference externa
 <dd><p>Convert input array of x values to numpy array of dimensions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.typing.ArrayLike</span></code></a>) – Input x values.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArrayLike</span></code></a></span>) – Input x values.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Internal X matrix to use with <code class="xref py py-class docutils literal notranslate"><span class="pre">libmvsr.Mvsr</span></code>.</p>
@@ -687,7 +677,7 @@ the y axis (required for normalization). Defaults to <a class="reference externa
 <dd><p>Normalize each y variant to a range of [0,1].</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>y</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – Input y values. Shape <code class="code docutils literal notranslate"><span class="pre">(n_variants,</span> <span class="pre">n_samples)</span></code></p>
+<dd class="field-odd"><p><strong>y</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.NDArray" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NDArray</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.single" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">single</span></code></a> | <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.double" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">double</span></code></a>]</span>) – Input y values. Shape <code class="code docutils literal notranslate"><span class="pre">(n_variants,</span> <span class="pre">n_samples)</span></code></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – If <code class="code docutils literal notranslate"><span class="pre">translation_dimension</span></code> has not been specified.</p>
@@ -707,7 +697,7 @@ the y axis (required for normalization). Defaults to <a class="reference externa
 <dd><p>Denormalize models derived from values previously normalized with <a class="reference internal" href="#mvsr.Kernel.Raw.normalize" title="Kernel.Raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">normalize()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>models</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – Models for regression segments.</p>
+<dd class="field-odd"><p><strong>models</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.NDArray" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NDArray</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.single" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">single</span></code></a> | <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.double" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">double</span></code></a>]</span>) – Models for regression segments.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – If <a class="reference internal" href="#mvsr.Kernel.Raw.normalize" title="Kernel.Raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">normalize()</span></code></a> has not been called on this kernel before.</p>
@@ -745,7 +735,7 @@ the y axis (required for normalization). Defaults to <a class="reference externa
 
 <dl class="py class">
 <dt class="sig sig-object py" id="Kernel.Poly">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Kernel.</span></span><span class="sig-name descname"><span class="pre">Poly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_interpolation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Kernel.Poly" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">Kernel.</span></span><span class="sig-name descname"><span class="pre">Poly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_interpolation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Kernel.Poly" title="Link to this definition">¶</a></dt>
 <dd><p>Kernel for polynomial regression segments.</p>
 <p>Bases: <a class="reference internal" href="#Kernel.Raw" title="Kernel.Raw"><code class="xref py py-class docutils literal notranslate"><span class="pre">Kernel.Raw</span></code></a></p>
 <p>Inherited Methods: <a class="reference internal" href="#mvsr.Kernel.Raw.normalize" title="Kernel.Raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">normalize()</span></code></a>, <a class="reference internal" href="#mvsr.Kernel.Raw.denormalize" title="Kernel.Raw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">denormalize()</span></code></a></p>
@@ -753,7 +743,7 @@ the y axis (required for normalization). Defaults to <a class="reference externa
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>degree</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Polynomial degree.</p></li>
-<li><p><strong>model_interpolation</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><em>Callable</em></a><em>[</em><em>[</em><em>numpy.typing.ArrayLike</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><a class="reference internal" href="#mvsr.Segment" title="mvsr.Segment"><em>Segment</em></a><em>]</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em><em>] </em><em>| </em><em>None</em>) – Function to interpolate between neighbouring segments. If <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a> interpolate
+<li><p><strong>model_interpolation</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArrayLike</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="#mvsr.Segment" title="mvsr.mvsr.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>]], <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]] | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – Function to interpolate between neighbouring segments. If <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a> interpolate
 linearly between segment endpoints. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
 </ul>
 </dd>
@@ -764,7 +754,7 @@ linearly between segment endpoints. Defaults to <a class="reference external" hr
 <dd><p>Convert input array of x values to numpy array of dimensions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.typing.ArrayLike</span></code></a>) – Input x values.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArrayLike</span></code></a></span>) – Input x values.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Internal X matrix to use with <code class="xref py py-class docutils literal notranslate"><span class="pre">libmvsr.Mvsr</span></code>.</p>
@@ -775,9 +765,9 @@ linearly between segment endpoints. Defaults to <a class="reference external" hr
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="mvsr.Kernel.Poly.interpolate">
-<span class="sig-prename descclassname"><span class="pre">Poly.</span></span><span class="sig-name descname"><span class="pre">interpolate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">segments</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mvsr.Kernel.Poly.interpolate" title="Link to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="Kernel.Poly.interpolate">
+<span class="sig-name descname"><span class="pre">interpolate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segments</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Kernel.Poly.interpolate" title="Link to this definition">¶</a></dt>
 <dd><p>Create interpolated <code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code>.</p>
 <p>Uses <code class="xref py py-obj docutils literal notranslate"><span class="pre">model_interpolation</span></code> if provided else linearly interpolates between segment
 endpoints.</p>
@@ -806,17 +796,17 @@ endpoints.</p>
 <h3>Enums<a class="headerlink" href="#enums" title="Link to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="mvsr.Algorithm">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Algorithm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mvsr.Algorithm" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Algorithm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mvsr.Algorithm" title="Link to this definition">¶</a></dt>
 <dd><p>Algorithm used to reduce the number of segments.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mvsr.Algorithm.GREEDY">
-<span class="sig-name descname"><span class="pre">GREEDY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#mvsr.Algorithm.GREEDY" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">GREEDY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></span><a class="headerlink" href="#mvsr.Algorithm.GREEDY" title="Link to this definition">¶</a></dt>
 <dd><p>Fast Greedy Algorithm ( <span class="math notranslate nohighlight">\(O(n \log n)\)</span> ).</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mvsr.Algorithm.DP">
-<span class="sig-name descname"><span class="pre">DP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#mvsr.Algorithm.DP" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">DP</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></span><a class="headerlink" href="#mvsr.Algorithm.DP" title="Link to this definition">¶</a></dt>
 <dd><p>Dynamic Program ( <span class="math notranslate nohighlight">\(O(n^2)\)</span> ).</p>
 </dd></dl>
 
@@ -824,11 +814,11 @@ endpoints.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="mvsr.Score">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mvsr.Score" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mvsr.Score" title="Link to this definition">¶</a></dt>
 <dd><p>Scoring method used to determine the number of segments.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mvsr.Score.EXACT">
-<span class="sig-name descname"><span class="pre">EXACT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#mvsr.Score.EXACT" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">EXACT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></span><a class="headerlink" href="#mvsr.Score.EXACT" title="Link to this definition">¶</a></dt>
 <dd><p>Output the exact number of segments provided.</p>
 </dd></dl>
 
@@ -960,7 +950,7 @@ endpoints.</p>
 </li>
 <li><a class="reference internal" href="#Kernel.Poly"><code class="docutils literal notranslate"><span class="pre">Kernel.Poly</span></code></a><ul>
 <li><a class="reference internal" href="#mvsr.Kernel.Poly.__call__"><code class="docutils literal notranslate"><span class="pre">Kernel.Poly.__call__()</span></code></a></li>
-<li><a class="reference internal" href="#mvsr.Kernel.Poly.interpolate"><code class="docutils literal notranslate"><span class="pre">Kernel.Poly.interpolate()</span></code></a></li>
+<li><a class="reference internal" href="#Kernel.Poly.interpolate"><code class="docutils literal notranslate"><span class="pre">Kernel.Poly.interpolate()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -999,9 +989,9 @@ endpoints.</p>
     </aside>
   </div>
 </div><script src="../../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     </body>
 </html>
