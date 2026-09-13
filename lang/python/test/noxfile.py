@@ -7,14 +7,14 @@ import nox
 nox.options.default_venv_backend = "uv"
 
 MIN_NUMPY_VERSION = {
-    "3.10": "1.21.*",
     "3.11": "1.23.*",
     "3.12": "1.26.*",
     "3.13": "2.1.*",
     "3.14": "2.3.*",
+    "3.15": "2.5.*",
 }
-PINNED_NUMPY_VERSION = "2.2.*"
-SKIP_PINNED_VERSION = {"3.14"}
+PINNED_NUMPY_VERSION = "2.4.*"
+SKIP_PINNED_VERSION = {"3.11", "3.15"}
 
 COVERAGE_CONFIG = Path(__file__).parents[1] / "pyproject.toml"
 
@@ -26,7 +26,7 @@ def test_simple(session: nox.Session):
     session.run("pytest", "-v", "--no-cov", "-k", "simple")
 
 
-@nox.session(python=["3.10", "3.11", "3.12", "3.13", "3.14"])
+@nox.session(python=["3.11", "3.12", "3.13", "3.14", "3.15"])
 @nox.parametrize("numpy", ["min", "pinned", "latest"])
 def test_versions(session: nox.Session, numpy: str):
     match numpy:
