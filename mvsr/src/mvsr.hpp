@@ -129,8 +129,26 @@ public:
      */
     void reduceDP(size_t numSegments)
     {
-        if (numSegments < 2 || pieces.getSize() <= numSegments) return;
+        if (numSegments == 0 || pieces.getSize() <= numSegments) return;
+
         greedyQueue.clear();
+
+        if (numSegments == 1)
+        {
+            Scalar *uniseg = &tempMemory[segSize];
+            segInit(uniseg, 0, nullptr);
+            size_t size = 0;
+            for (auto &seg : pieces)
+            {
+                size += seg.sampleSize;
+                segAdd(uniseg, uniseg, segGetStartPtr(seg));
+            }
+            pieces.clear();
+            pieces.reserve(1);
+            std::copy_n(uniseg, segSize, segGetStartPtr(*pieces.prepend(Segment{.sampleSize = size})));
+            return;
+        }
+
         size_t dpRowSize = dpTable.empty() ? 0 : dpTable[1].size;
 
         // check if table is too small
@@ -184,7 +202,7 @@ public:
                     // check whether the error is smaller than currently used one
                     for (size_t idx = 1; idx < dpRowSize; idx++)
                     {
-                        if (cmpRow[idx - 1].err + err < curRow[idx].err)
+                        if (cmpRow[idx - 1].err + err <= curRow[idx].err)
                         {
                             curRow[idx] = { cmpRow[idx - 1].err + err, diff };
                         }
