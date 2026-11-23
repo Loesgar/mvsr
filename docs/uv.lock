@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.12"
 
 [[package]]
@@ -674,7 +674,7 @@ wheels = [
 
 [[package]]
 name = "mvsr"
-version = "0.3.0"
+version = "0.3.1"
 source = { editable = "../lang/python" }
 dependencies = [
     { name = "numpy" },
