@@ -7,7 +7,7 @@
    - [`lang/python/pyproject.toml`](lang/python/pyproject.toml)
 
    Additionally any lock files should also be updated (this is technically not necessary though):
-   - run `nix flake update`
+   ~~+- run `nix flake update`~~ (not yet, this drops Intel MAC support)
    - run `uv lock` in [`lang/python`](lang/python)
    - run `uv lock` in [`docs`](docs)
 
