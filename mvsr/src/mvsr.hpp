@@ -145,6 +145,7 @@ public:
             }
             pieces.clear();
             pieces.reserve(1);
+            segUpdateError(uniseg);
             std::copy_n(uniseg, segSize, segGetStartPtr(*pieces.prepend(Segment{.sampleSize = size})));
             return;
         }
@@ -157,7 +158,7 @@ public:
             // recreate table
             dpRowSize = numSegments;
             dpTable.resize(pieces.getSize() * dpRowSize);
-            dpTable[0] = DpTableEntry{ .err = segGetStartPtr(pieces.front())[offErr], .size = pieces.front().sampleSize };
+            dpTable[0] = DpTableEntry{ .size = pieces.front().sampleSize };
             dpTable[1].size = dpRowSize;
 
             // setup global regression (for col 1)
@@ -177,6 +178,7 @@ public:
                 curRow->size = startIdx;
                 curRow += dpRowSize;
             }
+            (curRow - dpRowSize)[0] = { uniseg[offErr], startIdx };
 
             // iterate over every row
             for (Scalar *curSegDiff = &tempMemory[2 * segSize]; ++segit != pieces.end(); curRow += dpRowSize)
